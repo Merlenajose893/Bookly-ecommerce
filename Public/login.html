@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .split-screen {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .left {
+            flex: 1;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                       url('/api/placeholder/800/1200') center/cover no-repeat;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .left::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.7) 0%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+        }
+
+        .left-content {
+            position: relative;
+            color: white;
+            max-width: 500px;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .left-content h2 {
+            font-size: 36px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .left-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .right {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #fff;
+            font-size: 24px;
+            z-index: 10;
+            transition: opacity 0.3s;
+        }
+
+        .back-arrow:hover {
+            opacity: 0.8;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-top: 8px;
+        }
+
+        .forgot-password a {
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .forgot-password a:hover {
+            color: #0052a3;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin: 16px 0;
+            gap: 8px;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #45a049;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #666;
+            position: relative;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .divider::before {
+            left: 0;
+        }
+
+        .divider::after {
+            right: 0;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .social-button:hover {
+            background-color: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .signup-link {
+            text-align: center;
+        }
+
+        .signup-link a {
+            color: #0066cc;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .signup-link a:hover {
+            color: #0052a3;
+        }
+
+        @media (max-width: 768px) {
+            .split-screen {
+                flex-direction: column;
+            }
+
+            .left {
+                min-height: 300px;
+            }
+
+            .right {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="split-screen">
+        <div class="left">
+            <a href="#" class="back-arrow">←</a>
+            <div class="left-content">
+                <h2>Welcome to Your Digital Library</h2>
+                <p>Discover millions of eBooks, audiobooks, magazines, and more from our extensive collection.</p>
+            </div>
+        </div>
+        <div class="right">
+            <div class="container">
+                <h1>Welcome back!</h1>
+                <p>Enter your Credentials to access your account</p>
+                
+                <form>
+                    <div class="form-group">
+                        <label>Email address</label>
+                        <input type="email" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password">
+                        <div class="forgot-password">
+                            <a href="#">forgot password</a>
+                        </div>
+                    </div>
+                    
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">Remember for 30 days</label>
+                    </div>
+                    
+                    <button type="submit" class="login-button">Login</button>
+                </form>
+                
+                <div class="divider">Or</div>
+                
+                <div class="social-buttons">
+                    <button class="social-button">
+                        <img src="https://cdn.cdnlogo.com/logos/g/35/google-icon.svg" width="20" height="20" alt="Google">
+                        Sign in with Google
+                    </button>
+                    <button class="social-button">
+                        <img src="https://cdn.cdnlogo.com/logos/a/12/apple.svg" width="20" height="20" alt="Apple">
+                        Sign in with Apple
+                    </button>
+                </div>
+                
+                <div class="signup-link">
+                    Don't have an account? <a href="#">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
