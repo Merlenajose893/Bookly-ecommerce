@@ -1,0 +1,110 @@
+<%- include("../partials/adminheader") %>
+
+<div class="container-scroller">
+  <%- include("../partials/adminSidebar") %>
+
+  <div class="container-fluid page-body-wrapper">
+    <%- include("../partials/adminNav") %>
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title">Form elements</h3>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Forms</a></li>
+              <li class="breadcrumb-item active" aria-current="page">
+                Form elements
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Default form</h4>
+                <p class="card-description">Basic form layout</p>
+                <form class="forms-sample" action="/admin/update-user/<%= user._id %>?_method=PUT" method="post">
+                  <div class="form-group">
+                    <label for="exampleInputUsername1">Username</label>
+                    <input
+                      type="text"
+                      name="username"
+                      class="form-control"
+                      id="exampleInputUsername1"
+                     
+                      value="<%= user.username %>"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      class="form-control"
+                      id="exampleInputEmail1"
+                     
+                      value="<%= user.email %>"
+                    />
+                  </div>
+                  <!-- <div class="form-group">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="exampleInputPassword1"
+                      placeholder="Password"
+
+                    />
+                  </div> -->
+                  <div class="form-group">
+                    <label for="exampleInputRole">Role</label>
+                    <select name="userRole" class="js-example-basic-single" style="width:100%" id="exampleInputRole">
+                      
+                      <option value="admin" <%= user.role === "admin" ? "selected" : "" %>>Admin</option>
+                      <option value="user" <%= user.role === "user" ? "selected" : "" %>>User</option>
+                    
+                    </select>                    
+                    
+                  </div>
+                  
+                  
+                  <button type="submit" class="btn btn-primary mr-2">
+                    Submit
+                  </button>
+                  <button class="btn btn-dark">Cancel</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div
+          class="d-sm-flex justify-content-center justify-content-sm-between"
+        >
+          <span
+            class="text-muted d-block text-center text-sm-left d-sm-inline-block"
+            >Copyright © bootstrapdash.com 2020</span
+          >
+          <span
+            class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"
+          >
+            Free
+            <a
+              href="https://www.bootstrapdash.com/bootstrap-admin-template/"
+              target="_blank"
+              >Bootstrap admin templates</a
+            >
+            from Bootstrapdash.com</span
+          >
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/adminfooter") %>

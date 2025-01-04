@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookly Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="genre.css">
+</head>
+<body>
+    <!------Navbar------->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Bookly</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Orders</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Logout</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <!---------SideBar------->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2 bg-light sidebar">
+                <button class="btn btn-block btn-outline-primary mb-3">Dashboard</button>
+                <button class="btn btn-block btn-outline-primary mb-3">Manage Books</button>
+                <button class="btn btn-block btn-outline-primary mb-3">Manage Categories</button>
+                <button class="btn btn-block btn-outline-primary mb-3">Manage Authors</button>
+                <button class="btn btn-block btn-outline-primary mb-3">Orders</button>
+                <button class="btn btn-block btn-outline-primary mb-3">Coupons</button>
+                <button class="btn btn-block btn-outline-danger mb-3">Logout</button>
+            </div>
+            <div class="col-10">
+                <h3 class="mt-4">Manage Book Categories</h3>
+                <div class="d-flex mb-3">
+                    <input type="text" class="form-control me-2" placeholder="Search category">
+                    <button class="btn btn-primary">Search</button>
+                    <button class="btn btn-success ms-2" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Category Name</th>
+                            <th>Total Books</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Fiction</td>
+                            <td>120</td>
+                            <td>2024-12-08</td>
+                            <td>
+                                <button class="btn btn-dark btn-sm">Update</button>
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Science</td>
+                            <td>80</td>
+                            <td>2024-12-07</td>
+                            <td>
+                                <button class="btn btn-dark btn-sm">Update</button>
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Category Name</label>
+                            <input type="text" id="categoryName" class="form-control" placeholder="Enter category name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="categoryDesc" class="form-label">Description</label>
+                            <textarea id="categoryDesc" class="form-control" rows="3" placeholder="Enter description"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

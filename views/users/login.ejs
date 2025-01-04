@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <link rel="stylesheet" href="/css/login.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="split-screen">
         <div class="left">
             <a href="#" class="back-arrow">←</a>
             <div class="left-content">
-                <h2>Welcome to Your Digital Library</h2>
+                <h2>Welcome to Bookly</h2>
                 <p>Discover millions of eBooks, audiobooks, magazines, and more from our extensive collection.</p>
             </div>
         </div>
@@ -20,22 +21,33 @@
                 <h1>Welcome back!</h1>
                 <p>Enter your Credentials to access your account</p>
                 
-                <form>
+                <!-- Handle message conditionally -->
+                <% if (typeof message !== 'undefined' && message) { %>
+                    <script>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: '<%= message %>',
+                        });
+                    </script>
+                <% } %>
+                
+                <form action="/login" method="POST">
                     <div class="form-group">
                         <label>Email address</label>
-                        <input type="email" placeholder="Enter your email">
+                        <input type="email" name="email" placeholder="Enter your email">
                     </div>
                     
                     <div class="form-group">
                         <label>Password</label>
-                        <input type="password">
+                        <input type="password" name="password">
                         <div class="forgot-password">
-                            <a href="#">forgot password</a>
+                            <a href="#">Forgot password?</a>
                         </div>
                     </div>
                     
                     <div class="remember-me">
-                        <input type="checkbox" id="remember">
+                        <input type="checkbox" id="remember" name="remember">
                         <label for="remember">Remember for 30 days</label>
                     </div>
                     
@@ -56,10 +68,43 @@
                 </div>
                 
                 <div class="signup-link">
-                    Don't have an account? <a href="#">Sign Up</a>
+                    Don't have an account? <a href="/signup">Sign Up</a>
                 </div>
             </div>
         </div>
     </div>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting immediately
+    
+            const email = document.querySelector('input[type="email"]').value;
+            const password = document.querySelector('input[type="password"]').value;
+    
+            if (!email || !password) {
+                alert("Please fill in both fields.");
+                return;
+            }
+    
+            const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+    
+            const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+            if (!passwordPattern.test(password)) {
+                alert("Password must be at least 6 characters long and contain both letters and numbers.");
+                return;
+            }
+
+            const remember = document.querySelector('#remember').checked;
+            if (remember) {
+                // Optional: Handle 'remember me' functionality
+            }
+    
+            alert("Form is valid. Submitting...");
+            this.submit(); // Uncomment this line to submit the form
+        });
+    </script>
 </body>
 </html>

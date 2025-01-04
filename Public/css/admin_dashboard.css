@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(26, 26, 40);
+    font-family: Arial, sans-serif;
+}
+
+/* Navbar styling */
+.navbar-brand {
+    color: rgb(113, 103, 90);
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #2c3e50;
+    padding-top: 20px;
+    color: rgb(113, 103, 90);
+}
+
+.sidebar a {
+    display: block;
+    color: rgb(113, 103, 90);
+    padding: 12px 20px;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.sidebar a:hover {
+    background-color: #34495e;
+}
+
+/* Main content */
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    color: rgb(113, 103, 90);
+}
+
+/* Content Section */
+.content-section {
+    background-color: #1a1a28;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+/* Form Section */
+form {
+    background-color: #1a1a28;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+form label {
+    font-size: 14px;
+    color: rgb(113, 103, 90);
+}
+
+form input, form textarea {
+    background-color: #2c3e50;
+    border: 1px solid #34495e;
+    color: rgb(113, 103, 90);
+}
+
+form button {
+    margin-top: 10px;
+    background-color: #34495e;
+    color: rgb(113, 103, 90);
+}
+
+/* Card Styling */
+.card {
+    background-color: #2c3e50;
+    color: rgb(113, 103, 90);
+    border: none;
+    border-radius: 10px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-title {
+    font-size: 18px;
+    color: rgb(113, 103, 90);
+}
+
+.card-text {
+    color: rgb(113, 103, 90);
+}
+
+/* Buttons */
+.btn-link {
+    color: rgb(113, 103, 90);
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .content {
+        margin-left: 200px;
+    }
+}

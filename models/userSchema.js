@@ -1,14 +1,18 @@
-const mongoose=require('mongoose');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const {Schema}=mongoose;
-const userSchema=new Schema({
-    name:{type:String,required:true},
-    email:{type:String,required:true,unique:true},
-    password:{type:String,required:true,unique:true},
-    googleId:{type:String,required:true,unique:true},
-    password:{type:String,required:false},
-    isBlocked:{type:Boolean,default:false},
-    isAdmin:{type:Boolean,default:false }
-});
+const userSchema = new Schema({
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: function() { return !this.googleId; } },
+    cpassword:{type:String,required:false}, // Optional for Google sign-in
+    googleId: { type: String, unique: true, sparse: true }, // Optional, with sparse indexing
+    isBlocked: { type: Boolean, default: false },
+    isAdmin:{type:Boolean,default:false} // Default to 'user'
+}, { timestamps: true }); // Adds createdAt and updatedAt fields
 
-module.exports=userSchema;
+const User= mongoose.model('User', userSchema);
+module.exports ={
+    User
+}
+  

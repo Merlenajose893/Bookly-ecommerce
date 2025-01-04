@@ -101,4 +101,11 @@
     });
     
 })(jQuery);
+$(document).ready(function () {
+    $("#zoom-image").ezPlus({
+        zoomType: "lens",
+        lensShape: "round",
+        lensSize: 200
+    });
+});
 

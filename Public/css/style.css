@@ -9582,3 +9582,33 @@ a.text-dark:hover, a.text-dark:focus {
     transform: translateY(-15px);
   }
 }
+.image-gallery {
+  display: flex; /* This makes the images align horizontally */
+  gap: 10px; /* Optional: adds space between the images */
+}
+
+.image-item {
+  max-width: 100%; /* Ensures the images are responsive */
+  height: auto;
+  width: 150px; /* Maintains the aspect ratio */
+}
+.zoom-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.zoom-image {
+  transition: transform 0.3s ease;
+}
+
+.zoom-container:hover .zoom-image {
+  transform: scale(1.5); /* Zoom level */
+}
+.book-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start; /* Align images to the left */
+  gap: 10px;
+  width: 100%; /* Ensure it takes full available width */
+  margin-right: 120px; /* Optional, to create space from right if needed */
+}

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Genre Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/admin-category.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Bookly</a>
+        </div>
+    </nav>
+
+    <!-- Sidebar and Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="sidebar">
+                    <a href="/admin/">Dashboard</a>
+                    <a href="/admin/usermanage">User Management</a>
+                    <a href="/admin/books">Product Management</a>
+                    <a href="/admin/admin_category">Category Management</a>
+                    <a href="/admin/admin_order">Order Management</a>
+                    <a href="#">Coupons Management</a>
+                    <a href="/admin/logout" class="text-danger">Logout</a>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="content">
+                    <h3>Genre</h3>
+                    <div class="d-flex mb-3">
+                        <input type="text" class="form-control" placeholder="Search Genre">
+                        <button type="button" class="btn btn-primary ms-2">Search</button>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#createGenreModal">Create</button>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="createGenreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createGenreModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="createGenreModalLabel">Add Genre</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/admin/genre" method="POST"  onsubmit="return validateGenreName();">
+                                        <div class="mb-3">
+                                            <label for="genreName" class="form-label">Name</label>
+                                            <input type="text" id="genreName" name="name" class="form-control" placeholder="Name" required>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label for="genreDescription" class="form-label">Description</label>
+                                            <textarea id="genreDescription" name="description" class="form-control" placeholder="Description" rows="3" required></textarea>
+                                        </div>
+                                        <!-- <div class="mb-3">
+                                            <label for="productCount" class="form-label">Product Count</label>
+                                            <input type="number" id="productCount" name="productCount" class="form-control" placeholder="Product Count" required>
+                                        </div> -->
+                                        <button type="submit" class="btn btn-primary">Create</button>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="white">No.</th>
+                                <th scope="col" class="white">Name</th>
+                                
+                                <th scope="col" class="white">Updated Date</th>
+                                <th scope="col" class="white">Update</th>
+                                <th scope="col" class="white">Delete</th>
+                                <th scope="col" class="white">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% genres.forEach((genre, index) => { %>
+                                <tr>
+                                    <th scope="row" class="white"><%= (currentPage - 1) * itemsPerPage + index + 1 %></th>
+                                    <td class="white"><%= genre.name %></td>
+                                    <td class="white"><%= genre.productCount %></td>
+                                    <td class="white"><%= genre.updatedDate || "N/A" %></td>
+                                    <td>
+                                        <a href="/admin/updateGenre/?id=<%= genre.id %>" class="btn btn-success">Update</a>
+                                    </td>
+                                    <td>
+                                        <form action="/admin/deleteGenres/<%= genre.id %>" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-dark">Delete</button>
+                                        </form>
+                                    </td>
+                                    <td class="white">
+                                        <% if (genre.isDeleted) { %>
+                                            <span class="badge bg-danger">Deleted</span>
+                                        <% } else { %>
+                                            <span class="badge bg-success">Active</span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <% if (hasPrevPage) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= itemsPerPage %>">&laquo;</a>
+                                </li>
+                            <% } %>
+                        
+                            <% pageNumbers.forEach(i => { %>
+                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                    <a class="page-link" href="?page=<%= i %>&limit=<%= itemsPerPage %>"><%= i %></a>
+                                </li>
+                            <% }) %>
+                        
+                            <% if (hasNextPage) { %>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= itemsPerPage %>">&raquo;</a>
+                                </li>
+                            <% } %>
+                        </ul>
+                        
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    // Frontend: Handling the form submission
+    <!-- Add SweetAlert2 CDN in your HTML <head> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        async function handleSubmit(event) {
+            event.preventDefault();  // Prevent default form submission
+            
+            const genreName = document.getElementById('genreName').value;  // Access the value of the input field
+            const description = document.getElementById('genreDescription').value;
+            
+            // Validate genre name (already done)
+            if (!genreName.trim()) {
+                Swal.fire({
+                icon: 'error',
+                title: 'Invalid Genre Name',
+                text: 'Please enter a valid genre name',
+            });
+            return;
+        }
+        
+        // Send data to backend
+        try {
+            const response = await fetch('/admin/genre', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: genreName,
+                    description: description,
+                }),
+            });
+    
+            // Check for response status
+            if (response.status === 400) {
+                const data = await response.json();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.error,  // Show the error returned by backend
+                });
+            } else if (response.ok) {
+                // Successful submission
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Genre added successfully',
+                }).then(() => {
+                    window.location.href = '/admin/genre';  // Redirect to the genre page
+                });
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An unexpected error occurred. Please try again.',
+            });
+        }
+    }
+    
+    // Attach to your form submission event
+    document.querySelector('form').addEventListener('submit', handleSubmit);
+    
+    </script>
+    
+    
+</body>
+</html>

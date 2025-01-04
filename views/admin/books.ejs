@@ -1,0 +1,673 @@
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin books</title>
+    <link h<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset=ref="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Add Cropper.js CSS -->
+     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" /> -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+     
+     
+
+
+    <link rel="stylesheet" href="/css/books.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Bookly</a>
+        </div>
+    </nav>
+
+    <!-- Sidebar and Content -->
+    <div class="container-fluid">
+        <div class="section-1 d-flex">
+            <div class="sidebar">
+                <a href="/admin">Dashboard</a>
+                <a href="/admin/usermanage">User Management</a>
+                <a href="/admin/books">Product Management</a>
+                <a href="/admin/genre">Category Management</a>
+                <a href="/admin/admin_order">Order Management</a>
+                <a href="#">Coupons Management</a>
+                <a href="/admin/logout class="text-danger">Logout</a>
+            </div>
+            <div class="content1 flex-grow-1">
+                <div class="content1-section1">
+                    <h3>books</h3>
+                    <div class="container-fluid">
+                        <div class="content1-section2 d-flex">
+                            <input type="text" class="form-control me-2" placeholder="Search">
+                            <button type="button" class="btn btn-primary me-2">Search</button>
+                            <!-- Button trigger modal for Create -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
+                        </div>
+                    </div>
+
+                    <!-- Create Modal -->
+                    <div class="modal fade" id="createModal" data-bs-backdrop="static" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Add book</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="/admin/books" method="POST" enctype="multipart/form-data" >
+                                        <div class="mb-3">
+                                            <label for="bookName" class="form-label">ISBN</label>
+                                            <input type="text" id="isbn" class="form-control" name="isbn" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="bookName" class="form-label">Title</label>
+                                            <input type="text" id="bookName" class="form-control" name="title" required>
+                                        </div>
+                                        
+                                      <div class="mb-3">
+                                        <label for="bookName" class="form-label">Author</label>
+                                        <input type="text" id="bookName" class="form-control" name="author" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bookName" class="form-label">Publisher</label>
+                                        <input type="text" id="publisher" class="form-control" name="publisher" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bookName" class="form-label">Formats</label>
+                                        <input type="text" id="formats" class="form-control" name="formats" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="genre">Genre</label>
+                                        <select class="form-select" id="genre" name="books[genre]" required>
+                                          <% genres.forEach(function(genre) { %>
+                                            <option value="<%= genre._id %>"><%= genre.name %></option>
+                                          <% }); %>
+                                        </select>
+                                      </div>
+                                    
+
+                                  <div class="mb-3">
+                                    <label for="bookName" class="form-label">Regular Price</label>
+                                    <input type="text" id="bookName" class="form-control" name="regularPrice" required>
+                                </div>
+                                <div class="mb-3">
+                                  <label for="bookName" class="form-label">Sales Price</label>
+                                  <input type="text" id="bookName" class="form-control" name="salesPrice" required>
+                              </div>
+                              <div class="mb-3">
+                                <label for="bookName" class="form-label">Stock</label>
+                                <input type="text" id="bookName" class="form-control" name="quantity"required>
+                            </div>
+                            <div class="mb-3">
+                              <label for="bookName" class="form-label">Description</label>
+                              <input type="text" id="bookName" class="form-control" name="description" required>
+                            </div> 
+                                
+                            <div class="card-body">
+                                <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                    <img src="" alt="" id="imgView1" style="display: none;">
+                                    <input class="form-control" type="file" name="image1" id="input1" accept="image/png, image/jpeg, image/jpg"
+                                        onchange="viewImage1(event), viewImage(event, 1)">
+                                    <div id="images-error" class="error-message"></div>
+                                </div>
+                                <div class="image-cropper d-flex align-items-center" id="croppedContainer1" style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                    <img src="" id="croppedImg1" alt="" style="width: 100%; height: 100%;">
+                                    <button type="button" id="saveButton1" class="btn-sm btn-primary" onclick="saveCroppedImage(1)">Save</button>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                        <img src="" alt="" id="imgView2" style="display: none;">
+                                        <input class="form-control" type="file" name="image2" id="input2" accept="image/png, image/jpeg, image/jpg"
+                                            onchange="viewImage2(event), viewImage(event, 2)">
+                                    </div>
+                                    <div class="image-cropper d-flex align-items-center" id="croppedContainer2" style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                        <img src="" id="croppedImg2" alt="" style="width: 100%; height: 100%;">
+                                        <button type="button" id="saveButton2" class="btn-sm btn-primary" onclick="saveCroppedImage(2)">Save</button>
+                                    </div>
+                                </div>
+                            
+                                <div class="row">
+                                    <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                        <img src="" alt="" id="imgView3" style="display: none;">
+                                        <input class="form-control" type="file" name="image3" id="input3" accept="image/png, image/jpeg, image/jpg"
+                                            onchange="viewImage3(event), viewImage(event, 3)">
+                                    </div>
+                                    <div class="image-cropper d-flex align-items-center" id="croppedContainer3" style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                        <img src="" id="croppedImg3" alt="" style="width: 100%; height: 100%;">
+                                        <button type="button" id="saveButton3" class="btn-sm btn-primary" onclick="saveCroppedImage(3)">Save</button>
+                                    </div>
+                                </div>
+                            
+                                <div class="row">
+                                    <div class="card-body align-items-center" style="margin-bottom: 20px;">
+                                        <img src="" alt="" id="imgView4" style="display: none;">
+                                        <input class="form-control" type="file" name="image4" id="input4" accept="image/png, image/jpeg, image/jpg"
+                                            onchange="viewImage4(event), viewImage(event, 4)">
+                                    </div>
+                                    <div class="image-cropper d-flex align-items-center" id="croppedContainer4" style="display:none; width: 300px; height: 200px; margin-bottom: 20px;">
+                                        <img src="" id="croppedImg4" alt="" style="width: 100%; height: 100%;">
+                                        <button type="button" id="saveButton4" class="btn-sm btn-primary" onclick="saveCroppedImage(4)">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div>
+
+
+                            <hr>
+
+
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- books Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped table-bordered align-middle text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">Images</th>
+                                    <th scope="col">ISBN</th>
+                                    <th scope="col">Genre</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Publisher</th>
+                                    <th scope="col">Formats</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Sales Price</th>
+                                    <th scope="col">Regular Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% books.forEach((book) => { %>
+                                <tr>
+                                    <td>
+                                        <% if (book.images && book.images.length > 0) { %>
+                                        <img src="/uploads/<%= book.images[0].split('/').pop() %>" alt="Book Image" class="img-fluid" style="max-width: 100px; max-height: 100px; object-fit: contain;">
+                                        <% } else { %>
+                                        <p class="text-muted">No image</p>
+                                        <% } %>
+                                    </td>
+                                    <td class="white"><%= book.isbn %></td>
+                                    <td class="white">
+                                        <% if (book.genres && book.genres.length > 0) { %>
+                                          <%= book.genres.map(genre => genre.name).join(', ') %>
+                                        <% } else { %>
+                                          <em>No genres available</em>
+                                        <% } %>
+                                      </td>
+                                      
+                                      
+                                    <td class="white"><%= book.title %></td>
+                                    <td class="white"><%= book.publisher %></td>
+                                    <td class="white"><%= book.formats %></td>
+                                    <td class="white"><%= book.author %></td>
+                                    <td class="white">₹<%= book.salesPrice %></td>
+                                    <td class="white">₹<%= book.regularPrice %></td>
+                                    <td class="white"><%= book.quantity %></td>
+                                    <td class="white">Actions Here</td>
+                     
+
+                                <td>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewModal<%= book.id %>">View</button>
+                                    <!-- View Modal -->
+                                    <div class="modal fade" id="viewModal<%= book.id %>" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">book Details</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div>
+                                                        <strong>Images:</strong>
+                                                        <div
+                                                            style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                                            <% if (book.images && book.images.length> 0) { %>
+                                                                <% book.images.forEach(function(image) { %>
+                                                                    <img src="/uploads/<%= image.split('/').pop() %>"
+                                                                        alt="Book Image"
+                                                                        style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc;">
+                                                                    <% }); %>
+                                                                        <% } else { %>
+                                                                            <p>No images available</p>
+                                                                            <% } %>
+                                                        </div>
+    
+                                                    <!--<p><strong></strong> <%= book.image %></p> -->
+                                                    <p><strong>ISBN:</strong><%=book.isbn%></p>
+                                                    <p><strong>Name:</strong> <%= book.title %></p>
+                                                    <p><strong>Author:</strong> <%= book.author %></p>
+                                                    <p><strong>Publisher</strong><%=book.publisher%></p>
+                                                    <p><strong>Format:</strong><%=book.formats%></p>
+                                                    <p><strong>Category:</strong>
+                                                        <% if (book.genres && book.genres.length > 0) { %>
+                                                            <%= book.genres.map(genre => genre.name).join(', ') %>
+                                                        <% } else { %>
+                                                            No genres available
+                                                        <% } %>
+                                                    </p>
+                                                    
+                                                    <p><strong>Regular Price:</strong> <%= book.regularPrice %></p>
+                                                    <p><strong>Sales Price:</strong> <%= book.salesPrice%></p>
+                                                    <p><strong>Stock:</strong> <%= book.quantity %></p>
+                                                    <p><strong>Description:</strong> <%= book.description %></p>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= book.id %>">Update</button>
+                                    <!-- Update Modal -->
+                                    <div class="modal fade" id="updateModal<%= book.id %>" tabindex="-1">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Update Book</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="/admin/books/<%=book.id%>/update" method="POST" enctype="multipart/form-data">
+                                                        <input type="hidden" name="id" value="<%= book._id %>">
+                                                        <!-- Book fields -->
+                                                        <div class="mb-3">
+                                                            <label for="title<%= book.id %>" class="form-label">ISBN</label>
+                                                            <input type="text" id="isbn<%= book.id %>" class="form-control" name="isbn" value="<%= book.isbn %>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="title<%= book.id %>" class="form-label">Title</label>
+                                                            <input type="text" id="title<%= book.id %>" class="form-control" name="title" value="<%= book.title %>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="author<%= book.id %>" class="form-label">Author</label>
+                                                            <input type="text" id="author<%= book.id %>" class="form-control" name="author" value="<%= book.author %>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="author<%= book.id %>" class="form-label">Publisher</label>
+                                                            <input type="text" id="publisher%= book.id %>" class="form-control" name="publisher"value="<%= book.publisher%>" required>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="author<%= book.id %>" class="form-label">Formats</label>
+                                                            <input type="text" id="formats<%= book.id %>" class="form-control" name="formats" value="<%= book.formats %>" required>
+
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="author<%= book.id %>" class="form-label">Description</label>
+                                                            <input type="text" id="description<%= book.id %>" class="form-control" name="description"value="<%= book.description %>" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label for="genre" class="form-label">Genre</label>
+                                                            <select class="form-select" id="genre" name="genre" required>
+                                                                <% genres.forEach(function(genre) { %>
+                                                                    <option value="<%= genre._id %>" <%= book.genres.some(g => g._id.toString() === genre._id.toString()) ? 'selected' : '' %>>
+                                                                        <%= genre.name %>
+                                                                    </option>
+                                                                <% }); %>
+                                                            </select>
+                                                        </div>
+                                                        
+                                    <div class="mb-3">
+                                        <label for="bookName" class="form-label">Regular Price</label>
+                                        <input type="number" id="bookName" class="form-control" name="regularPrice" value="<%= book.regularPrice %>"
+                                        required>
+                                    </div>
+                                                                            
+                                    <div class="mb-3">
+                                        <label for="bookName" class="form-label">Sales Price</label>
+                                        <input type="number" id="bookName" class="form-control" name="salesPrice" value="<%= book.salesPrice%>"
+                                        required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="bookName" class="form-label">Stock</label>
+                                        <input type="number" id="bookName" class="form-control" name="quantity" value="<%= book.quantity%>"
+                                        required>
+                                    </div>
+                                                        <!-- Existing images -->
+                                                        <div>
+                                                            <% if (book.images && book.images.length) { %>
+                                                              <div class="mb-3">
+                                                                <label class="form-label">Current Images</label>
+                                                                <div class="row">
+                                                                  <% book.images.forEach((image, index) => { %>
+                                                                    <div class="col-md-3">
+                                                                      <img src="/uploads/<%= image.split('/').pop() %>" 
+                                                                           alt="Image <%= index + 1 %>" 
+                                                                           class="img-fluid border shadow-sm current-image" 
+                                                                           style="cursor: pointer;" 
+                                                                           data-bs-toggle="modal" 
+                                                                           data-bs-target="#imageModal" 
+                                                                           data-image="/uploads/<%= image.split('/').pop() %>">
+                                                                    </div>
+                                                                  <% }) %>
+                                                                </div>
+                                                              </div>
+                                                            <% } %>
+                                                          </div>
+                                                          
+                                                          <!-- Modal for displaying the image -->
+                                                          <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered">
+                                                              <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                  <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                                                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                  <img id="modalImage" src="" alt="Preview" class="img-fluid">
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                          </div>
+                                                       
+                                                             <div class="card-body">
+                                                                <!-- Image 1 -->
+                                                                <div class="card-body align-items-center">
+                                                                    <img src="" alt="" id="imgView1">
+                                                                    <input class="form-control" type="file" name="image1" id="input1" accept="image/*" onchange="handleImageChange(event, 1)">
+                                                                    <div id="images-error" class="error-message"></div>
+                                                                </div>
+                                                                <div class="image-cropper d-flex align-items-center" id="croppedContainer1" style="display:none; width: 300px; height: 200px;">
+                                                                    <img src="" id="croppedImg1" alt="">
+                                                                    <button type="button" id="saveButton1" class="btn-sm btn-primary" onclick="saveCroppedImage(1)">Save</button>
+                                                                </div>
+                                                            </div>
+                                        
+                                                            <!-- Repeat for other images (image2, image3, image4) -->
+                                                            <!-- Image 2 -->
+                                                            <div class="card-body align-items-center">
+                                                                <img src="" alt="" id="imgView2">
+                                                                <input class="form-control" type="file" name="image2" id="input2" accept="image/*" onchange="handleImageChange(event, 2)">
+                                                            </div>
+                                                            <div class="image-cropper d-flex align-items-center" id="croppedContainer2" style="display:none; width: 300px; height: 200px;">
+                                                                <img src="" id="croppedImg2" alt="">
+                                                                <button type="button" id="saveButton2" class="btn-sm btn-primary" onclick="saveCroppedImage(2)">Save</button>
+                                                            </div>
+                                        
+                                                            <!-- Image 3 -->
+                                                            <div class="card-body align-items-center">
+                                                                <img src="" alt="" id="imgView3">
+                                                                <input class="form-control" type="file" name="image3" id="input3" accept="image/*" onchange="handleImageChange(event, 3)">
+                                                            </div>
+                                                            <div class="image-cropper d-flex align-items-center" id="croppedContainer3" style="display:none; width: 300px; height: 200px;">
+                                                                <img src="" id="croppedImg3" alt="">
+                                                                <button type="button" id="saveButton3" class="btn-sm btn-primary" onclick="saveCroppedImage(3)">Save</button>
+                                                            </div>
+                                        
+                                                            <!-- Image 4 -->
+                                                            <div class="card-body align-items-center">
+                                                                <img src="" alt="" id="imgView4">
+                                                                <input class="form-control" type="file" name="image4" id="input4" accept="image/*" onchange="handleImageChange(event, 4)">
+                                                            </div>
+                                                            <div class="image-cropper d-flex align-items-center" id="croppedContainer4" style="display:none; width: 300px; height: 200px;">
+                                                                <img src="" id="croppedImg4" alt="">
+                                                                <button type="button" id="saveButton4" class="btn-sm btn-primary" onclick="saveCroppedImage(4)">Save</button>
+                                                            </div>
+
+                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <td>
+                                    <% if (book.isDeleted === true) { %>
+                                        <form action="/admin/undelete-books/<%= book._id %>" method="POST" class="undelete-form">
+                                            <input type="hidden" name="id" value="<%= book._id %>">
+                                            <button type="button" class="btn btn-success text-white btn-outline-secondary" onclick="confirmAction(this, 'publish', 'Are you sure you want to publish this book?')">Publish</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form action="/admin/delete-books/<%= book._id %>" method="POST" class="delete-form">
+                                            <input type="hidden" name="id" value="<%= book._id %>">
+                                            <button type="button" class="btn btn-danger text-white btn-outline-secondary" onclick="confirmAction(this, 'delete', 'Are you sure you want to delete this book?')">Delete</button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                                
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-------------pagination -------------->
+    <div class="page d-flex flex-column min-vh-100">
+        <!-- Table Here -->
+        <table class="table table-bordered table-striped">
+            <!-- Table content -->
+        </table>
+    
+        <!-- Pagination -->
+        <nav aria-label="Page navigation example" class="mt-3">
+            <ul class="pagination justify-content-center">
+                <!-- Previous Page Link -->
+                <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+                    <a class="page-link" href="?page=<%= page - 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+    
+                <!-- Page Number Links -->
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= page === i ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>&search=<%= search %>&genre=<%= genre %>"><%= i %></a>
+                    </li>
+                <% } %>
+    
+                <!-- Next Page Link -->
+                <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+                    <a class="page-link" href="?page=<%= page + 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+      
+      
+      
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            function viewImage(event, index) {
+                const input = event.target;
+    
+                if (!input.files || !input.files[0]) {
+                    console.error("No file selected or invalid input.");
+                    return;
+                }
+    
+                const reader = new FileReader();
+    
+                reader.onload = function () {
+                    const dataURL = reader.result;
+                    const image = document.getElementById(`imgView${index}`);
+                    const cropperContainer = document.getElementById(`croppedContainer${index}`);
+                    const saveButton = document.getElementById(`saveButton${index}`);
+                    const croppedImg = document.getElementById(`croppedImg${index}`);
+    
+                    if (!image || !cropperContainer || !saveButton || !croppedImg) {
+                        console.error("Elements for Cropper.js not found. Verify IDs and structure.");
+                        return;
+                    }
+    
+                    // Display the original image for cropping
+                    image.src = dataURL;
+                    image.style.display = "block";
+                    croppedImg.style.display = "none"; // Hide the cropped image initially
+                    cropperContainer.style.display = "none"; // Hide the cropper initially
+    
+                    image.onload = function () {
+                        // Destroy any existing Cropper instance
+                        if (image.cropper) {
+                            image.cropper.destroy();
+                        }
+    
+                        // Initialize Cropper.js
+                        const cropper = new Cropper(image, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            zoomable: true,
+                            background: false,
+                            ready() {
+                                console.log("Cropper is ready for image:", index);
+                            },
+                        });
+    
+                        image.cropper = cropper;
+                        cropperContainer.style.display = "flex"; // Show cropper container
+    
+                        // Save cropped image
+                        saveButton.onclick = function () {
+                            const croppedCanvas = cropper.getCroppedCanvas();
+                            if (!croppedCanvas) {
+                                console.error("Failed to generate cropped canvas.");
+                                return;
+                            }
+    
+                            croppedImg.src = croppedCanvas.toDataURL("image/jpeg", 1.0);
+                            croppedImg.style.display = "block"; // Show the cropped image
+                            image.style.display = "none"; // Hide the original image
+    
+                            croppedCanvas.toBlob((blob) => {
+                                const fileName = `cropped-img-${Date.now()}-${index}.jpg`;
+                                const file = new File([blob], fileName, { type: "image/jpeg" });
+    
+                                const dataTransfer = new DataTransfer();
+                                dataTransfer.items.add(file);
+                                input.files = dataTransfer.files;
+    
+                                console.log("Cropped image successfully saved.");
+                            });
+    
+                            cropperContainer.style.display = "none"; // Hide cropper container
+                            cropper.destroy();
+                        };
+                    };
+                };
+    
+                reader.readAsDataURL(input.files[0]);
+            }
+    
+            // Attach event listeners dynamically for file inputs
+            document.querySelectorAll("input[type='file']").forEach((fileInput) => {
+                const idMatch = fileInput.id.match(/input(\d+)/);
+                if (idMatch) {
+                    const index = idMatch[1];
+                    fileInput.addEventListener("change", (e) => viewImage(e, index));
+                } else {
+                    console.warn(`File input ID (${fileInput.id}) does not match the expected pattern.`);
+                }
+            });
+        });
+    </script>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const modalImage = document.getElementById('modalImage');
+      document.querySelectorAll('.current-image').forEach(image => {
+        image.addEventListener('click', function () {
+          modalImage.src = this.getAttribute('data-image');
+        });
+      });
+    });
+  </script>
+<script>
+    function handleImageChange(event, index) {
+        var input = event.target;
+        var file = input.files[0];
+        
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                // Display the image in the preview area
+                document.getElementById("imgView" + index).src = e.target.result;
+
+                // Show the cropper container
+                document.getElementById("croppedContainer" + index).style.display = "flex";
+
+                // Initialize the cropper for the new image
+                var image = document.getElementById("imgView" + index);
+                var cropper = new Cropper(image, {
+                    aspectRatio: 3 / 2, // Optional: aspect ratio for cropping
+                    viewMode: 1, // Restrict the crop area
+                    autoCropArea: 1, // 100% of the area will be available for cropping
+                    responsive: true
+                });
+
+                // Save cropped image
+                document.getElementById("saveButton" + index).onclick = function() {
+                    var canvas = cropper.getCroppedCanvas();
+                    var croppedImage = canvas.toDataURL();
+                    document.getElementById("croppedImg" + index).src = croppedImage;
+                    input.value = croppedImage; // Attach the cropped image to the file input (for submission)
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    // Save the cropped image (to be used when the Save button is clicked)
+    function saveCroppedImage(index) {
+        // You can modify the saved image as needed before attaching it to the form input
+        // The cropped image is now in the hidden <img> element (croppedImg1, croppedImg2, etc.)
+        var croppedImage = document.getElementById("croppedImg" + index).src;
+        if (croppedImage) {
+            // You can perform any additional action here (e.g., set it to a hidden input field)
+        }
+    }
+</script>
+
+    
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmAction(button, action, message) {
+        Swal.fire({
+            title: 'Confirm Action',
+            text: message,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // If confirmed, submit the form
+                const form = button.closest('form');
+                form.submit();
+            } else {
+                Swal.fire('Cancelled', `The ${action} action was cancelled.`, 'info');
+            }
+        });
+    }
+</script>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

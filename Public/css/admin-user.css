@@ -1,0 +1,80 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    background-color: rgb(26, 26, 40);
+}
+
+.navbar-brand{
+  
+    color: rgb(113, 103, 90);
+}
+
+
+/*     navbar  completed    */
+
+
+.section-1{
+    width: 100%;
+    height: 100vh;
+    display:flex;
+}
+
+.sidebar{
+    width:25%;
+    height:100vh;
+    margin:0;
+}
+.sidebar button{
+    width:100%;
+    height:8vh;
+    margin:0;
+    color: rgb(113, 103, 90);
+   /* background-color: rgb(128, 107, 75); */
+}
+
+/*   Sidebar completed   */
+
+.content1{
+    width: 100%;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    color:white;
+}
+.content1-section1{
+    width: 98%;
+    padding: 2%;
+    background-color: #edeeee;
+
+}
+
+.content1-section1 .form-control{
+    width: 85%;
+    height: 5vh;
+    background-color: white;
+
+}
+.content1-section1 .table{
+    color: rgb(113, 103, 90);
+}
+.content1-section2{
+    display: flex;
+    gap:8px;
+}
+.modal-content{
+    background-color: rgb(26, 26, 40);
+}
+.modal-body{
+    background-color: rgb(26, 26, 40);
+}
+
+.white{
+    color: #edeeee;
+}
+

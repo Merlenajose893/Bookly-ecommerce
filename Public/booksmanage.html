@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="/Public/css/bookmanage.css">
+<div class="container">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <nav class="side-nav">
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">User Management</a></li>
+        <li><a href="#">Book Management</a></li>
+        <li><a href="#">Order Management</a></li>
+        <li><a href="#">Category Management</a></li>
+        <li><a href="#">Coupon Management</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <main>
+      <section class="products">
+        <h2>Products</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Title</th>
+              <th>Category</th>
+              <th>Publisher</th>
+              <th>ogPrice</th>
+              <th>offerPrice</th>
+              <th>Update</th>
+              <th>Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><img src="img/great.png" class="images" alt=""></td>
+              <td>The Great Gatsby</td>
+              <td>Fiction</td>
+              <td>Bizz</td>
+              <td>4900</td>
+              <td>3999</td>
+              <td><button class="update-btn">Update</button></td>
+              <td><button class="delete-btn">Delete</button></td>
+            </tr>
+            <tr>
+              <td><img src="b1 1.png" class="images" alt=""></td>
+              <td>Deep Work</td>
+              <td>Non-Fiction</td>
+              <td>Silen</td>
+              <td>3000</td>
+              <td>2499</td>
+              <td><button class="update-btn">Update</button></td>
+              <td><button class="delete-btn">Delete</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="add-product">
+        <h2>Add New Products</h2>
+        <form>
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" id="title" name="title">
+          </div>
+          <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" id="author" name="author">
+          </div>
+          <button type="submit" class="create-btn">Create</button>
+        </form>
+      </section>
+    </main>
+  </div>
+</div>

@@ -1,0 +1,70 @@
+<%- include("../../views/partials/adminheader") %>
+
+<div class="container-scroller">
+  <%- include("../../views/partials/adminsidebar") %>
+
+  <div class="container-fluid page-body-wrapper">
+  
+
+<div class="row">
+  <div class="col-12 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Order Status</h4>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="form-check form-check-muted m-0">
+                    <label class="form-check-label">
+                      <input type="checkbox" class="form-check-input">
+                    </label>
+                  </div>
+                </th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Join Date</th>
+                <th>Block</th>
+                <th>UnBlock</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let i = 0; i < data.length; i++) { %>
+                <tr>
+                  <td>
+                    <div class="form-check form-check-muted m-0">
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input">
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <img src="assets/images/faces/face<%= i + 1 %>.jpg" alt="image" />
+                    <span class="pl-2"><%= data[i].name %></span>
+                  </td>
+                  <td><%= data[i].email %></td>
+                  <td><%= data[i].role %></td>
+                  <td><%= data[i].joinDate %></td>
+                  
+                  <% if (data[i].isBlocked === false) { %>
+                    <td>
+                      <a href="/admin/block?id=<%= data[i].id %>" class="badge badge-outline-danger">Block</a>
+                    </td>
+                    <td>-</td>
+                  <% } else { %>
+                    <td>-</td>
+                    <td>
+                      <a href="/admin/unblockCustomer?id=<%= data[i].id %>" class="badge badge-outline-success">Unblock</a>
+                    </td>
+                  <% } %>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

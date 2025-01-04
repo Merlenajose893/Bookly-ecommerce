@@ -1,0 +1,173 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1c1c1c;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    background-color: #2c3e50;
+    padding-top: 20px;
+    color: white;
+}
+
+.sidebar a {
+    display: block;
+    color: black;
+    padding: 12px 20px;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+.sidebar a:hover {
+    background-color: #34495e;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+}
+
+/* Table Container */
+.user-table {
+    background-color: #222;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 40px;
+    overflow-x: auto; /* Make sure the table is scrollable on smaller screens */
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    margin-right: 10px;
+    width: 70%;
+}
+
+.search-bar button {
+    padding: 10px;
+    background-color: #0066cc;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+    vertical-align: middle; /* Align content properly */
+}
+
+table th {
+    background-color: #333;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+table tr:nth-child(even) {
+    background-color: #292929;
+}
+
+table tr:hover {
+    background-color: #444; /* Hover effect for rows */
+}
+
+/* Button Styles */
+button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.update-btn {
+    background-color: #4caf50; /* Green */
+    color: white;
+}
+
+.ban-btn {
+    background-color: #ff9800; /* Yellow */
+    color: white;
+}
+
+.delete-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: static;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .user-table, .form-container {
+        margin-right: 0;
+    }
+
+    .search-bar input {
+        width: 60%;
+    }
+
+    table th, table td {
+        padding: 8px;
+    }
+}
+
+/* User Avatar */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.col-md-9 {
+    margin-left: 250px;
+    padding: 20px;
+    /* Enable vertical scrolling */
+   
+}
+.white
+{
+    color: wheat;
+}

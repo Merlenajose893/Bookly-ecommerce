@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookish Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            gap: 40px;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .image-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-section img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+        }
+
+        .back-button {
+            margin-bottom: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .signup-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4A90E2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .signup-button:hover {
+            background-color: #357ABD;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 24px 0;
+            color: #666;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .social-button {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .login-link {
+            text-align: center;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #4A90E2;
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .image-section {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <button class="back-button">←</button>
+            <h1>Get Started Now</h1>
+            
+            <form method="post" action="/signup" id="signupForm">
+                <div id="error1" class="error-message"></div>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" placeholder="Enter your name" name="name" required>
+                </div>
+                <div id="error2" class="error-message"></div>
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" placeholder="Enter your email" name="email" required>
+                </div>
+                <div id="error3" class="error-message"></div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" name="password" required>
+                </div>
+                <div id="error4" class="error-message"></div>
+                <div class="form-group">
+                    <label for="cpassword">ConfirmPassword</label>
+                    <input type="password" id="cpassword" placeholder="Enter your ConfirmPassword" name="cpassword" required>
+                </div>
+                <div id="error5" class="error-message"></div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="checkbox">
+                    <label for="terms">I agree to the terms & policy</label>
+                </div>
+                
+                <button type="submit" class="signup-button">Signup</button>
+                
+                <div class="divider">Or</div>
+                
+                <div class="social-buttons">
+                    <a href="/auth/google">
+                        <img src="img/google.png" alt="Google" width="20">
+                        Sign in with Google
+                    </a>
+                    <button class="social-button">
+                        <img src="img/apple.png" alt="Apple" width="20">
+                        Sign in with Apple
+                    </button>
+                </div>
+                
+                <p class="login-link">
+                    Have an account? <a href="#">Sign In</a>
+                </p>
+            </form>
+        </div>
+        
+        <!-- Image Section -->
+        <div class="image-section">
+            <img src="img/books.jpg" alt="Books Image">
+        </div>
+    </div>
+    <script>
+        const nameid = document.getElementById('name');
+        const emailid = document.getElementById('email');
+        const passwordid = document.getElementById('password');
+        const confirmpasswordid = document.getElementById('cpassword');
+        const error1 = document.getElementById('error1');
+        const error2 = document.getElementById('error2');
+        const error3 = document.getElementById('error3');
+        const error4 = document.getElementById('error4');
+        const error5 = document.getElementById('error5');
+        const signform = document.getElementById('signupForm'); // Corrected form id
+    
+        function nameValidate() {
+            const nameval = nameid.value;
+            const namePattern = /^[A-Za-z\s]+$/; // Name should contain only alphabets and spaces
+            if (nameval.trim() === '') {
+                error1.style.display = 'block';
+                error1.textContent = 'Please enter your name';
+            } else if (!namePattern.test(nameval)) {
+                error1.style.display = 'block';
+                error1.textContent = 'Please enter valid alphabets';
+            } else {
+                error1.style.display = 'none';
+            }
+        }
+    
+        function emailValidate() {
+            const emailval = emailid.value;
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Basic email regex
+            if (!emailPattern.test(emailval)) {
+                error2.style.display = 'block';
+                error2.textContent = 'Invalid email format';
+            } else {
+                error2.style.display = 'none';
+            }
+        }
+    
+        function validatePassword() {
+    const password = document.getElementById("passwordid").value;
+    const confirmPassword = document.getElementById("confirmpasswordid").value;
+    const errorElement = document.getElementById("error");
+
+    if (password === "") {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Password cannot be empty";
+    } else if (password.length < 8) {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Password must be at least 8 characters long";
+    } else if (password !== confirmPassword) {
+        errorElement.style.display = "block";
+        errorElement.textContent = "Passwords do not match";
+    } else {
+        errorElement.style.display = "none";
+        alert("Password is valid");
+    }
+}
+
+    
+        signform.addEventListener('submit', (e) => {
+            nameValidate();
+            emailValidate();
+            passValidateChecking();
+    
+            // Prevent form submission if any errors exist
+            if (error1.style.display === 'block' || error2.style.display === 'block' || error3.style.display === 'block' || error4.style.display === 'block') {
+                e.preventDefault();
+            }
+        });
+    
+        // Adding event listeners for each input field to validate on keyup
+        nameid.addEventListener('keyup', nameValidate);
+        emailid.addEventListener('keyup', emailValidate);
+        passwordid.addEventListener('keyup', passValidateChecking);
+        confirmpasswordid.addEventListener('keyup', passValidateChecking);
+    </script>
+    
+</body>
+</html>
