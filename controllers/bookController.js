@@ -248,7 +248,7 @@ const toggleProductStatus = async (req, res) => {
 const getAllBooks = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 10; // Number of items per page
+    const limit = 20; // Number of items per page
     const skip = (page - 1) * limit;
     const genre = req.query.genre || '';
     const search = req.query.search || '';

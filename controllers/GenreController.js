@@ -20,7 +20,7 @@ const genreInfo = async (req, res) => {
     const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     // Render the template
-    res.render('genre', {
+    res.render('genres', {
       genres: genres,
       currentPage: page,
       totalPages: totalPages,
@@ -41,19 +41,21 @@ const addGenre = async (req, res) => {
   let { name, description } = req.body;
 
   try {
+    // Trim and convert name to lowercase to ensure case-insensitivity
     name = name.trim().toLowerCase();
 
-    const existingGenre = await Genre.findOneAndUpdate(
-      { name: { $regex: new RegExp('^' + name + '$', 'i') } },
-      { $setOnInsert: { name, description } },
-      { upsert: true, new: false }
-    );
+    // Check if genre already exists (case-insensitive)
+    const existingGenre = await Genre.findOne({ name });
 
     if (existingGenre) {
       return res.status(400).json({ error: 'Genre already exists' });
     }
 
-    return res.redirect('/admin/genre');
+    // If not, create a new genre
+    const newGenre = new Genre({ name, description });
+    await newGenre.save();
+
+    return res.redirect('/admin/genres');
   } catch (error) {
     if (error.code === 11000) {
       return res.status(400).json({ error: 'Genre already exists' });
@@ -63,6 +65,7 @@ const addGenre = async (req, res) => {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 
@@ -207,7 +210,7 @@ const editCategory = async (req, res) => {
     );
 
     if (updatedGenre) {
-      res.redirect('/admin/genre');
+      res.redirect('/admin/genres');
     } else {
       res.status(404).json({ error: 'Genre not found' });
     }
@@ -225,10 +228,10 @@ const pageerror = async (req, res) => {
     res.status(500).json({ status: false, message: 'Internal Server Error' });
   }
 };
-const deleteCategory = async (req, res) => {
+const toggleCategoryDeletion = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log('Category ID to soft delete:', id); // Log the ID for debugging
+    console.log('Category ID to toggle deletion:', id);
 
     // Validate ID format
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -236,22 +239,23 @@ const deleteCategory = async (req, res) => {
     }
 
     // Check if the category exists
-    const category = await Genre.findById(id); // Replace `Genre` with your model name if different
+    const category = await Genre.findById(id);
     if (!category) {
       return res.status(404).json({ error: 'Category not found' });
     }
 
-    // Delete the category
-    category.isDeleted = true;
-    category.deletedAt = new Date();
+    // Toggle the deletion status
+    category.isDeleted = !category.isDeleted;
+    category.deletedAt = category.isDeleted ? new Date() : null; // Set `deletedAt` when deleting
     await category.save();
-    console.log('Soft deleted successfully', category);
-    res.redirect('/admin/genre');
+    console.log(`Category ${category.isDeleted ? 'soft deleted' : 'restored'} successfully`, category);
+    res.redirect('/admin/genres');
   } catch (error) {
-    console.error('Error in deleteCategory:', error.message, error.stack); // Log the error details
+    console.error('Error in toggleCategoryDeletion:', error.message, error.stack);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 const toggleGenreStatus = async (req, res) => {
   try {
     const genreId = req.params.id; // Get genre ID from route params
@@ -277,6 +281,5 @@ module.exports = {
   pageerror,
   getEditCategory,
   editCategory,
-  deleteCategory,
-  toggleGenreStatus,
-};
+ toggleCategoryDeletion,
+}

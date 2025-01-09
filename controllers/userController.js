@@ -10,10 +10,33 @@ const path = require('path');
 
 const loadHomePage = async (req, res) => {
     try {
-        return res.render('home');
+        let message = req.session.message || null;
+        req.session.message = null;
+
+        const user = req.user; // Assuming user information is available in `req.user`
+        if (user && user.isBlocked) {
+            return res.status(403).send('<h1 style="background-color:red; color:white;">Access Denied: Your account is blocked.</h1>');
+        }
+
+        const genres = await Genre.find();
+        const books = await Book.find(); // Fetch books from the database
+
+        // Pass the session object and books to the EJS view
+        return res.render('home', { genres, books, session: req.session, message });
     } catch (error) {
         console.error('Error loading home page:', error);
         res.status(500).send('Server Error');
+    }
+};
+
+
+const loadAccountBan=async(req,res)=>
+{
+    try {
+        res.render('accountban');
+    } catch (error) {
+        console.error(error);
+        
     }
 }
 const loadVerifyOtp=async(req,res)=>
@@ -26,6 +49,17 @@ const loadVerifyOtp=async(req,res)=>
         
     }
 }
+
+const loadCart=async(req,res)=>
+{
+    try {
+        res.render('cart');
+    } catch (error) {
+        console.error(error);
+        
+    }
+}
+
 const pageNotFound=async(req,res)=>
 {
     try {
@@ -84,7 +118,8 @@ const login = async (req, res) => {
 
 const loadSignUp = async (req, res) => {
     try {
-        res.render('signup');
+        let message='';
+        res.render('signup',{message});
     } catch (error) {
         console.error('Error loading signup page:', error);
         res.status(500).send('Internal Server Error');
@@ -137,7 +172,6 @@ const signup = async (req, res) => {
     try {
         const { name, email, password, cpassword } = req.body;
         console.log(req.body);
-        
 
         // Validate input fields
         if (!name || !email || !password || !cpassword) {
@@ -164,7 +198,6 @@ const signup = async (req, res) => {
         // Generate OTP and send it to the user
         const otp = generateOtp();
         console.log(otp);
-        
 
         // Assume sendVerificationEmail sends the OTP to the email and returns true/false
         const emailSent = await sendVerificationEmail(email, otp);
@@ -175,14 +208,15 @@ const signup = async (req, res) => {
         // Store OTP and user data in session
         req.session.userOtp = otp;
         req.session.userData = { name, email, password };
-        
-        console.log("Session:",req.session.userData);
-        
+
+        console.log("Session:", req.session.userData);
+
         console.log('OTP Sent:', otp);
         console.log('Session OTP:', req.session.userOtp);
 
         // Render the OTP verification page
-        res.render('verify');
+        res.render('verify', { message: '' }); // Ensure message is defined here too
+
     } catch (error) {
         console.error('Signup Error:', error);
         res.status(500).send('Internal Server Error');
@@ -197,26 +231,57 @@ const signup = async (req, res) => {
 
 
 
+
 const resendOtp = async (req, res) => {
     try {
-        
-        console.log("SessionData:",req.session.userData);
-        
+        // Ensure session data exists
+        if (!req.session || !req.session.userData) {
+            return res.status(400).json({ success: false, message: "Session not found or user not logged in" });
+        }
+
+        console.log("SessionData:", req.session.userData);
+
         const { email } = req.session.userData;
 
         if (!email) {
             return res.status(400).json({ success: false, message: "Email not found in session" });
         }
 
+        // Define OTP expiry time (e.g., 5 minutes = 300,000 ms)
+        const OTP_EXPIRY_TIME = 5 * 60 * 1000;
+
+        // Get the current time and check if OTP has expired
+        const currentTime = Date.now();
+        const { otpTimestamp } = req.session;
+
+        if (otpTimestamp) {
+            const timeDifference = currentTime - otpTimestamp;
+            if (timeDifference < OTP_EXPIRY_TIME) {
+                const remainingTime = OTP_EXPIRY_TIME - timeDifference;
+                return res.status(429).json({
+                    success: false,
+                    message: `You can only resend OTP after ${Math.ceil(remainingTime / 1000)} seconds.`,
+                });
+            }
+        }
+
+        // Generate new OTP and update session with new timestamp
         const otp = generateOtp();
-        console.log(otp);
-
         req.session.userOtp = otp;
-        console.log(req.session.userOtp);
+        req.session.otpTimestamp = currentTime; // Store the current time
 
+        console.log("Generated OTP:", otp);
+
+        // Send OTP to email (ensure sendVerificationEmail handles errors)
         const emailSent = await sendVerificationEmail(email, otp);
+
         if (emailSent) {
             console.log("Resend OTP:", otp);
+
+            // Optionally, store a success message in the session for frontend display
+            req.session.otpSuccessMessage = "OTP has been successfully resent. Please check your email.";
+
+            // Redirect to the OTP verification page
             return res.redirect('/verify');
         } else {
             return res.status(500).json({ success: false, message: "Failed to resend OTP, please try again" });
@@ -226,6 +291,10 @@ const resendOtp = async (req, res) => {
         return res.status(500).json({ success: false, message: "Internal Server Error, please try again" });
     }
 };
+
+
+
+
 
 
 
@@ -311,6 +380,7 @@ const verifyOtp = async (req, res) => {
 
 const loadShop = async (req, res) => {
     try {
+        
       const page = parseInt(req.query.page) || 1; // Get the current page (default to 1 if not provided)
       const itemsPerPage = 10; // Number of books to show per page
   
@@ -323,11 +393,13 @@ const loadShop = async (req, res) => {
       // Fetch the books for the current page with pagination
       const books = await Book.find({ isDeleted: false })
                               .skip((page - 1) * itemsPerPage)  // Skip books from previous pages
-                              .limit(itemsPerPage);  // Limit the number of books per page
+                              .limit(itemsPerPage); 
+                              const genres = await Genre.find({ isDeleted: false }); // Limit the number of books per page
   
       // Render the 'shop' view and pass the books and pagination data to the template
       return res.render('shop', {
         books,
+        genres,
         currentPage: page,
         totalPages: totalPages,
         message: 'Shop is rendered successfully'
@@ -388,17 +460,29 @@ const logout = (req, res) => {
 
 const loadBookDetails = async (req, res) => {
     try {
-      const bookId = req.params.id; // Get the book ID from the URL parameters
-      const book = await Book.findById(bookId); // Fetch the book from the database using the ID
-  
-      if (!book) {
-        return res.status(404).send('Book not found');
+      const user = req.user; // Assuming user information is available in `req.user`
+      if (user && user.isBlocked) {
+        return res.status(403).send('<h1 style="background-color:red; color:white;">Access Denied: Your account is blocked.</h1>');
       }
   
-      // Render the 'details' view and pass the book data to the template
+      const { id: bookId } = req.params; // Destructure to get book ID
+  
+      // Validate bookId (assuming it should be a valid MongoDB ObjectId)
+      if (!bookId.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({ success: false, message: 'Invalid book ID format' });
+      }
+  
+      // Fetch the book from the database using the ID
+      const book = await Book.findById(bookId);
+  
+      // If the book is not found or is deleted
+      if (!book || book.isDeleted) {
+        return res.render('productban'); // Render the productban page
+      }
+  
+      // Render the 'details' view with the book data
       return res.render('details', {
-        book, 
-        // Pass the book object to the view
+        book, // Pass the book object to the view
       });
   
     } catch (error) {
@@ -407,28 +491,25 @@ const loadBookDetails = async (req, res) => {
     }
   };
   
+  
+  
 
   const loadFiction = async (req, res) => {
     try {
       // Get the genre ID from the route parameter
-      const genreId = req.params.genreId;  
-      console.log('Genre ID:', genreId); // Log to check if the parameter is passed
+      // Log to check if the parameter is passed
   
       // Fetch the category details
-      const category = await Genre.findById(genreId);
-      console.log('Category:', category); // Log the result
+      // Log the result
   
-      if (!category) {
-        return res.status(404).json({ message: 'Category not found' });
-      }
+  
   
       // Fetch all books that belong to the category
-      const books = await Book.find({ categories: genreId });
+      const books = await Book.find();
   
       // Render the page with books based on the category
       res.render('fiction', {
-        books: books,
-        category: category,
+        books
       });
     } catch (error) {
       console.error('Error fetching books:', error);
@@ -437,6 +518,130 @@ const loadBookDetails = async (req, res) => {
   };
   
   
+  const getAllGenres = async (req, res) => {
+    try {
+      const genres = await Genre.find({ isListed: false, isDeleted: false });
+      if (!genres.length) {
+        console.log('No genres found.');
+        return res.render('home', { genres: [] }); // Send an empty array to the view
+      }
+      console.log('Fetched Genres:', genres);
+      res.render('home', { genres });
+    } catch (error) {
+      console.error('Error fetching genres:', error);
+      res.status(500).send('Internal Server Error');
+    }
+  };
+  
+  const showGenre = async (req, res) => {
+    try {
+      const genreId = req.params.id;
+  
+      // Validate if the ID is a valid ObjectId
+      if (!mongoose.Types.ObjectId.isValid(genreId)) {
+        return res.status(400).send('Invalid Genre ID');
+      }
+  
+      const genre = await Genre.findById(genreId);
+      if (!genre) {
+        return res.status(404).send('Genre not found');
+      }
+      if (genre.isDeleted) {
+        res.render('categoryban')
+      }
+      // Define itemsPerPage for pagination
+      const itemsPerPage = 10; // Change this number as needed
+      const currentPage = parseInt(req.query.page) || 1; // Default to page 1 if no page is provided
+  
+      // Fetch total book count for the genre
+      const totalBooks = await Book.countDocuments({ genres: genreId });
+  
+      // Fetch books with pagination
+      const books = await Book.find({ genres: genreId })
+        .populate('genres')
+        .skip((currentPage - 1) * itemsPerPage)
+        .limit(itemsPerPage);
+  
+      console.log('Books found:', books);
+  
+      // Render the 'genre' view with the genre and books
+      res.render('genre', {
+        genre,
+        books,
+        currentPage,
+        totalPages: Math.ceil(totalBooks / itemsPerPage),
+      });
+    } catch (error) {
+      console.error('Error in showGenre:', error);
+      res.status(500).send('Server Error');
+    }
+  };
+  
+  const showBookDetails=async(req,res)=>
+  {
+    try {
+        const bookId=req.params.id;
+        if(!mongoose.Types.ObjectId.isValid(bookId)){
+            return res.status(400).send('Invalid Book ID');
+        }
+        const book=await Book.findById(bookId).populate('genres');
+        if (!book) {
+            return res.status(404).send('Book not found');
+          }
+      
+          console.log('Book details:', book);
+      
+          // Render the book details page
+          res.render('bookDetails', { book });
+    } catch (error) {
+        console.error('Error in showBookDetails:', error);
+    res.status(500).send('Server Error'); 
+    }
+  }
+  
+
+
+const getAllGenresWithBooks = async (req, res) => {
+  try {
+    const { genreId } = req.query; // Retrieve the genre ID from the query parameters (if provided).
+
+    let booksByGenre;
+
+    if (genreId) {
+      // Fetch the specific genre
+      const genre = await Genre.findOne({ _id: genreId, isListed: true, isDeleted: false });
+
+      if (!genre) {
+        return res.status(404).send('Genre not found');
+      }
+
+      // Fetch books for the selected genre
+      const books = await Book.find({ genre: genre._id, isDeleted: false });
+
+      booksByGenre = [{ genre, books }];
+    } else {
+      // Fetch all genres
+      const genres = await Genre.find({ isListed: true, isDeleted: false });
+
+      // Fetch all books
+      const books = await Book.find({ isDeleted: false }).populate('genre'); // Assuming books have a 'genre' field.
+
+      // Categorize books by genre
+      booksByGenre = genres.map((genre) => {
+        return {
+          genre,
+          books: books.filter((book) => book.genre && book.genre.equals(genre._id)),
+        };
+      });
+    }
+
+    // Render data to the home view
+    res.render('fiction', { booksByGenre });
+  } catch (error) {
+    console.error('Error fetching genres or books:', error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
 
@@ -446,4 +651,4 @@ const loadBookDetails = async (req, res) => {
 
 
 
-module.exports = { loadHomePage, loadLogin, loadCheckOut, loadContact, loadSignUp, signup, verifyOtp, resendOtp,login,loadShop,getBooksById,pageNotFound,logout,loadBookDetails,loadFiction,loadVerifyOtp};
+module.exports = { loadHomePage, loadLogin, loadCheckOut, loadContact, loadSignUp, signup, verifyOtp, resendOtp,login,loadShop,getBooksById,pageNotFound,logout,loadBookDetails,loadFiction,loadVerifyOtp,getAllGenres,getAllGenresWithBooks,showGenre,showBookDetails,loadAccountBan,loadCart};

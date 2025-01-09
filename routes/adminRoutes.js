@@ -25,8 +25,8 @@ router.get('/updateuser/:id',AdminUserController.updateUser);  // Get list of al
 router.get('/blockCustomer',AdminUserController.blockUser);
 router.get('/unblockCustomer',AdminUserController.unblockUser);
 //Genre management
-router.get('/genre', adminAuth, GenreController.genreInfo);  // Get list of all genres
-router.post('/genre',GenreController.addGenre);
+router.get('/genres', adminAuth, GenreController.genreInfo);  // Get list of all genres
+router.post('/genres',GenreController.addGenre);
 router.post('/addCategoryOffer',adminAuth,GenreController.addCategoryOffer);
 router.post('/removeCategoryOffer',adminAuth,GenreController.removeCategoryInfo);
 router.get('/listCategory',adminAuth,GenreController.listCategory);
@@ -35,9 +35,9 @@ router.get('/pageerror',GenreController.pageerror);
 router.get('/updateGenre', GenreController.getEditCategory);
 
 router.post('/updateGenre/:id',adminAuth,GenreController.editCategory);
-router.get('/deleteGenre/:id',adminAuth,GenreController.deleteCategory);
-router.post('/deleteGenres/:id',adminAuth,GenreController.deleteCategory);
-router.post('/admin/genre/:id',GenreController.toggleGenreStatus)
+
+router.post('/toggleCategoryDeletion/:id', GenreController.toggleCategoryDeletion);
+
 
 //Product Management
 router.get('/books',adminAuth, bookController.getAllBooks);

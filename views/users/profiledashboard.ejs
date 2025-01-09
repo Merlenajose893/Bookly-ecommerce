@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookly - Account Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+  
+    <style>
+        .sidebar-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .sidebar-link:hover {
+            color: #333;
+        }
+        .dashboard-header {
+            background-color: #f8d7da;
+        }
+        .newsletter-section {
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Breadcrumb -->
+    <div class="bg-white py-2">
+        <div class="container">
+            <nav>
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="#" class="text-secondary">Home</a></li>
+                    <li class="breadcrumb-item text-secondary">Account</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <h1 class="mb-4">Bookly</h1>
+
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-12 col-md-4 col-lg-3">
+                <div class="card">
+                    <div class="dashboard-header p-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-home me-2"></i>
+                            <span class="fw-medium">Dashboard</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex flex-column gap-3">
+                            <a href="/orders" class="sidebar-link">
+                                <i class="fas fa-shopping-bag me-2"></i>
+                                Orders
+                            </a>
+                            <a href="/profile" class="sidebar-link">
+                                <i class="fas fa-user me-2"></i>
+                                Update Profile
+                            </a>
+                            <a href="/wallet" class="sidebar-link">
+                                <i class="fas fa-wallet me-2"></i>
+                                Wallet
+                            </a>
+                            <a href="/address" class="sidebar-link">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                My Address
+                            </a>
+                            <a href="/changepassword" class="sidebar-link">
+                                <i class="fas fa-key me-2"></i>
+                                Change Password
+                            </a>
+                            <a href="/logout" class="sidebar-link">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-12 col-md-8 col-lg-9">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h4 mb-3">Hello <%= user.name %></h2>
+                        <p class="text-secondary mb-0">
+                            From your account dashboard, you can easily check & view your recent orders, manage your shipping and billing addresses, and edit your password and account details.
+                        </p>
+                        <p>Email:<%=user.email%></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter Section -->
+        <div class="newsletter-section mt-4 p-4 rounded">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 mb-3 mb-md-0">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-envelope me-2"></i>
+                        <span class="fw-medium me-2">Sign up for our Newsletter</span>
+                        <span class="text-secondary">For updates and offers</span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter Your Email" name="email">
+                        <button class="btn btn-dark" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-5">
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <h3 class="h5">Bookly</h3>
+                    <p class="text-secondary">
+                        Discover stories and knowledge in every book.<br>
+                        From timeless classics to trending new releases, Bookly brings you the best selection.<br>
+                        Your next great read is just a click away!
+                    </p>
+                    <p class="text-secondary mb-1">
+                        <i class="fas fa-map-marker-alt me-2"></i>123 Street, New York, USA
+                    </p>
+                    <p class="text-secondary mb-1">
+                        <i class="fas fa-envelope me-2"></i>info@example.com
+                    </p>
+                    <p class="text-secondary mb-1">
+                        <i class="fas fa-phone me-2"></i>+012 345 67890
+                    </p>
+                </div>
+                <div class="col-12 col-md-6">
+                    <h5 class="mb-3">HELP</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Track Order</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Returns</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Shipping</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">FAQs</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-top pt-3 mt-3">
+                <p class="text-secondary text-center mb-0">© 2024 Bookly. All Rights Reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

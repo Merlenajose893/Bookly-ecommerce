@@ -23,7 +23,7 @@
                     <a href="/admin/">Dashboard</a>
                     <a href="/admin/usermanage">User Management</a>
                     <a href="/admin/books">Product Management</a>
-                    <a href="/admin/admin_category">Category Management</a>
+                    <a href="/admin/genres">Category Management</a>
                     <a href="/admin/admin_order">Order Management</a>
                     <a href="#">Coupons Management</a>
                     <a href="/admin/logout" class="text-danger">Logout</a>
@@ -48,22 +48,18 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="/admin/genre" method="POST"  onsubmit="return validateGenreName();">
+                                    <form action="/admin/genres" method="POST" id="genreForm">
                                         <div class="mb-3">
                                             <label for="genreName" class="form-label">Name</label>
                                             <input type="text" id="genreName" name="name" class="form-control" placeholder="Name" required>
                                         </div>
-                                        
                                         <div class="mb-3">
                                             <label for="genreDescription" class="form-label">Description</label>
                                             <textarea id="genreDescription" name="description" class="form-control" placeholder="Description" rows="3" required></textarea>
                                         </div>
-                                        <!-- <div class="mb-3">
-                                            <label for="productCount" class="form-label">Product Count</label>
-                                            <input type="number" id="productCount" name="productCount" class="form-control" placeholder="Product Count" required>
-                                        </div> -->
                                         <button type="submit" class="btn btn-primary">Create</button>
                                     </form>
+                                    
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -96,20 +92,25 @@
                                         <a href="/admin/updateGenre/?id=<%= genre.id %>" class="btn btn-success">Update</a>
                                     </td>
                                     <td>
-                                        <form action="/admin/deleteGenres/<%= genre.id %>" method="POST" style="display:inline;">
-                                            <button type="submit" class="btn btn-dark">Delete</button>
+                                        <form action="/admin/toggleCategoryDeletion/<%= genre.id %>" method="POST" style="display:inline;">
+                                          <button type="submit" class="btn <%= genre.isDeleted ? 'btn-success' : 'btn-dark' %>">
+                                            <%= genre.isDeleted ? 'Restore' : 'Delete' %>
+                                          </button>
                                         </form>
-                                    </td>
-                                    <td class="white">
+                                      </td>
+                                      <td class="white">
                                         <% if (genre.isDeleted) { %>
-                                            <span class="badge bg-danger">Deleted</span>
+                                          <span class="badge bg-danger">Unlisted</span>
                                         <% } else { %>
-                                            <span class="badge bg-success">Active</span>
+                                          <span class="badge bg-success">Listed</span>
                                         <% } %>
-                                    </td>
+                                      </td>
+                                      
+                                   
                                 </tr>
                             <% }); %>
                         </tbody>
+                        
                     </table>
 
                     <!-- Pagination -->
@@ -145,27 +146,50 @@
     <!-- Add SweetAlert2 CDN in your HTML <head> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
+<script>
+    // Function to handle form submission
+    async function handleSubmit(event) {
+        event.preventDefault(); // Prevent default form submission
 
-        async function handleSubmit(event) {
-            event.preventDefault();  // Prevent default form submission
-            
-            const genreName = document.getElementById('genreName').value;  // Access the value of the input field
-            const description = document.getElementById('genreDescription').value;
-            
-            // Validate genre name (already done)
-            if (!genreName.trim()) {
-                Swal.fire({
+        const genreName = document.getElementById('genreName').value.trim();
+        const description = document.getElementById('genreDescription').value.trim();
+
+        // Regular expression to match alphabets and spaces only
+        const alphabetRegex = /^[a-zA-Z\s]+$/;
+
+        // Validate genre name
+        if (!genreName) {
+            Swal.fire({
                 icon: 'error',
                 title: 'Invalid Genre Name',
-                text: 'Please enter a valid genre name',
+                text: 'Please enter a valid genre name.',
             });
-            return;
+            return; // Stop form submission
         }
-        
-        // Send data to backend
+
+        if (!alphabetRegex.test(genreName)) {
+            alert('Genre name must only contain letters and spaces.');
+            return; // Stop the form submission
+        }
+
+        // Validate description
+        if (!description) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Description',
+                text: 'Please enter a valid description.',
+            });
+            return; // Stop form submission
+        }
+
+        if (!alphabetRegex.test(description)) {
+            alert('Description must only contain letters and spaces.');
+            return; // Stop the form submission
+        }
+
         try {
-            const response = await fetch('/admin/genre', {
+            // Send data to the backend
+            const response = await fetch('/admin/genres', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,38 +199,60 @@
                     description: description,
                 }),
             });
-    
-            // Check for response status
+
+            // Handle response
             if (response.status === 400) {
                 const data = await response.json();
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: data.error,  // Show the error returned by backend
+                    text: data.error || 'An error occurred while adding the genre.',
                 });
             } else if (response.ok) {
-                // Successful submission
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
-                    text: 'Genre added successfully',
+                    text: 'Genre added successfully!',
                 }).then(() => {
-                    window.location.href = '/admin/genre';  // Redirect to the genre page
+                    window.location.href = '/admin/genres'; // Redirect to genre page
                 });
+            } else {
+                throw new Error('Unexpected response');
             }
         } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'An unexpected error occurred. Please try again.',
+                text: 'An unexpected error occurred. Please try again later.',
             });
         }
     }
-    
-    // Attach to your form submission event
+
+    // Attach the `handleSubmit` function to the form submission event
     document.querySelector('form').addEventListener('submit', handleSubmit);
-    
-    </script>
+</script>
+
+<script>
+    // Function to show the SweetAlert confirmation
+    function confirmDeletion(genreId, action) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: `You are about to ${action.toLowerCase()} this category.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: action,
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If confirmed, submit the form
+          document.getElementById('toggleCategoryForm-' + genreId).submit();
+        }
+      });
+    }
+  </script>
+  
+
     
     
 </body>

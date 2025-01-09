@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookly - Wallet</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f5f5f5;
+        }
+        .sidebar-link {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 8px 0;
+            display: block;
+        }
+        .sidebar-link:hover {
+            color: #333;
+        }
+        .sidebar-link.active {
+            background-color: #f8d7da;
+            margin: 0 -1rem;
+            padding: 8px 1rem;
+        }
+
+        .sidebar-menu li {
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .sidebar-menu li.active {
+            background-color: #e6bfbf;
+            color: #333;
+        }
+
+        .wallet-card {
+            background-color: #1e3050;
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .card-number {
+            letter-spacing: 3px;
+            font-size: 24px;
+        }
+
+        .btn-teal {
+            background-color: #008374;
+            color: white;
+        }
+
+        .btn-teal:hover {
+            background-color: #006d61;
+            color: white;
+        }
+
+        .newsletter {
+            background-color: #e6bfbf;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-secondary">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Account</li>
+            </ol>
+        </nav>
+<h1>Bookly</h1>
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <div class="col-12 col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <a href="#" class="sidebar-link">
+                            <i class="fas fa-th-large me-2"></i>
+                            Dashboard
+                        </a>
+                        <a href="#" class="sidebar-link active">
+                            <i class="fas fa-shopping-bag me-2"></i>
+                            Orders
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="fas fa-user me-2"></i>
+                            Update Profile
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="fas fa-wallet me-2"></i>
+                            Wallet
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            My Address
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="fas fa-key me-2"></i>
+                            Change Password
+                        </a>
+                        <a href="#" class="sidebar-link">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title bg-light p-3 rounded mb-4">Wallet</h5>
+                        
+                        <!-- Wallet Card -->
+                        <div class="wallet-card mb-4">
+                            <h4>Fiction</h4>
+                            <div class="card-number my-3">**** **** **** 2004</div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="mb-0">$900.00</h3>
+                                <small>Valid Thru: 12/26</small>
+                            </div>
+                        </div>
+
+                        <!-- Add Amount Section -->
+                        <div class="mt-4">
+                            <label class="form-label">Add Amount</label>
+                            <input type="number" class="form-control mb-3" placeholder="Enter amount">
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-teal">Add Money</button>
+                                <button class="btn btn-teal">Transactions</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="newsletter rounded p-4 mt-5">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <div class="d-flex align-items-center gap-2">
+                        <span>✉️</span>
+                        <span>Sign in to Newsletter</span>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Enter Your Email">
+                        <button class="btn btn-dark">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-light mt-5 py-5">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h2 class="h4 mb-3">Bookly</h2>
+                    <p class="text-secondary">
+                        Discover stories and knowledge in every book.<br>
+                        From timeless classics to trending new releases, Bookly<br>
+                        brings you the best selection.<br>
+                        Your next great read is just a click away!
+                    </p>
+                </div>
+
+                <div class="col-lg-4">
+                    <h3 class="h5 mb-3">HELP</h3>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Track Order</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Returns</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">Shipping</a></li>
+                        <li class="mb-2"><a href="#" class="text-secondary text-decoration-none">FAQs</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="text-secondary">
+                        <p class="mb-2">📍 123 Street, New York, USA</p>
+                        <p class="mb-2">✉️ info@example.com</p>
+                        <p class="mb-2">📞 +012 345 67890</p>
+                    </div>
+                    <div class="text-secondary mt-4">
+                        © 2024 Bookly. All Rights Reserved.
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

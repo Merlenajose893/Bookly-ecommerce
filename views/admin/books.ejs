@@ -31,7 +31,7 @@
                 <a href="/admin">Dashboard</a>
                 <a href="/admin/usermanage">User Management</a>
                 <a href="/admin/books">Product Management</a>
-                <a href="/admin/genre">Category Management</a>
+                <a href="/admin/genres">Category Management</a>
                 <a href="/admin/admin_order">Order Management</a>
                 <a href="#">Coupons Management</a>
                 <a href="/admin/logout class="text-danger">Logout</a>
@@ -62,23 +62,28 @@
                                             <label for="bookName" class="form-label">ISBN</label>
                                             <input type="text" id="isbn" class="form-control" name="isbn" required>
                                         </div>
+                                        <div id="isbn-error" class="error-message"></div>
                                         <div class="mb-3">
                                             <label for="bookName" class="form-label">Title</label>
                                             <input type="text" id="bookName" class="form-control" name="title" required>
                                         </div>
+                                        <div id="title-error" class="error-message"></div>
                                         
                                       <div class="mb-3">
                                         <label for="bookName" class="form-label">Author</label>
                                         <input type="text" id="bookName" class="form-control" name="author" required>
                                     </div>
+                                    <div id="author-error" class="error-message"></div>
                                     <div class="mb-3">
                                         <label for="bookName" class="form-label">Publisher</label>
                                         <input type="text" id="publisher" class="form-control" name="publisher" required>
                                     </div>
+                                    <div id="publisher-error" class="error-message"></div>
                                     <div class="mb-3">
                                         <label for="bookName" class="form-label">Formats</label>
                                         <input type="text" id="formats" class="form-control" name="formats" required>
                                     </div>
+                                    <div id="formats-error" class="error-message"></div>
                                     <div class="form-group">
                                         <label for="genre">Genre</label>
                                         <select class="form-select" id="genre" name="books[genre]" required>
@@ -87,24 +92,37 @@
                                           <% }); %>
                                         </select>
                                       </div>
-                                    
+                                      <div id="genre-error" class="error-message"></div>
 
                                   <div class="mb-3">
                                     <label for="bookName" class="form-label">Regular Price</label>
                                     <input type="text" id="bookName" class="form-control" name="regularPrice" required>
                                 </div>
+                                <div id="regularPrice-error" class="error-message"></div>
                                 <div class="mb-3">
                                   <label for="bookName" class="form-label">Sales Price</label>
                                   <input type="text" id="bookName" class="form-control" name="salesPrice" required>
                               </div>
+                              <div id="salesPrice-error" class="error-message"></div>
                               <div class="mb-3">
                                 <label for="bookName" class="form-label">Stock</label>
-                                <input type="text" id="bookName" class="form-control" name="quantity"required>
+                                <input 
+                                    type="number" 
+                                    id="stockInput" 
+                                    class="form-control" 
+                                    name="quantity" 
+                                    value="<%= books.quantity %>" 
+                                    required 
+                                    oninput="validateStock()">
+                                <div id="quantity-error" class="error-message text-danger" style="display: none;"></div>
+                                <p id="stockStatus" class="mt-2"></p>
                             </div>
+                            
                             <div class="mb-3">
                               <label for="bookName" class="form-label">Description</label>
                               <input type="text" id="bookName" class="form-control" name="description" required>
                             </div> 
+                            <div id="description-error" class="error-message"></div>
                                 
                             <div class="card-body">
                                 <div class="card-body align-items-center" style="margin-bottom: 20px;">
@@ -162,7 +180,7 @@
                             <hr>
 
 
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-primary" onsubmit="return validateBookForm()">Submit</button>
                                     </form>
                                 </div>
                             </div>
@@ -174,21 +192,24 @@
                     <!-- books Table -->
                     <div class="table-responsive">
                         <table class="table table-hover table-striped table-bordered align-middle text-center">
-                            <thead class="table-dark">
+                            <thead class="table-dark text-center align-middle">
                                 <tr>
-                                    <th scope="col">Images</th>
-                                    <th scope="col">ISBN</th>
-                                    <th scope="col">Genre</th>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Publisher</th>
-                                    <th scope="col">Formats</th>
-                                    <th scope="col">Author</th>
-                                    <th scope="col">Sales Price</th>
-                                    <th scope="col">Regular Price</th>
-                                    <th scope="col">Quantity</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col" class="p-3">Images</th>
+                                   
+                                    <th scope="col" class="p-3">Genre</th>
+                                    <th scope="col" class="p-3">Title</th>
+                                  
+                                    <th scope="col" class="p-3">Author</th>
+                                    <th scope="col" class="p-3">Sales Price</th>
+                                    <th scope="col" class="p-3">Regular Price</th>
+                                    <th scope="col" class="p-3">Quantity</th>
+                                    <th scope="col" class="p-3">View</th>
+                                    <th scope="col" class="p-3">update</th>
+                                    <th scope="col" class="p-3">Delete</th>
+                   
                                 </tr>
                             </thead>
+                            
                             <tbody>
                                 <% books.forEach((book) => { %>
                                 <tr>
@@ -199,7 +220,7 @@
                                         <p class="text-muted">No image</p>
                                         <% } %>
                                     </td>
-                                    <td class="white"><%= book.isbn %></td>
+                                   
                                     <td class="white">
                                         <% if (book.genres && book.genres.length > 0) { %>
                                           <%= book.genres.map(genre => genre.name).join(', ') %>
@@ -210,13 +231,19 @@
                                       
                                       
                                     <td class="white"><%= book.title %></td>
-                                    <td class="white"><%= book.publisher %></td>
-                                    <td class="white"><%= book.formats %></td>
+                                 
                                     <td class="white"><%= book.author %></td>
                                     <td class="white">₹<%= book.salesPrice %></td>
                                     <td class="white">₹<%= book.regularPrice %></td>
-                                    <td class="white"><%= book.quantity %></td>
-                                    <td class="white">Actions Here</td>
+                                    <td class="white">
+                                        <% if (book.quantity === 0) { %>
+                                            <span class="green">Out of Stock</span>
+                                        <% } else { %>
+                                            <span class="green"><%= book.quantity %></span>
+                                        <% } %>
+                                    </td>
+                                    
+                                    
                      
 
                                 <td>
@@ -261,7 +288,14 @@
                                                     
                                                     <p><strong>Regular Price:</strong> <%= book.regularPrice %></p>
                                                     <p><strong>Sales Price:</strong> <%= book.salesPrice%></p>
-                                                    <p><strong>Stock:</strong> <%= book.quantity %></p>
+                                                    <p><strong>Stock:</strong> 
+                                                        <% if (book.quantity === 0) { %>
+                                                            <span>Out of Stock</span>
+                                                        <% } else { %>
+                                                            <span><%= book.quantity %></span>
+                                                        <% } %>
+                                                    </p>
+                                                    
                                                     <p><strong>Description:</strong> <%= book.description %></p>
                                                     
                                                 </div>
@@ -416,7 +450,7 @@
                                                                 <button type="button" id="saveButton4" class="btn-sm btn-primary" onclick="saveCroppedImage(4)">Save</button>
                                                             </div>
 
-                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                        <button type="submit" class="btn btn-primary" >Update</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -445,7 +479,7 @@
                 </div>
             </div>
         </div>
-        
+        </div>
     </div>
     
     <!-------------pagination -------------->
@@ -456,30 +490,32 @@
         </table>
     
         <!-- Pagination -->
-        <nav aria-label="Page navigation example" class="mt-3">
-            <ul class="pagination justify-content-center">
-                <!-- Previous Page Link -->
-                <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
-                    <a class="page-link" href="?page=<%= page - 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
+        
     
-                <!-- Page Number Links -->
-                <% for (let i = 1; i <= totalPages; i++) { %>
-                    <li class="page-item <%= page === i ? 'active' : '' %>">
-                        <a class="page-link" href="?page=<%= i %>&search=<%= search %>&genre=<%= genre %>"><%= i %></a>
-                    </li>
-                <% } %>
-    
-                <!-- Next Page Link -->
-                <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
-                    <a class="page-link" href="?page=<%= page + 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
+    <nav aria-label="Page navigation example" class="mt-3">
+        <ul class="pagination justify-content-center">
+            <!-- Previous Page Link -->
+            <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+                <a class="page-link" href="?page=<%= page - 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+
+            <!-- Page Number Links -->
+            <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item <%= page === i ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %>&search=<%= search %>&genre=<%= genre %>"><%= i %></a>
                 </li>
-            </ul>
-        </nav>
+            <% } %>
+
+            <!-- Next Page Link -->
+            <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+                <a class="page-link" href="?page=<%= page + 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>        
     </div>
     
       
@@ -488,7 +524,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+ 
+    
     <script>
+        
         document.addEventListener("DOMContentLoaded", () => {
             function viewImage(event, index) {
                 const input = event.target;
@@ -583,6 +622,161 @@
             });
         });
     </script>
+    <script>
+        function validateBookForm() {
+    clearErrorMessages();
+    let isValid = true;
+
+    // Get all input values
+    const isbn = document.getElementsByName('isbn')[0].value.trim();
+    const title = document.getElementsByName('title')[0].value.trim();
+    const author = document.getElementsByName('author')[0].value.trim();
+    const publisher = document.getElementsByName('publisher')[0].value.trim();
+    const formats = document.getElementsByName('formats')[0].value.trim();
+    const genre = document.getElementsByName('books[genre]')[0].value;
+    const regularPrice = document.getElementsByName('regularPrice')[0].value.trim();
+    const salesPrice = document.getElementsByName('salesPrice')[0].value.trim();
+    const stock = document.getElementsByName('quantity')[0].value.trim();
+    const description = document.getElementsByName('description')[0].value.trim();
+    const images = [
+        document.getElementById('input1').files,
+        document.getElementById('input2').files,
+        document.getElementById('input3').files,
+        document.getElementById('input4').files,
+    ];
+
+    // Validate ISBN
+    if (!/^\d{10,13}$/.test(isbn)) {
+        displayErrorMessage('isbn-error', 'ISBN must be a valid 10-13 digit number.');
+        isValid = false;
+    }
+
+    // Validate title
+    if (title === "") {
+        displayErrorMessage('title-error', 'Title is required.');
+        isValid = false;
+    }
+
+    // Validate author
+    if (author === "") {
+        displayErrorMessage('author-error', 'Author is required.');
+        isValid = false;
+    }
+
+    // Validate publisher
+    if (publisher === "") {
+        displayErrorMessage('publisher-error', 'Publisher is required.');
+        isValid = false;
+    }
+
+    // Validate formats
+    if (formats === "") {
+        displayErrorMessage('formats-error', 'Formats are required.');
+        isValid = false;
+    }
+
+    // Validate genre
+    if (genre === "") {
+        displayErrorMessage('genre-error', 'Please select a genre.');
+        isValid = false;
+    }
+
+    // Validate regular price
+    if (!/^\d+(\.\d{1,2})?$/.test(regularPrice) || parseFloat(regularPrice) <= 0) {
+        displayErrorMessage('regularPrice-error', 'Enter a valid positive regular price.');
+        isValid = false;
+    }
+
+    // Validate sales price
+    if (!/^\d+(\.\d{1,2})?$/.test(salesPrice) || parseFloat(salesPrice) < 0) {
+        displayErrorMessage('salesPrice-error', 'Enter a valid non-negative sales price.');
+        isValid = false;
+    } else if (parseFloat(salesPrice) >= parseFloat(regularPrice)) {
+        displayErrorMessage('salesPrice-error', 'Sales price must be less than regular price.');
+        isValid = false;
+    }
+
+    // Validate stock quantity
+    if (!/^\d+$/.test(stock) || parseInt(stock) < 0) {
+    displayErrorMessage('quantity-error', 'Enter a valid non-negative stock quantity.');
+    isValid = false;
+} else {
+    const stockValue = parseInt(stock);
+
+    if (stockValue === 0) {
+        displayOutOfStockMessage(); // Function to handle "Out of Stock"
+    } else {
+        clearOutOfStockMessage(); // Function to clear "Out of Stock" message
+    }
+
+    clearErrorMessage('quantity-error'); // Clear error if input is valid
+}
+
+    // Validate description
+    if (description === "") {
+        displayErrorMessage('description-error', 'Description is required.');
+        isValid = false;
+    }
+
+    // Validate images
+    let imageSelected = false;
+    for (let i = 0; i < images.length; i++) {
+        if (images[i].length > 0) {
+            imageSelected = true;
+            break;
+        }
+    }
+    if (!imageSelected) {
+        displayErrorMessage('images-error', 'Please upload at least one image.');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function displayErrorMessage(elementId, message) {
+    const errorElement = document.getElementById(elementId);
+    if (errorElement) {
+        errorElement.innerText = message;
+        errorElement.style.display = "block";
+    }
+}
+
+function clearErrorMessages() {
+    const errorElements = document.getElementsByClassName('error-message');
+    Array.from(errorElements).forEach(element => {
+        element.innerText = '';
+        element.style.display = "none";
+    });
+}
+function validateStock() {
+    const stockInput = document.getElementById('stockInput');
+    const stockError = document.getElementById('quantity-error');
+    const stockStatus = document.getElementById('stockStatus');
+    const stockValue = parseInt(stockInput.value);
+
+    // Clear any previous error messages
+    stockError.style.display = 'none';
+    stockError.textContent = '';
+
+    // Validation logic
+    if (isNaN(stockValue) || stockValue < 0) {
+        stockError.style.display = 'block';
+        stockError.textContent = 'Enter a valid non-negative stock quantity.';
+        stockStatus.textContent = '';
+    } else if (stockValue === 0) {
+        stockStatus.textContent = 'Out of Stock';
+        stockStatus.classList.remove('text-success');
+        stockStatus.classList.add('text-danger');
+    } else {
+        stockStatus.textContent = 'In Stock';
+        stockStatus.classList.remove('text-danger');
+        stockStatus.classList.add('text-success');
+    }
+}
+
+
+    </script>
     
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -663,9 +857,121 @@
         });
     }
 </script>
+<script>
 
+    document.addEventListener("DOMContentLoaded", () => {
+        const form = document.querySelector("form");
+  
+    form.addEventListener("submit", (event) => {
+        let isValid = true;
+        
+        // Reset all error messages
+      document.querySelectorAll(".error-message").forEach((error) => {
+        error.textContent = "";
+      });
+  
+      // Validate ISBN
+      const isbn = document.getElementById("isbn");
+      if (!/^\d{10}|\d{13}$/.test(isbn.value)) {
+        isValid = false;
+        setError(isbn, "ISBN must be 10 or 13 digits.");
+    }
+    
+    // Validate Title
+    const title = document.getElementById("bookName");
+    if (title.value.trim() === "") {
+        isValid = false;
+        setError(title, "Title is required.");
+    }
+  
+      // Validate Author
+      const author = document.getElementsByName("author")[0];
+      if (author.value.trim() === "") {
+        isValid = false;
+        setError(author, "Author is required.");
+      }
+  
+      // Validate Publisher
+      const publisher = document.getElementById("publisher");
+      if (publisher.value.trim() === "") {
+        isValid = false;
+        setError(publisher, "Publisher is required.");
+    }
+  
+    // Validate Formats
+    const formats = document.getElementById("formats");
+    if (formats.value.trim() === "") {
+        isValid = false;
+        setError(formats, "Formats are required.");
+    }
+    
+    // Validate Genre
+    const genre = document.getElementById("genre");
+    if (genre.value === "") {
+        isValid = false;
+        setError(genre, "Please select a genre.");
+    }
+    
+    // Validate Prices
+      const regularPrice = document.getElementsByName("regularPrice")[0];
+      const salesPrice = document.getElementsByName("salesPrice")[0];
+      if (!/^\d+(\.\d{1,2})?$/.test(regularPrice.value)) {
+        isValid = false;
+        setError(regularPrice, "Enter a valid regular price.");
+      }
+      if (!/^\d+(\.\d{1,2})?$/.test(salesPrice.value)) {
+          isValid = false;
+          setError(salesPrice, "Enter a valid sales price.");
+        }
+        
+        // Validate Stock
+        const stock = document.getElementsByName("quantity")[0];
+        if (!/^\d+$/.test(stock.value)) {
+        isValid = false;
+        setError(stock, "Stock must be a number.");
+      }
+      
+      // Validate Description
+      const description = document.getElementsByName("description")[0];
+      if (description.value.trim() === "") {
+          isValid = false;
+          setError(description, "Description is required.");
+        }
+  
+      // Validate Images
+      for (let i = 1; i <= 4; i++) {
+          const imageInput = document.getElementById(`input${i}`);
+          if (imageInput && imageInput.files.length > 0) {
+          const file = imageInput.files[0];
+          if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+            isValid = false;
+            setError(imageInput, "Invalid image format. Only PNG, JPEG, and JPG are allowed.");
+        }
+    }
+}
 
+if (!isValid) {
+    event.preventDefault();
+}
+});
 
+// Helper function to set error
+function setError(element, message) {
+    const errorDiv = element.closest(".mb-3")?.querySelector(".error-message");
+    if (errorDiv) {
+        errorDiv.textContent = message;
+    } else {
+        const newErrorDiv = document.createElement("div");
+        newErrorDiv.classList.add("error-message");
+        newErrorDiv.style.color = "red";
+        newErrorDiv.textContent = message;
+        element.closest(".mb-3").appendChild(newErrorDiv);
+    }
+    }
+});
+  
+
+</script>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>

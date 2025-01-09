@@ -10,7 +10,7 @@ const adminRouters=require('./routes/adminRoutes');
 require('dotenv').config(); // Correct way to load environment variables
 const db = require('./config/db');
 const passport=require('./config/passport');
-
+const {checkBlockedUser}=require('./middlewares/check');
 // Connect to the database
 db();
 
@@ -22,6 +22,7 @@ app.use(session({
    // Persistent session store
    cookie: { secure: false } 
 }));
+// app.use(checkBlockedUser)
 app.use(passport.initialize());
 app.use(passport.session());
 

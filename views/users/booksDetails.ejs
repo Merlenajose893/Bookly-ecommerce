@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= book.title %> - Details</title>
+</head>
+<body>
+  <h1><%= book.title %></h1>
+  <p><strong>Author:</strong> <%= book.author %></p>
+  <p><strong>Publisher:</strong> <%= book.publisher %></p>
+  <p><strong>ISBN:</strong> <%= book.isbn %></p>
+  <p><strong>Description:</strong> <%= book.description %></p>
+  <p><strong>Genres:</strong> 
+    <% book.genres.forEach((genre, index) => { %>
+      <%= genre.name %><%= index < book.genres.length - 1 ? ', ' : '' %>
+    <% }); %>
+  </p>
+  <p><strong>Price:</strong> ₹<%= book.salesPrice %> (Regular: ₹<%= book.regularPrice %>)</p>
+  <p><strong>Quantity Available:</strong> <%= book.quantity %></p>
+
+  <h2>Formats</h2>
+  <ul>
+    <% book.formats.forEach(format => { %>
+      <li><%= format %></li>
+    <% }); %>
+  </ul>
+
+  <h2>Images</h2>
+  <div>
+    <% if (book.images.length > 0) { %>
+      <% book.images.forEach(image => { %>
+        <img src="/uploads/<%= image %>" alt="<%= book.title %>" style="width:200px;height:auto;" />
+      <% }); %>
+    <% } else { %>
+      <p>No images available for this book.</p>
+    <% } %>
+  </div>
+
+  <h2>Reviews</h2>
+  <ul>
+    <% if (book.reviews.length > 0) { %>
+      <% book.reviews.forEach(review => { %>
+        <li><strong><%= review.user %>:</strong> <%= review.comment %></li>
+      <% }); %>
+    <% } else { %>
+      <li>No reviews yet.</li>
+    <% } %>
+  </ul>
+</body>
+</html>

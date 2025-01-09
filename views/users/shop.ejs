@@ -104,14 +104,17 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link" data-toggle="dropdown">Genres <i class="fa fa-angle-down float-right mt-1"></i></a>
                             <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href="" class="dropdown-item">Fiction</a>
-                                <a href="" class="dropdown-item">Non fiction</a>
-                                <a href="" class="dropdown-item">Academics</a>
-                            </div>
-                        </div>
-                        <a href="" class="nav-item nav-link">Science-Fiction & Fantasy</a>
-                        <a href="" class="nav-item nav-link">Mystery & Thriller</a>
-                        <a href="" class="nav-item nav-link">Children's Book</a>
+                                <% if (genres && genres.length) { %>
+                                    <% genres.forEach(genre => { %>
+                                        <% if (!genre.isDeleted) { %> <!-- Check if genre is not deleted -->
+                                            <a href="/genres/<%= genre._id %>" class="dropdown-item">
+                                                <%= genre.name %>
+                                            </a>
+                                        <% } %>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p class="dropdown-item">No genres available</p>
+                                <% } %>
                         
                     </div>
                 </nav>

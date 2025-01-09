@@ -1,3 +1,14 @@
 <h1><%= message %></h1>
-<h2><%= error.status %></h2>
-<pre><%= error.stack %></pre>
+<h2><%= error?.status || 'Unknown Error' %></h2>
+<pre><%= error?.stack || 'No stack trace available' %></pre>
+<script>
+    // Display the error message using SweetAlert
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: '<%= message %>', // Insert the message passed from the backend
+      confirmButtonText: 'Go Back',
+    }).then(() => {
+      window.history.back(); // Navigate back to the previous page
+    });
+  </script>
