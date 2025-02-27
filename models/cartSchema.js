@@ -1,20 +1,55 @@
-const mongoose=require('mongoose'),
-const {Schema}=mongoose;
-const cartSchema=new Schema({
-    userId:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true},
-    bookId:{
-        type:mongoose.Schema.Types.ObjectId,ref:'Books',required:true
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const cartSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  items: [{
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Book',
+      required: true
     },
-    quantity:{type:Number,default:1},
-    addedAt:{type:Date,required:Date.now()},
-    createdAt:{type:Date,required:Date.now()},
-    updatedAt:{type:Date,required:Date.now()},
-    status:{
-        type:String,
-        enum:['active','purchased','abandoned'],
-        default:true
+    quantity: {
+      type: Number,
+      default: 1,
+      required: true
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    totalPrice: {
+      type: Number,
+      required: true
+    },
+    subTotal: {
+      type: Number,
+      default: 0
     }
-},
-  
-{timestamps:true});
-module.exports=mongoose.model('Cart',cartSchema);
+  }],
+  subTotal: {
+    type: Number,
+    default: 0
+  },
+  couponId: { // ✅ Add coupon reference
+    type: Schema.Types.ObjectId,
+    ref: 'Coupon',
+    default: null
+  },
+  discountAmount: { // ✅ Store discount amount separately
+    type: Number,
+    default: 0
+  },
+  appliedCoupon: { type: String, default: null },
+  total: { // ✅ Store the final total after discount
+    type: Number,
+    default: 0
+  }
+});
+
+const Cart = mongoose.model("Cart", cartSchema);
+module.exports = { Cart };

@@ -1,0 +1,186 @@
+<%- include('../../views/partials/profileHeader.ejs') -%>
+<style>
+    .profile-form-card {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        background: white;
+    }
+    
+    .form-control {
+        padding: 0.75rem 1.2rem;
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #4A90E2;
+        box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.1);
+    }
+    
+    .form-label {
+        font-weight: 500;
+        color: #424242;
+        margin-bottom: 0.5rem;
+    }
+    
+    .save-btn {
+        background: #4A90E2;
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .save-btn:hover {
+        background: #357ABD;
+        transform: translateY(-2px);
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-icon {
+        color: #6c757d;
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-with-icon .form-control {
+        padding-left: 2.8rem;
+    }
+    
+    .section-title {
+        position: relative;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+        color: #2c3e50;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 3px;
+        background: #4A90E2;
+        border-radius: 2px;
+    }
+</style><!-- Main Content -->
+<div class="col-md-9">
+    <div class="profile-form-card p-4 p-md-5">
+        <h4 class="section-title">Update Profile</h4>
+        
+        <form id="updateProfileForm" method="post" action="/profiledashboard">
+            <div class="mb-4">
+                <label for="name" class="form-label">Username</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user form-icon"></i>
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Enter your username" 
+                        value="<%=user.name%>" 
+                        name="name" 
+                        id="name"
+                    >
+                </div>
+                <div id="nameError" class="error-message"></div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="phone" class="form-label">Phone Number</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-phone form-icon"></i>
+                    <input 
+                        type="tel" 
+                        class="form-control" 
+                        placeholder="Enter your phone number" 
+                        value="<%=user.phone%>" 
+                        name="phone" 
+                        id="phone"
+                    >
+                </div>
+                <div id="phoneError" class="error-message"></div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-secondary px-4">
+                    Cancel
+                </button>
+                <button type="submit" class="save-btn">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<!-- Newsletter Section -->
+<%- include('../../views/partials/profileFooter.ejs') -%>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- SweetAlert Library -->
+
+<script>
+    document.getElementById("updateProfileForm").addEventListener("submit", function(event) {
+        let isValid = true;
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const nameError = document.getElementById("nameError");
+        const phoneError = document.getElementById("phoneError");
+
+        // Reset error messages
+        nameError.textContent = "";
+        phoneError.textContent = "";
+
+        // Name validation
+        if (name === "") {
+            nameError.textContent = "Username is required.";
+            isValid = false;
+        }
+
+        // Phone validation (strong validation)
+        const phoneRegex = /^(?:\+?\d{1,4}[\s\-]?)?(\(?\d{1,4}\)?[\s\-]?)?\d{1,4}[\s\-]?\d{1,4}[\s\-]?\d{1,4}$/;
+
+        // Check for 10 zeroes or 10 ones in the phone number
+        const invalidPhone = phone === "0000000000" || phone === "1111111111";
+
+        if (!phoneRegex.test(phone) || invalidPhone) {
+            phoneError.textContent = "Please enter a valid phone number (e.g., +123-456-7890 or (123) 456-7890), but not all zeroes or ones.";
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault(); // Prevent form submission if validation fails
+        } else {
+            // Prevent form submission for demonstration purposes
+            event.preventDefault();
+
+            // Show success message with SweetAlert
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Updated!',
+                text: 'Your profile details have been successfully updated.',
+                confirmButtonText: 'OK'
+            }).then(() => {
+                // Submit the form after the SweetAlert confirmation
+                document.getElementById("updateProfileForm").submit();
+            });
+        }
+    });
+</script>
+

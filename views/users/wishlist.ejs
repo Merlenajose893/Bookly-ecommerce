@@ -1,0 +1,376 @@
+<head>
+    <meta charset="utf-8">
+    <title>EShopper - Bootstrap Shop Template</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Free HTML Templates" name="keywords">
+    <meta content="Free HTML Templates" name="description">
+
+    <!-- Favicon -->
+    <link href="img/favicon.ico" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="css/style.css" rel="stylesheet">
+    <style>
+        /* Custom CSS */
+        .top-bar {
+            background-color: #f8f9fa;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .search-bar input {
+            padding-right: 40px;
+            border-radius: 20px;
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+        }
+
+        .categories-dropdown {
+            background-color: #e4b7b7;
+            padding: 10px 20px;
+            border: none;
+            color: #333;
+        }
+
+        .wishlist-header {
+            background-color: #f8f9fa;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .book-item {
+            margin-bottom: 20px;
+        }
+
+        .book-image {
+            max-width: 100px;
+            height: auto;
+        }
+
+        .stock-status {
+            font-size: 14px;
+        }
+
+        .stock-status.in-stock {
+            color: #28a745;
+        }
+
+        .stock-status.out-of-stock {
+            color: #dc3545;
+        }
+
+        .footer {
+            background-color: #f8f9fa;
+            padding: 50px 0;
+            margin-top: 50px;
+        }
+
+        .footer-links h5 {
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .shop-more-section {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .payment-icons img {
+            height: 30px;
+            margin: 0 5px;
+        }
+        .in-stock {
+    color: green;
+    font-weight: bold;
+}
+
+.out-of-stock {
+    color: red;
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<div class="container-fluid">
+    <div class="row bg-secondary py-2 px-xl-5">
+        <div class="col-lg-6 d-none d-lg-block">
+            <div class="d-inline-flex align-items-center">
+                <a class="text-dark" href="">FAQs</a>
+                <span class="text-muted px-2">|</span>
+                <a class="text-dark" href="">Help</a>
+                <span class="text-muted px-2">|</span>
+                <a class="text-dark" href="">Support</a>
+            </div>
+        </div>
+        <div class="col-lg-6 text-center text-lg-right">
+            <div class="d-inline-flex align-items-center">
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a class="text-dark px-2" href="">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a class="text-dark pl-2" href="">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row align-items-center py-3 px-xl-5">
+        <div class="col-lg-3 d-none d-lg-block">
+            <a href="" class="text-decoration-none">
+                <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">B</span>OOKLY</h1>
+            </a>
+        </div>
+        <div class="col-lg-6 col-6 text-left">
+            <form action="">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search for products">
+                    <div class="input-group-append">
+                        <span class="input-group-text bg-transparent text-primary">
+                            <i class="fa fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-3 col-6 text-right">
+            <a href="/wishlist" class="btn border">
+                <i class="fas fa-heart text-danger"></i>
+                Wishlist (<span class="badge"><%= wishlistCount %></span>)
+            </a>
+            
+            <a href="/cart" class="btn border">
+                <i class="fas fa-shopping-cart text-primary"></i>
+                <span class="badge">0</span>
+            </a>
+        </div>
+    </div>
+</div>
+<div class="wishlist-header">
+    <div class="container">
+        <h1 class="text-center">WISHLIST</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb justify-content-center">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Wishlist</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="container">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>BOOK DETAILS</th>
+                    <th>PRICE</th>
+                    <th>STOCK</th>
+                    <th>ADD TO CART</th>
+                    <th>REMOVE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (wishlist && wishlist.length > 0) { %>
+                    <% wishlist.forEach(book => { %>
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="/uploads/<%= book.images[0] %>" alt="<%= book.title %>" class="book-image me-3">
+                                    <span><%= book.title %></span>
+                                </div>
+                            </td>
+                            <td><%= book.salesPrice %></td>
+                            <td>
+                                <span class="stock-status <%= book.stock > 0 ? 'in-stock' : 'out-of-stock' %>">
+                                    <%= book.quantity > 0 ? 'IN STOCK' : 'OUT OF STOCK' %>
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" onclick="moveToCart('<%= book._id %>')">
+                                    Add to Cart
+                                </button>
+                            </td>
+                          
+                            
+                            <td>
+                                <button class="btn btn-link" onclick="removeFromWishlist('<%= book._id %>')">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="5" class="text-center">No items in your wishlist.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function toggleWishlist(bookId) {
+    fetch(`/wishlist/add/${bookId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => {
+        if (response.ok) {
+            window.location.href = '/wishlist'; // Redirect to wishlist page
+        } else {
+            return response.json();
+        }
+    })
+    .then(data => {
+        if (data && data.error) {
+            alert(data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    function moveToCart(bookId) {
+        fetch('/wishlist-to-cart', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bookId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Book moved to cart successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href='/cart'; // Refresh wishlist page
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Something went wrong. Please try again.'
+            });
+        });
+    }
+</script>
+<script>
+    function removeFromWishlist(bookId) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to remove this book from your wishlist?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, remove it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch("/wishlist/remove", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ bookId }) // Send ObjectId as string
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect if session expired
+                    return;
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Removed!",
+                        text: "Book removed from wishlist successfully!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: data.message
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error!",
+                    text: "Something went wrong. Please try again."
+                });
+            });
+        }
+    });
+}
+
+</script>
+
+
+<%-include('../partials/footer.js')%>

@@ -21,22 +21,39 @@
     <!-- Libraries Stylesheet -->
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
+
+    
     <!-- Customized Bootstrap Stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <style>
+        .dark
+        {
+            /* background-color: aqua; */
+            color: black;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Topbar Start -->
     <div class="container-fluid">
+        <!-- Cart items is(<%=cart.itemCount%>) -->
         <div class="row bg-secondary py-2 px-xl-5">
+           
             <div class="col-lg-6 d-none d-lg-block">
+                <%if(message){%>
+                    <h6 class="text-danger"><%=message%></h6>
+                          <%  }%>
                 <div class="d-inline-flex align-items-center">
                     <a class="text-dark" href="">FAQs</a>
                     <span class="text-muted px-2">|</span>
                     <a class="text-dark" href="">Help</a>
                     <span class="text-muted px-2">|</span>
                     <a class="text-dark" href="">Support</a>
+                    
                 </div>
+                
             </div>
             <div class="col-lg-6 text-center text-lg-right">
                 <div class="d-inline-flex align-items-center">
@@ -77,14 +94,15 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
+                <!-- <a href="" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
                     <span class="badge">0</span>
+                </a> -->
+                <a href="/cart" class="btn border">
+                    <i class="fas fa-shopping-cart text-primary"></i> 
+                    Cart items (<span class="badge"><%= cart.itemCount %></span>)
                 </a>
-                <a href="" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
-                </a>
+                
             </div>
         </div>
     </div>
@@ -131,22 +149,19 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link">Shop</a>
-                            <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
+                            <a href="/" class="nav-item nav-link">Home</a>
+                            <a href="/shop" class="nav-item nav-link">Shop</a>
+                            <a href="/details" class="nav-item nav-link">Shop Detail</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
+                                    <a href="/cart" class="dropdown-item">Shopping Cart</a>
+                                    <a href="/checkout" class="dropdown-item">Checkout</a>
                                 </div>
                             </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="/contact" class="nav-item nav-link">Contact</a>
                         </div>
-                        <div class="navbar-nav ml-auto py-0">
-                            <a href="" class="nav-item nav-link">Login</a>
-                            <a href="" class="nav-item nav-link">Register</a>
-                        </div>
+                        
                     </div>
                 </nav>
             </div>
@@ -157,7 +172,8 @@
 
     <!-- Page Header Start -->
     <div class="container-fluid bg-secondary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+       
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 100px;padding: 2rem" >
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
             <div class="d-inline-flex">
                 <p class="m-0"><a href="">Home</a></p>
@@ -170,162 +186,127 @@
 
 
     <!-- Cart Start -->
-    <div class="container-fluid pt-5">
-        <div class="row px-xl-5">
-            <div class="col-lg-8 table-responsive mb-5">
-                <table class="table table-bordered text-center mb-0">
-                    <thead class="bg-secondary text-dark">
-                        <tr>
-                            <th>Products</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody class="align-middle">
-                        <tr>
-                            <td class="align-middle"><img src="img/product-1.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-2.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-3.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-4.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        <tr>
-                            <td class="align-middle"><img src="img/product-5.jpg" alt="" style="width: 50px;"> Colorful Stylish Shirt</td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="1">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">$150</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-lg-4">
-                <form class="mb-5" action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control p-4" placeholder="Coupon Code">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary">Apply Coupon</button>
-                        </div>
+    <div class="container-fluid py-6">
+        <div class="row justify-content-center px-4 px-xl-5">
+            <!-- Cart Table Section -->
+            <div class="col-lg-8 mb-5">
+                <div class="card border-0 shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-primary text-white">
+                                <tr>
+                                    <th class="py-3">Products</th>
+                                    <th class="py-3">Price</th>
+                                    <th class="py-3">Quantity</th>
+                                    <th class="py-3">Total</th>
+                                    <th class="py-3">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                                <% cart.items.forEach(item => { %>
+                                    <tr>
+                                        <td class="align-middle py-4">
+                                            <div class="d-flex align-items-center">
+                                                <img src="/uploads/<%= item.productId.images[0] %>" alt="images" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+
+                                                <span class="ms-3 fw-medium"><%= item.productId.title %></span>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">₹<%= item.productId.salesPrice %></td>
+                                        <td class="align-middle">
+                                            <div class="input-group quantity mx-auto" style="width: 130px;">
+                                                <button class="btn btn-outline-primary btn-sm btn-minus">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                                <input type="text" class="form-control form-control-sm text-center border-primary" 
+                                                    value="<%= item.quantity %>">
+                                                <button class="btn btn-outline-primary btn-sm btn-plus" >
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle">₹<%= item.totalPrice %></td>
+                                        <td class="align-middle">
+                                            <button class="btn btn-outline-danger btn-sm rounded-circle remove-item" 
+                                                data-id="<%= item.productId._id %>">
+                                                <i class="fa fa-times"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                            
+                        </table>
                     </div>
-                </form>
-                <div class="card border-secondary mb-5">
-                    <div class="card-header bg-secondary border-0">
-                        <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                </div>
+            </div>
+    
+            <!-- Cart Summary Section -->
+            <div class="col-lg-4">
+                <!-- Coupon Section -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <!-- <h3>Available Coupons</h3> -->
+                        <!-- <% if (coupons.length > 0) { %> -->
+                            <!-- <ul class="list-group"> -->
+                                <!-- <% coupons.forEach(coupon => { %> -->
+                                    <!-- <li class="list-group-item"> -->
+                                        <!-- <strong><%= coupon.name %></strong> - ₹<%= coupon.offerPrice %> off  -->
+                                        <!-- (Min purchase: ₹<%= coupon.minimumPrice %>, Expiry: <%= new Date(coupon.expiredOn).toLocaleDateString() %>) -->
+                                    <!-- </li> -->
+                                <!-- <% }); %> -->
+                            <!-- </ul> -->
+                        <!-- <% } else { %> -->
+                            <!-- <p>No coupons available</p> -->
+                        <!-- <% } %> -->
+                        <!-- <br> -->
+
+                        <h4>Apply Coupon</h4>
+                 
+                            <div class="input-group">
+                                <select class="form-select" name="couponCode" id="couponSelect">
+                                    <option value="" selected disabled>Select a coupon</option>
+                                    <% coupons.forEach(coupon => { %>
+                                        <option value="<%= coupon.name %>"><%= coupon.name %> - ₹<%= coupon.offerPrice %> off</option>
+                                    <% }); %>
+                                </select>
+                                <button class="btn btn-primary px-4" onclick="applyCoupon(event)">Apply</button>
+                                <button class="btn btn-danger px-4 ms-2" onclick="removeCoupon()">Remove</button>
+
+                            </div>
+                            <p id="appliedCouponMessage" class="text-success mt-2"></p>
+                      
+                    </div>
+                </div>
+    
+                <!-- Summary Section -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="card-title mb-0">Cart Summary</h5>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3 pt-1">
-                            <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">$150</h6>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-medium">Subtotal</span>
+                            <span class="fw-medium" id="subt">₹<%= cart.subtotal %></span>
                         </div>
-                        <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-medium">Shipping</span>
+                            <span class="fw-medium">₹50</span>
                         </div>
-                    </div>
-                    <div class="card-footer border-secondary bg-transparent">
-                        <div class="d-flex justify-content-between mt-2">
-                            <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">$160</h5>
+                        <hr>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fw-bold">Total</span>
+                            <span class="fw-bold" id="cartTotal">₹<%= cart.total %></span>
                         </div>
-                        <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                        <button class="btn btn-primary w-100 py-3 mt-2" >
+                          <a class="dark" href="/checkout"> Proceed to Checkout</a> 
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    
     <!-- Cart End -->
 
 
@@ -383,19 +364,7 @@
                 </div>
             </div>
         </div>
-        <div class="row border-top border-light mx-xl-5 py-4">
-            <div class="col-md-6 px-xl-0">
-                <p class="mb-md-0 text-center text-md-left text-dark">
-                    &copy; <a class="text-dark font-weight-semi-bold" href="#">Your Site Name</a>. All Rights Reserved. Designed
-                    by
-                    <a class="text-dark font-weight-semi-bold" href="https://htmlcodex.com">HTML Codex</a><br>
-                    Distributed By <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
-                </p>
-            </div>
-            <div class="col-md-6 px-xl-0 text-center text-md-right">
-                <img class="img-fluid" src="img/payments.png" alt="">
-            </div>
-        </div>
+      
     </div>
     <!-- Footer End -->
 
@@ -416,6 +385,279 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
+
+    <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.querySelectorAll('.remove-item').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = button.getAttribute('data-id'); 
+                console.log('po',productId);
+                // Get the product ID from the button's data-id attribute
+            
+                // Send a POST request to the server to remove the item from the cart
+                fetch('/cart/:productId', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId: productId }), // Send productId to delete the item
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload the page or update the UI to reflect the changes
+                        window.location.reload(); // Refresh the page to reflect the changes in the cart
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Unable to remove the item from the cart.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting item:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'An unexpected error occurred while deleting the item.',
+                    });
+                });
+            });
+        });
+    </script>
+       <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const btnPlus = document.querySelectorAll('.btn-plus');
+    const btnMinus = document.querySelectorAll('.btn-minus');
+    const quantityInputs = document.querySelectorAll('.form-control');
+
+    function safeGetNumber(element, defaultValue = 0) {
+        if (!element) return defaultValue;
+        const text = element.textContent.replace(/[^\d.-]/g, '');
+        const number = parseFloat(text);
+        return isNaN(number) ? defaultValue : number;
+    }
+
+    function handleQuantityChange(input) {
+        if (!input) return;
+        
+        let quantity = parseInt(input.value) || 1;
+        // quantity += change;
+
+        if (quantity > 5) {
+            quantity = 5;
+            Swal.fire({
+                icon: 'warning',
+                title: 'Limit Reached',
+                text: 'You can add a maximum of 5 items per product.',
+                confirmButtonText: 'OK'
+            });
+        }
+
+        quantity = Math.max(1, quantity); // Ensure minimum 1
+        input.value = quantity;
+
+        updatePriceAndCart(input);
+    }
+
+    async function updatePriceAndCart(input) {
+        if (!input) return;
+
+        const row = input.closest('tr');
+        if (!row) return;
+
+        const removeBtn = row.querySelector('.remove-item');
+        if (!removeBtn) {
+            console.error('Remove button not found');
+            return;
+        }
+
+        const productId = removeBtn.dataset.id;
+        const priceCell = row.querySelector('td:nth-child(2)');
+        const totalPriceCell = row.querySelector('td:nth-child(4)');
+
+        if (!priceCell || !totalPriceCell) {
+            console.error('Price cells not found');
+            return;
+        }
+
+        const price = safeGetNumber(priceCell);
+        let quantity = parseInt(input.value) || 1;
+
+        // Update UI
+        const totalPrice = (price * quantity).toFixed(2);
+        totalPriceCell.textContent = `₹${totalPrice}`;
+
+        try {
+            const response = await fetch('/cart/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId, quantity })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                updateCartSummary();
+                window.location.reload('/cart');
+            } else {
+                throw new Error(data.message || 'Error updating cart');
+            }
+        } catch (error) {
+            console.error("Error updating cart:", error);
+            
+            Swal.fire({
+                icon: 'error',
+                title: 'Error Updating Cart',
+                text: error.message || 'An unexpected error occurred while updating the cart.',
+                confirmButtonText: 'Retry',
+                showCancelButton: true,
+                cancelButtonText: 'Reload Page'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    updatePriceAndCart(input);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    location.reload('/cart');
+                }
+            });
+        }
+    }
+
+    function updateCartSummary(cart) {
+        if (!cart) return;
+
+        const subtotalElement = document.querySelector('.card-body span:nth-child(2)');
+        const totalElement = document.querySelector('.card-body .fw-bold:last-child');
+
+        if (subtotalElement && totalElement) {
+            subtotalElement.textContent = `₹${cart.subtotal.toFixed(2)}`;
+            totalElement.textContent = `₹${(cart.subtotal + 50).toFixed(2)}`; // Assuming ₹50 shipping
+        }
+    }
+
+    // Event Listeners
+    btnPlus.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const input = this.closest('tr')?.querySelector('.form-control');
+            handleQuantityChange(input, 1);
+        });
+    });
+
+    btnMinus.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const input = this.closest('tr')?.querySelector('.form-control');
+            handleQuantityChange(input, -1);
+        });
+    });
+
+    quantityInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            handleQuantityChange(this, 0);
+        });
+
+        input.addEventListener('input', function() {
+            let value = this.value.replace(/[^\d]/g, '');
+            value = value ? Math.min(5, Math.max(1, parseInt(value))) : 1;
+            this.value = value;
+        });
+    });
+
+    updateCartSummary();
+});
+
+  </script>
+<script>
+    const applyCoupon = async (event) => {
+    event.preventDefault();
+
+    const couponSelect = document.getElementById('couponSelect');
+    const selectedCoupon = couponSelect.value;
+
+    if (!selectedCoupon) {
+        Swal.fire("Warning", "Please select a coupon.", "warning");
+        return;
+    }
+
+    try {
+        const response = await fetch('/cart/apply-coupon', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ couponCode: selectedCoupon })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            Swal.fire("Error", result.message, "error");
+            return;
+        }
+
+        console.log(result.subtotal);
+        console.log(result.total);
+
+        // Update UI dynamically
+        document.getElementById("subt").innerText = `₹${result.subtotal}`;
+        document.getElementById("cartTotal").innerText = `₹${result.total}`;
+
+        // Show success message with Swal
+        Swal.fire({
+            title: "Success",
+            text: "Coupon applied successfully!",
+            icon: "success",
+            confirmButtonText: "OK"
+        });
+
+    } catch (error) {
+        console.error("Error applying coupon:", error);
+        Swal.fire("Error", "An error occurred while applying the coupon.", "error");
+    }
+};
+
+
+async function removeCoupon() {
+    try {
+        const response = await fetch("/cart/remove-coupon", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Update both subtotal and total displays
+            document.getElementById("subt").innerText = `₹${data.subtotal.toFixed(2)}`;
+            document.getElementById("cartTotal").innerText = `₹${data.total.toFixed(2)}`;
+            
+            // Clear coupon UI elements
+            document.getElementById("appliedCouponMessage").innerText = "";
+            document.getElementById("couponSelect").value = "";
+            
+            Swal.fire("Success", "Coupon removed successfully!", "success");
+        } else {
+            Swal.fire("Error", data.message, "error");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        Swal.fire("Error", "Failed to remove coupon.", "error");
+    }
+}
+
+</script>
+<!-- <script></script> -->
+    
+    
 </body>
 
 </html>

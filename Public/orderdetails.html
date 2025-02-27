@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .order-details-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .order-details-card .card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px 10px 0 0;
+        }
+        .order-details-card .card-body {
+            padding: 2rem;
+        }
+        .order-summary, .shipping-address, .payment-method {
+            margin-bottom: 2rem;
+        }
+        .order-summary h5, .shipping-address h5, .payment-method h5 {
+            margin-bottom: 1rem;
+            color: #007bff;
+        }
+        .order-summary p, .shipping-address p, .payment-method p {
+            margin: 0.5rem 0;
+        }
+        .btn-back {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card order-details-card">
+                    <div class="card-header text-center">
+                        <h3>Order Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Order Summary -->
+                        <div class="order-summary">
+                            <h5>Order Summary</h5>
+                            <p><strong>Order ID:</strong> #123456</p>
+                            <p><strong>Order Date:</strong> October 10, 2023</p>
+                            <p><strong>Status:</strong> <span class="text-success">Delivered</span></p>
+                            <hr>
+                            <p><strong>Subtotal:</strong> $150.00</p>
+                            <p><strong>Shipping:</strong> $10.00</p>
+                            <p><strong>Total:</strong> $160.00</p>
+                        </div>
+
+                        <!-- Shipping Address -->
+                        <div class="shipping-address">
+                            <h5>Shipping Address</h5>
+                            <p><strong>Name:</strong> John Doe</p>
+                            <p><strong>Address:</strong> 123 Main St, Apt 4B</p>
+                            <p><strong>City:</strong> New York</p>
+                            <p><strong>State:</strong> NY</p>
+                            <p><strong>Zip Code:</strong> 10001</p>
+                            <p><strong>Country:</strong> USA</p>
+                            <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+                        </div>
+
+                        <!-- Payment Method -->
+                        <div class="payment-method">
+                            <h5>Payment Method</h5>
+                            <p><strong>Method:</strong> Credit Card</p>
+                            <p><strong>Card Number:</strong> **** **** **** 1234</p>
+                            <p><strong>Expiry Date:</strong> 12/25</p>
+                        </div>
+
+                        <!-- Back Button -->
+                        <div class="text-center">
+                            <a href="/" class="btn btn-back">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

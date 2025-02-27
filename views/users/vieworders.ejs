@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Order</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f8f9fa;
+            --border-color: #dee2e6;
+            --success-color: #2ecc71;
+            --pending-color: #f1c40f;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--primary-color);
+        }
+
+        .order-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            background: white;
+            padding: 2rem;
+        }
+
+        .order-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending {
+            background-color: var(--pending-color);
+            color: #000;
+        }
+
+        .status-delivered {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-text {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .book-item {
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .book-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .price-details {
+            background-color: var(--background-color);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .price-row.total {
+            border-bottom: none;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background-color: #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .order-header {
+                padding: 1.5rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .book-image {
+                height: 120px;
+            }
+
+            .status-badge {
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="order-container">
+        <% if (order) { %>
+            <div class="order-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-2">Order #<%= order.orderId%></h2>
+                        <p class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Ordered on <%= new Date(order.createdAt).toLocaleDateString() %></p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="status-badge <%= order.status === 'Pending' ? 'status-pending' : 'status-delivered' %>">
+                            <i class="fas <%= order.status === 'Pending' ? 'fa-clock' : 'fa-check-circle' %> me-2"></i><%= order.status %>
+                        </span>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <h4 class="section-title">Customer Information</h4>
+                        <div class="info-label">Name</div>
+                        <p class="info-text"><i class="fas fa-user me-2"></i><%= order.user.name %></p>
+                        <div class="info-label">Contact</div>
+                        <p class="info-text"><i class="fas fa-phone me-2"></i><%= order.user.phone %></p>
+                        <p class="info-text"><i class="fas fa-envelope me-2"></i><%= order.user.email %></p>
+                    </div>
+                </div>
+    
+                <div class="col-md-6">
+                    <div class="card">
+                        <h4 class="section-title">Shipping Address</h4>
+                        <p class="info-text">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            <%= order.shippingAddress.pincode %><br>
+                            <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %><br>
+                            <%= order.shippingAddress.zipCode %><br>
+                            <%= order.shippingAddress.country %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="card">
+                <h4 class="section-title">Order Items</h4>
+                <% order.books.forEach(book => { %>
+                    <div class="book-item">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="/uploads/<%= book.productId.images[0] %>" alt="<%= book.productId.title %>" class="book-image">
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-2"><%= book.productId.title %></h5>
+                                <p class="text-muted mb-0"><i class="fas fa-pen me-2"></i>Author: <%= book.productId.author %></p>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <div class="info-label">Quantity</div>
+                                <p class="mb-0 fw-bold"><%= book.quantity %></p>
+                            </div>
+                            <div class="col-md-2 text-end">
+                                <div class="info-label">Price</div>
+                                <p class="mb-0 fw-bold">₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %></p>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+    
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="section-title">Payment Details</h4>
+                        <div class="mb-3">
+                            <span class="payment-badge">
+                                <i class="fas fa-credit-card me-2"></i><%= order.paymentMethod %>
+                            </span>
+                        </div>
+                        <div class="payment-badge">
+                            <i class="fas fa-check-circle me-2"></i><%= order.paymentStatus %>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="price-details">
+                            <div class="price-row">
+                                <span>Subtotal</span>
+                                <span>₹<%= order.totalAmount %></span>
+                            </div>
+                            <div class="price-row">
+                                <span>Shipping</span>
+                                <span>₹50</span>
+                            </div>
+                            <div class="price-row total">
+                                <span>Total</span>
+                                <span>₹<%= order.totalAmount + (order.shippingCost || 0) %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="text-center mt-4">
+                <a href="/profileorder" class="back-btn">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                </a>
+            </div>
+        <% } else { %>
+            <div class="card text-center">
+                <div class="py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h4>Order Not Found</h4>
+                    <p class="text-muted">The requested order could not be found.</p>
+                    <a href="/profileorders" class="back-btn">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                    </a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+    
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

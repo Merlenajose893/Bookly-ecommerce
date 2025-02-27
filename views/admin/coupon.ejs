@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management - UrbanWorn</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #1e1e2d;
+            --sidebar-bg: #1a1a27;
+            --content-bg: #151521;
+            --text-color: #92929f;
+            --text-muted: #6d6d80;
+            --border-color: #2b2b40;
+            --input-bg: #1b1b29;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar h3 {
+            color: #ffffff;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .main-container {
+            background-color: var(--content-bg);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--dark-bg);
+            color: #ffffff !important;
+        }
+
+        .nav-link.active {
+            background-color: var(--dark-bg);
+            color: #ffffff !important;
+        }
+
+        .search-box {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .search-box:focus {
+            background-color: var(--input-bg);
+            border-color: #0d6efd;
+            color: var(--text-color);
+            box-shadow: none;
+        }
+
+        .table {
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .table th {
+            border-bottom: 2px solid var(--border-color);
+            color: #992323;
+        }
+
+        .table td {
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .product-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .btn-update {
+            background-color: #0c8;
+            color: white;
+            border: none;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+        }
+
+        .form-control, .form-select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--input-bg);
+            border-color: #0d6efd;
+            color: var(--text-color);
+            box-shadow: none;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        .status-online {
+            background-color: #0c8;
+        }
+
+        .status-offline {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3>Bookly</h3>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/admin">Dashboard</a>
+                    <a class="nav-link" href="/admin/usermanage">User Management</a>
+                    <a class="nav-link" href="/admin/books">Books Management</a>
+                    <a class="nav-link active" href="/admin/genres">Category Management</a>
+                    <a class="nav-link" href="/admin/adminorders">Order Management</a>
+                    <a class="nav-link" href="/admin/coupon">Coupen Management</a>
+                    <a class="nav-link" href="/admin/offer">Offer Management</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 p-4">
+                <!-- Status Dots -->
+                <div class="status-dots">
+                    <span class="dot dot-green"></span>
+                    <span class="dot dot-red"></span>
+                </div>
+            
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" class="form-control search-box" placeholder="Search">
+                    <button class="btn btn-search">Search</button>
+                </div>
+                <div class="d-flex mb-3">
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#createCouponModal">Create Coupon</button>
+                </div>
+            
+                <!-- Modal -->
+                <div class="modal fade" id="createCouponModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createCouponModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="createCouponModalLabel">Add Coupon</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/admin/coupon" method="POST" id="couponForm">
+                                    <div class="mb-3">
+                                        <label for="couponName" class="form-label">Coupon Name</label>
+                                        <input type="text" id="couponName" name="name" class="form-control" placeholder="Name" >
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="offerPrice" class="form-label">Offer Price</label>
+                                        <input type="number" id="offerPrice" name="offerPrice" class="form-control" placeholder="Offer Price">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="minimumPrice" class="form-label">Minimum Price</label>
+                                        <input type="number" id="minimumPrice" name="minimumPrice" class="form-control" placeholder="Minimum Price" >
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="expiredOn" class="form-label">Expiry Date</label>
+                                        <input type="date" id="expiredOn" name="expiredOn" class="form-control" >
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Create</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Coupon Table -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>SNo</th>
+                                        <th>Name</th>
+                                        <th>Offer Price</th>
+                                        <th>Minimum Price</th>
+                                        <th>Expiry Date</th>
+                                        <th>Update</th>
+                                        <th>Delete</th>
+                                        <!-- <th>Status</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% coupons.forEach((coupon, index) => { %>
+                                        <tr>
+                                            <th scope="row" class="white"><%= (currentPage - 1) * itemsPerPage + index + 1 %></th>
+                                            <td class="white"><%= coupon.name %></td>
+                                            <td class="white"><%= coupon.offerPrice %></td>
+                                            <td class="white">₹<%= coupon.minimumPrice %></td>
+                                            <td class="white"><%= coupon.expiredOn.toLocaleDateString()%></td>
+                                            <td>
+                                                <a href="/admin/updateCoupon/<%= coupon.id %>" class="btn btn-success">Update</a>
+                                            </td>
+                                            <td>
+                                                <form action="/admin/toggleCouponStatus/<%= coupon.id %>" method="POST" style="display:inline;">
+                                                    <button type="submit" class="btn <%= coupon.isActive ? 'btn-danger' : 'btn-success' %>">
+                                                        <%= coupon.isList ? 'Deactive' : 'Active' %>
+                                                    </button>
+                                                </form>
+                                                
+                                            </td>
+                                            
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <% if (hasPrevPage) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= itemsPerPage %>">&laquo;</a>
+                            </li>
+                        <% } %>
+                        <% pageNumbers.forEach(i => { %>
+                            <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>&limit=<%= itemsPerPage %>"><%= i %></a>
+                            </li>
+                        <% }) %>
+                        <% if (hasNextPage) { %>
+                            <li class="page-item">
+                                <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= itemsPerPage %>">&raquo;</a>
+                            </li>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById("couponForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+        
+            const formData = new FormData(this);
+            const formObject = Object.fromEntries(formData.entries()); // Convert FormData to JSON
+            console.log(formObject); // Debugging: Check if data is correct
+    
+            try {
+                const response = await fetch("/admin/coupon", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json", // ✅ Set JSON header
+                    },
+                    body: JSON.stringify(formObject), // ✅ Convert to JSON string
+                });
+    
+                const result = await response.json(); // Parse response as JSON
+    
+                if (response.ok) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Coupon Created!",
+                        text: result.message || "The coupon has been successfully added.",
+                        showConfirmButton: false,
+                        timer: 2000 // Auto close after 2 seconds
+                    }).then(() => {
+                        location.reload(); // Reload to update the table
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Failed to Create Coupon",
+                        text: result.message || "Something went wrong. Please try again.",
+                    });
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "An unexpected error occurred. Please try again.",
+                });
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    document.getElementById("couponForm").addEventListener("submit", async function(event) {
+        event.preventDefault();
+    
+        // Get form values
+        const name = document.getElementById("couponName").value.trim();
+        const offerPrice = document.getElementById("offerPrice").value.trim();
+        const minimumPrice = document.getElementById("minimumPrice").value.trim();
+        const expiredOn = document.getElementById("expiredOn").value.trim();
+    
+        // Validation Checks
+        if (!name || !offerPrice || !minimumPrice || !expiredOn) {
+            return Swal.fire("Error!", "All fields are required!", "error");
+        }
+    
+        if (isNaN(offerPrice) || isNaN(minimumPrice) || offerPrice <= 0 || minimumPrice <= 0) {
+            return Swal.fire("Error!", "Offer Price and Minimum Price must be positive numbers!", "error");
+        }
+    
+        const expiryDate = new Date(expiredOn);
+        const today = new Date();
+        if (expiryDate <= today) {
+            return Swal.fire("Error!", "Expiry date must be in the future!", "error");
+        }
+    
+        // Prepare form data
+        const formData = new FormData(this);
+        const formObject = Object.fromEntries(formData.entries());
+    
+        // Send data to the server
+        try {
+            const response = await fetch("/admin/coupon", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formObject),
+            });
+    
+            const result = await response.json();
+    
+            if (response.ok) {
+                Swal.fire("Success!", result.message, "success").then(() => location.reload());
+            } else {
+                Swal.fire("Error!", result.message, "error");
+            }
+        } catch (error) {
+            Swal.fire("Error!", "Something went wrong!", "error");
+        }
+    });
+    </script>
+    <!-- Add this in the <head> or before </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        async function toggleCouponStatus(couponId, button) {
+    try {
+        const response = await fetch(`/admin/toggleCouponStatus/${couponId}`, {
+            method: "POST", // Use PATCH for updates
+            headers: { "Content-Type": "application/json" },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Update button text and styling dynamically
+            button.textContent = result.isList ? "Deactive" : "Active";
+            button.classList.toggle("btn-success", !result.isList);
+            button.classList.toggle("btn-danger", result.isList);
+            Swal.fire("Success!", result.message, "success");
+        } else {
+            Swal.fire("Error!", result.message, "error");
+        }
+    } catch (error) {
+        Swal.fire("Error!", "Something went wrong!", "error");
+        console.error("Error toggling coupon status:", error);
+    }
+}
+
+    </script>
+    
+  
+
+</body>
+</html>

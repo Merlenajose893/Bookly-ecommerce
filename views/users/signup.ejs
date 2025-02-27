@@ -176,23 +176,25 @@
                 <div id="error1" class="error-message"></div>
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" id="name" placeholder="Enter your name" name="name" required>
+                    <input type="text" id="name" placeholder="Enter your name" name="name">
                 </div>
                 <div id="error2" class="error-message"></div>
                 <div class="form-group">
                     <label for="email">Email address</label>
-                    <input type="email" id="email" placeholder="Enter your email" name="email" required>
+                    <input type="email" id="email" placeholder="Enter your email" name="email" >
                 </div>
                 <div id="error3" class="error-message"></div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="Enter your password" name="password" required>
+                    <input type="password" id="password" placeholder="Enter your password" name="password" >
                 </div>
                 <div id="error4" class="error-message"></div>
                 <div class="form-group">
                     <label for="cpassword">ConfirmPassword</label>
-                    <input type="password" id="cpassword" placeholder="Enter your ConfirmPassword" name="cpassword" required>
+                    <input type="password" id="cpassword" placeholder="Enter your ConfirmPassword" name="cpassword" >
                 </div>
+                
+
                 <div id="error5" class="error-message"></div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="terms" name="checkbox">
@@ -208,14 +210,14 @@
                         <img src="img/google.png" alt="Google" width="20">
                         Sign in with Google
                     </a>
-                    <button class="social-button">
+                    <!-- <button class="social-button">
                         <img src="img/apple.png" alt="Apple" width="20">
                         Sign in with Apple
-                    </button>
+                    </button> -->
                 </div>
                 
                 <p class="login-link">
-                    Have an account? <a href="#">Sign In</a>
+                    Have an account? <a href="/login">Sign In</a>
                 </p>
             </form>
         </div>
@@ -266,6 +268,33 @@ function passValidateChecking() {
     const password = passwordid.value;
     const confirmPassword = confirmpasswordid.value;
 
+    // Strong password regex: at least 8 characters, with at least one uppercase, one lowercase, one digit, and one special character
+    const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    if (password === '') {
+        error3.style.display = 'block';
+        error3.textContent = 'Password cannot be empty';
+    } else if (!strongPasswordPattern.test(password)) {
+        error3.style.display = 'block';
+        error3.textContent = 'Password must include at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character';
+    } else {
+        error3.style.display = 'none';
+    }
+
+    if (confirmPassword === '') {
+        error4.style.display = 'block';
+        error4.textContent = 'Please confirm your password';
+    } else if (password !== confirmPassword) {
+        error4.style.display = 'block';
+        error4.textContent = 'Passwords do not match';
+    } else {
+        error4.style.display = 'none';
+    }
+}
+
+    const password = passwordid.value;
+    const confirmPassword = confirmpasswordid.value;
+
     if (password === '') {
         error3.style.display = 'block';
         error3.textContent = 'Password cannot be empty';
@@ -285,7 +314,7 @@ function passValidateChecking() {
     } else {
         error4.style.display = 'none';
     }
-}
+
 
 signform.addEventListener('submit', (e) => {
     nameValidate();

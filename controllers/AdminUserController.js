@@ -24,6 +24,26 @@ const customerInfo = async (req, res) => {
       $or: [{ name: { $regex: search, $options: 'i' } }],
     });
 
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // Create a pagination object
+    const pagination = {
+      previous: page > 1 ? `?page=${page - 1}&search=${search}` : null,
+      next: page < totalPages ? `?page=${page + 1}&search=${search}` : null,
+      current: page,
+      totalPages,
+      pages: [],
+    };
+
+    // Generate page numbers for pagination
+    for (let i = 1; i <= totalPages; i++) {
+      pagination.pages.push({
+        number: i,
+        url: `?page=${i}&search=${search}`,
+        active: i === page,
+      });
+    }
+
     // Render the page with user data
     res.render('usermanage', {
       users,   // Pass users data
@@ -31,12 +51,15 @@ const customerInfo = async (req, res) => {
       page,
       limit,
       count: totalCount,  // Pass total count for pagination
+      pagination, // Pass pagination object
     });
   } catch (error) {
     console.error('Error fetching user data:', error);
     res.status(500).send('An error occurred while fetching users');
   }
 };
+
+
 
   
 const blockUser = async (req, res) => {

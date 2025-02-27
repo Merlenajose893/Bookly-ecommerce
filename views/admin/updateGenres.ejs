@@ -3,56 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Update Genre</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/admin-category.css">
+    <title>Update Category - UrbanWorn</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #d3c3c3;
+            --sidebar-bg: #1a1d2d;
+            --input-bg: #282d45;
+            --text-color: #92929f;
+            --text-muted: #6d6d80;
+            --border-color: #2b2b40;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar h3 {
+            color: #ffffff;
+            opacity: 0.7;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--input-bg);
+            color: #ffffff !important;
+        }
+
+        .nav-link.active {
+            background-color: var(--input-bg);
+            color: #ffffff !important;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+
+        .form-container {
+            max-width: 600px;
+        }
+
+        .form-label {
+            color: #2b2323;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            background-color: var(--input-bg);
+            border: none;
+            color: var(--text-color);
+            padding: 10px 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-control:focus {
+            background-color:#ffffff;
+            border: 1px solid #0095e8;
+            box-shadow: none;
+            color: var(--text-color);
+        }
+
+        .btn-update {
+            background-color: #0095e8;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 5px;
+        }
+
+        .status-dots {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-left: 5px;
+        }
+
+        .dot-green {
+            background-color: #00b074;
+        }
+
+        .dot-red {
+            background-color: #f1416c;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Bookly</a>
-        </div>
-    </nav>
-
-    <!-- Sidebar and Content -->
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-2">
-                <div class="sidebar">
-                    <button type="button" class="btn">Dashboard</button>
-                    <button type="button" class="btn">User Management</button>
-                    <button type="button" class="btn">Product Management</button>
-                    <button type="button" class="btn">Order Management</button>
-                    <button type="button" class="btn">Genre Management</button>
-                    <button type="button" class="btn">Coupons Management</button>
-                    <button type="button" class="btn">Log out</button>
-                </div>
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3>UrbanWorn</h3>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/admin">Dashboard</a>
+                    <a class="nav-link" href="/admin/usermanage">User Management</a>
+                    <a class="nav-link" href="/admin/books">Products Management</a>
+                    <a class="nav-link active" href="/admin/genres">Category Management</a>
+                    <a class="nav-link" href="#">Order Management</a>
+                    <a class="nav-link" href="#">Coupen Management</a>
+                </nav>
             </div>
-            <div class="col-md-10">
-                <div class="content">
-                    <h3>Update Genre</h3>
-                    <form action="/admin/updateGenre/<%= genre._id %>" method="POST">
+
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <!-- Status Dots -->
+                <div class="status-dots">
+                    <span class="dot dot-green"></span>
+                    <span class="dot dot-red"></span>
+                </div>
+
+                <div class="form-container">
+                    <h4 class="mb-4" style="color: rgb(29, 27, 27);">Update category</h4>
+                    <form id="updateCategoryForm" action="/admin/updateGenre/<%= genre._id %>" method="POST">
                         <div class="mb-3">
-                            <label for="genreName" class="form-label">Name</label>
-                            <input type="text" id="genreName" name="name" class="form-control" value="<%= genre.name %>" required>
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="<%= genre.name %>">
+                            <div class="error-message" id="name-error" style="display:none; color:red;"></div>
                         </div>
-                        
                         <div class="mb-3">
-                            <label for="genreDescription" class="form-label">Description</label>
-                            <textarea id="genreDescription" name="description" class="form-control" rows="3" required><%= genre.description %></textarea>
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Description" value="<%= genre.description %>">
+                            <div class="error-message" id="description-error" style="display:none; color:red;"></div>
                         </div>
-                        <!-- <div class="mb-3">
-                            <label for="productCount" class="form-label">Product Count</label>
-                            <input type="number" id="productCount" name="productCount" class="form-control" value="<%= genre.productCount %>" required>
-                        </div> -->
-                        <button type="submit" class="btn btn-primary">Update</button>
+                        <button type="submit" class="btn btn-update">Update</button>
                     </form>
                 </div>
+                
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Validate and submit form
+        document.getElementById('updateCategoryForm').addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+    
+        function validateForm() {
+            let isValid = true;
+    
+            // Clear previous error messages
+            clearErrorMessages();
+    
+            // Get form fields
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('description').value;
+    
+            // Validate name
+            if (name.trim() === "") {
+                displayErrorMessage('name-error', 'Please enter a category name.');
+                isValid = false;
+            }
+    
+            // Validate description
+            if (description.trim() === "") {
+                displayErrorMessage('description-error', 'Please enter a description.');
+                isValid = false;
+            }
+    
+            return isValid;
+        }
+    
+        function displayErrorMessage(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.innerText = message;
+            errorElement.style.display = "block";
+        }
+    
+        function clearErrorMessages() {
+            const errorElements = document.getElementsByClassName('error-message');
+            Array.from(errorElements).forEach(element => {
+                element.innerText = '';
+                element.style.display = 'none';
+            });
+        }
+    </script>
+    
 </body>
 </html>

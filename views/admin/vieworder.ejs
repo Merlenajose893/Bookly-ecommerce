@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Existing styles */
+        :root {
+            --dark-bg: #202042;
+            --sidebar-bg: #1a1a27;
+            --content-bg: #151521;
+            --text-color: #92929f;
+            --text-muted: #6d6d80;
+            --border-color: #2b2b40;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .sidebar h3 {
+            color: #ffffff;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .main-container {
+            background-color: var(--content-bg);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background-color: var(--dark-bg);
+            color: #ffffff !important;
+        }
+
+        .nav-link.active {
+            background-color: var(--dark-bg);
+            color: #ffffff !important;
+        }
+
+        .search-box {
+            background-color: var(--dark-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .search-box:focus {
+            background-color: var(--dark-bg);
+            border-color: #0d6efd;
+            color: var(--text-color);
+            box-shadow: none;
+        }
+
+        .table {
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .table th {
+            border-bottom: 2px solid var(--border-color);
+            color: #9a1d1d;
+        }
+
+        .table td {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .btn-ban {
+            background-color: #f90;
+            color: white;
+            border: none;
+        }
+
+        .pagination {
+            justify-content: center;
+        }
+        .order-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .book-item {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        
+        .book-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .book-image {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .price-details {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+        
+        .back-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        
+        .back-btn:hover {
+            background-color: #5a6268;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3 class="mb-4">Bookly</h3>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/admin">Dashboard</a>
+                    <a class="nav-link active" href="/admin/usermanage">User Management</a>
+                    <a class="nav-link" href="/admin/books">Products Management</a>
+                    <a class="nav-link" href="/admin/genres">Category Management</a>
+                    <a class="nav-link" href="#">Order Management</a>
+                    <a class="nav-link" href="#">Coupon Management</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="order-container">
+                <% if (order) { %>
+                    <div class="order-header d-flex justify-content-between align-items-start">
+                        <div>
+                            <h2 class="mb-2">Order <%= order.orderId%></h2>
+                            <p class="text-muted mb-0">Ordered on <%= new Date(order.createdAt).toLocaleDateString() %></p>
+                        </div>
+                        <span class="status-badge <%= order.status === 'Pending' ? 'status-pending' : 'status-delivered' %>">
+                            <%= order.status %>
+                        </span>
+                    </div>
+            
+                    <div class="customer-info mb-4">
+                        <h4>Customer Information</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Name</h6>
+                                <p><%= order.user.name %></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Contact</h6>
+                                <p><%= order.user.phone %></p>
+                                <p><%= order.user.email %></p>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="shipping-info mb-4">
+                        <h4>Shipping Address</h4>
+                        <p class="mb-0"><%= order.shippingAddress.pincode %></p>
+                        <p class="mb-0"><%= order.shippingAddress.city %>, <%= order.shippingAddress.state %></p>
+                        <p class="mb-0"><%= order.shippingAddress.zipCode %></p>
+                        <p><%= order.shippingAddress.country %></p>
+                    </div>
+            
+                    <div class="order-items mb-4">
+                        <h4>Order Items</h4>
+                        <% order.books.forEach(book => { %>
+                            <div class="book-item">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2">
+                                        <img src="/uploads/<%= book.productId.images[0] %>" alt="<%= book.productId.title %>" class="book-image">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5><%= book.productId.title %></h5>
+                                        <p class="text-muted mb-0">Author: <%= book.productId.author %></p>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <p class="mb-0">Quantity</p>
+                                        <p class="mb-0 fw-bold"><%= book.quantity %></p>
+                                    </div>
+                                    <div class="col-md-2 text-end">
+                                        <p class="mb-0">Price</p>
+                                        <p class="mb-0 fw-bold"> ₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+            
+                    <div class="price-details">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h4>Payment Details</h4>
+                                <p class="mb-0">Payment Method: <%= order.paymentMethod %></p>
+                                <p>Payment Status: <%= order.paymentStatus %></p>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Subtotal:</span>
+                                    <span>₹<%= order.totalAmount %></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Shipping:</span>
+                                    <span>₹50</span>
+                                </div>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total:</span>
+                                    <span>₹<%= order.totalAmount + (order.shippingCost || 0) %></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="mt-4 text-center">
+                        <a href="/admin/adminorders" class="back-btn">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                        </a>
+                    </div>
+                <% } else { %>
+                    <div class="alert alert-warning">
+                        <h4>Order Not Found</h4>
+                        <p>The requested order could not be found.</p>
+                        <a href="/admin/adminorders" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Orders
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmAction(form, action) {
+          return Swal.fire({
+            title: `Are you sure you want to ${action} this order?`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: `Yes, ${action}!`,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              Swal.fire({
+                title: `Order ${action}ed successfully!`,
+                icon: "success",
+                timer: 3500,
+                showConfirmButton: false
+              });
+              form.submit();
+              return true;
+            }
+            return false;
+          });
+        }
+      </script>
+</body>
+</html>

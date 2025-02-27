@@ -1,50 +1,536 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/admin_dashboard.css">
+    <title>Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #1e1e2d;
+            --sidebar-bg: #1a1a27;
+            --content-bg: #dfdfff;
+            --text-color: #92929f;
+            --text-muted: #a1a1cf;
+            --border-color: #2b2b40;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        .sidebar {
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            width: 250px;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .sidebar-header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h3 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-link i {
+            width: 20px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ffffff !important;
+            transform: translateX(5px);
+        }
+
+        .stat-card {
+            background-color: var(--sidebar-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card .icon {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(13, 110, 253, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .icon i {
+            font-size: 24px;
+            color: #0d6efd;
+        }
+
+        .stat-card h3 {
+            color: #ffffff;
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .sales-card {
+            background-color: var(--sidebar-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .sales-card h5 {
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .sales-card .number {
+            font-size: 24px;
+            font-weight: 600;
+            color: #0d6efd;
+        }
+
+        .table {
+            color: var(--text-color);
+        }
+
+        .table thead th {
+            background-color: var(--sidebar-bg);
+            color: #ffffff;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .table tbody td {
+            border-color: var(--border-color);
+        }
+
+        .form-select, .form-control {
+            background-color: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .form-select:focus, .form-control:focus {
+            background-color: var(--sidebar-bg);
+            border-color: #0d6efd;
+            color: var(--text-color);
+            box-shadow: none;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .welcome-section {
+            margin-bottom: 30px;
+        }
+
+        .welcome-section h1 {
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .date-filter {
+            background-color: var(--sidebar-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .table-responsive {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+    }
+    .table {
+        width: 100%;
+        min-width: 100%;
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        white-space: nowrap;
+    }
+    .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.pagination a {
+  text-decoration: none;
+  padding: 8px 16px;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+  background-color: #0056b3;
+}
+
+.pagination .prev, .pagination .next {
+  font-size: 14px;
+}
+
+.pagination .page-info {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.pagination a.disabled {
+  background-color: #ccc;
+  pointer-events: none;
+}
+
+    </style>
 </head>
-
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Bookly</a>
-        </div>
-    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3>Bookly</h3>
+                <nav class="nav flex-column">
+                    <a class="nav-link active" href="/admin">Dashboard</a>
+                    <a class="nav-link" href="/admin/usermanage">User Management</a>
+                    <a class="nav-link" href="/admin/books">Products Management</a>
+                    <a class="nav-link" href="/admin/genres">Category Management</a>
+                    <a class="nav-link" href="/admin/adminorders">Order Management</a>
+                    <a class="nav-link" href="/admin/coupon">Coupons Management</a>
+                    <a class="nav-link" href="/admin/offer">Offers Management</a>
+                    <a class="nav-link" href="/admin/logout">Logout</a>
+                </nav>
+            </div>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <a href="/admin/admin_home">Dashboard</a>
-        <a href="/admin/usermanage">User Management</a>
-        <a href="/admin/books">Product Management</a>
-        <a href="/admin/genre">Category Management</a>
-        <a href="/admin/admin_order">Order Management</a>
-        <a href="#">Coupons Management</a>
-        <a href="/admin/logout" class="text-danger">Logout</a>
-    </div>
-
-    <!-- Main Content -->
-    <div class="content">
-        <div class="content-section">
-            <h3>Welcome to the Admin Dashboard</h3>
-            <p>Manage your site efficiently. Navigate through the sidebar for various management options.</p>
-        </div>
-
+            <!-- Main Content -->
+            <div class="col-md-10 main-container">
+                <div class="main-content">
+                    <div class="welcome-section">
+                        <h1>Welcome to Admin Dashboard</h1>
+                        <p class="text-muted">Here's what's happening with your store today.</p>
+                    </div>
         
-
-        <!-- Admin Info Cards Section -->
+                    <!-- Stats Row -->
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <p>Total Users</p>
+                                <h3><%= totalUsers %></h3>
+                                <p class="text-success"><i class="fas fa-arrow-up"></i> 12% increase</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <p>Total Books</p>
+                                <h3><%= totalBooks %></h3>
+                                <p class="text-success"><i class="fas fa-arrow-up"></i> 8% increase</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <p>Total Orders</p>
+                                <h3><%= totalOrders %></h3>
+                                <p class="text-success"><i class="fas fa-arrow-up"></i> 15% increase</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card">
+                                <div class="icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                                <p>Delivered Orders</p>
+                                <h3><%= deliveredOrderedCount %></h3>
+                                <p class="text-success"><i class="fas fa-arrow-up"></i> 10% increase</p>
+                            </div>
+                        </div>
+                    </div>
         
-    </div>
+                    <!-- Financial Stats -->
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="sales-card">
+                                <h5>Total Revenue</h5>
+                                <p class="number">₹<%= revenueAmount.toFixed(2) %></p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="sales-card">
+                                <h5>Total Sales</h5>
+                                <p class="number">₹<%= totalSales %></p>
+                            </div>
+                        </div> 
+                    <div class="col-md-4">
+                            <div class="sales-card">
+                                <h5>Total Discount</h5>
+                                <p class="number">₹<%= totalDiscount %></p>
+                            </div>
+                        </div> 
+                    </div>
+        
+                    <!-- Sales Report Section -->
+                   <!-- Sales Report Section -->
+                   <div class="container mt-4">
+                    <div class="card">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h3 class="card-title mb-0">Sales Report</h3>
+                                <div class="btn-group">
+                                    <button onclick="exportReport('pdf')" class="btn btn-primary me-2">
+                                        <i class="fas fa-file-pdf me-2"></i>Export PDF
+                                    </button>
+                                    <button onclick="exportReport('excel')" class="btn btn-success">
+                                        <i class="fas fa-file-excel me-2"></i>Export Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <!-- Date Filter Section -->
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <form method="GET" action="/admin">
+                                        <div class="form-group">
+                                            <label class="form-label">Date Filter</label>
+                                            <select id="dateFilter" class="form-select" onchange="handleFilterChange()">
+                                                <option value="daily">Daily</option>
+                                                <option value="weekly">Weekly</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="yearly">Yearly</option>
+                                                <option value="custom">Custom Range</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div id="customDateRange" class="col-md-8" style="display: none;">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">Start Date</label>
+                                                        <input type="date" id="startDate" class="form-control" name="startDate">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label class="form-label">End Date</label>
+                                                        <input type="date" id="endDate" class="form-control" name="endDate">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="filter" id="filter" value="daily"> <!-- default value -->
+                                        <button type="submit" class="btn btn-primary">Apply Filter</button>
+                                    </form>
+                            <!-- Summary Cards -->
+                            <div class="row mb-4">
+                                
+                                
+                            </div>
+                
+                            <!-- Sales Table -->
+                            <div class="w-full">
+                                <table class="w-full">
+                                  <thead>
+                                    <tr class="bg-gray-100">
+                                      <th class="p-4 text-left">Order ID</th>
+                                      <th class="p-4 text-left">Customer</th>
+                                      <th class="p-4 text-left">Amount</th>
+                                      <th class="p-4 text-left">Discount</th>
+                                      <th class="p-4 text-left">Payment Method</th>
+                                      <th class="p-4 text-left">Date</th>
+                                      <!-- <th class="p-4 text-left">Date</th> -->
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <% console.log("Report Data in View:", reportData); %>
+                                    <% reportData.forEach(order => { %>
+                                      <tr class="border-b">
+                                        <td class="p-4"><%= order.orderId %></td>
+                                        <td class="p-4">
+                                          <% if (order.user) { %>
+                                            <%= order.user.name || order.user.email %>
+                                          <% } else { %>
+                                            Guest
+                                          <% } %>
+                                        </td>
+                                        <td class="p-4">₹<%= order.totalAmount %></td>
+                                        <td class="p-4">₹<%= order.discountAmount %></td>
+                                        <td class="p-4"><%= order.paymentMethod %></td>
+                                        <td class="p-4"><%= order.createdAt.toLocaleDateString() %></td>
+                                        <!-- <td class="p-4"><%= order.date %></td> -->
+                                      </tr>
+                                    <% }); %>
+                                  </tbody>
+                                  
+                                </table>
+                               
+                              </div>
+                              <div class="pagination">
+                                <% if (currentPage > 1) { %>
+                                  <a href="/admin?page=<%= currentPage - 1 %>" class="prev">Previous</a>
+                                <% } %>
+                              
+                                <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
+                              
+                                <% if (currentPage < totalPages) { %>
+                                  <a href="/admin?page=<%= currentPage + 1 %>" class="next">Next</a>
+                                <% } %>
+                              </div>
+                              
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<!-- Download PDF Button -->
+
+
+<!-- <button id="downloadExcel">Download Excel</button> -->
+        </div>
+        <!-- <div class="image-container">
+            <img src="/img/manager.png" alt="Manager Icon" width="50px" height="50px">
+        </div> -->
+    </div>
+</div>
+
+        </div>
+        <!-- Sales Report Section -->
+
+
+    </div>
+    <script>
+        function handleFilterChange() {
+            const filter = document.getElementById('dateFilter').value;
+            document.getElementById('filter').value = filter;
+    
+            if (filter === 'custom') {
+                document.getElementById('customDateRange').style.display = 'block';
+            } else {
+                document.getElementById('customDateRange').style.display = 'none';
+            }
+    
+            // Optionally submit the form on change (auto-submit):
+            // document.querySelector("form").submit();
+        }
+    </script>
+    <script>
+        function handleFilterChange() {
+            const filterSelect = document.getElementById('dateFilter');
+            const customDateRange = document.getElementById('customDateRange');
+            
+            if (filterSelect.value === 'custom') {
+                customDateRange.style.display = 'block';
+            } else {
+                customDateRange.style.display = 'none';
+            }
+        }
+        
+        function exportReport(format) {
+            const filter = document.getElementById('dateFilter').value;
+            let url = `/admin/sales-report?filter=${filter}&format=${format}`;
+            
+            if (filter === 'custom') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+                
+                if (!startDate || !endDate) {
+                    alert('Please select both start and end dates for custom range');
+                    return;
+                }
+                
+                url += `&startDate=${startDate}&endDate=${endDate}`;
+            }
+            
+            window.location.href = url;
+        }
+        
+        // Initialize DataTable if you want to add sorting and pagination
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof $.fn.DataTable !== 'undefined') {
+                $('#salesTable').DataTable({
+                    order: [[5, 'desc']], // Sort by date by default
+                    pageLength: 10,
+                    responsive: true
+                });
+            }
+        });
+        
+        // Set initial filter value if it exists in URL params
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const filter = urlParams.get('filter');
+            
+            if (filter) {
+                document.getElementById('dateFilter').value = filter;
+                handleFilterChange();
+                
+                if (filter === 'custom') {
+                    const startDate = urlParams.get('startDate');
+                    const endDate = urlParams.get('endDate');
+                    if (startDate) document.getElementById('startDate').value = startDate;
+                    if (endDate) document.getElementById('endDate').value = endDate;
+                }
+            }
+        });
+        </script>
+        
+          
+
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+
 </body>
-
 </html>

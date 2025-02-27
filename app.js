@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const nocache=require('nocache');
 const path = require('path');
+const flash = require('connect-flash');
 const multer=require('multer');
 const upload=require('./middlewares/upload');
 const session=require('express-session');
@@ -14,22 +15,31 @@ const {checkBlockedUser}=require('./middlewares/check');
 // Connect to the database
 db();
 
+app.use(nocache());
 // Middleware setup
 app.use(session({
-  secret: 'mySecret', // Replace with a secure, random secret key
+  secret: 'mySecret',  // Change this to a more secure, random secret in production
   resave: false, 
-  saveUninitialized: false, // Avoid saving empty sessions
-   // Persistent session store
-   cookie: { secure: false } 
+  saveUninitialized: false,
+  cookie: {
+      secure: false,  // For non-HTTPS in development
+      httpOnly: true, // Helps secure the cookie from client-side JavaScript access
+      maxAge: 24 * 60 * 60 * 1000  // Cookie expiration (1 day)
+  }
 }));
+console.log(session);
 // app.use(checkBlockedUser)
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(flash());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(nocache());
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isAuthenticated || false;
+  next();
+});
 
 
 // Set up view engine and views directories

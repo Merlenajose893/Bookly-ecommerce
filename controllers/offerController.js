@@ -1,3 +1,4 @@
+
 const mongoose=require('mongoose');
 const {Offer}=require('../models/offerSchema');
 const {Book}=require('../models/bookSchema')
@@ -134,5 +135,6 @@ const toggleOfferStatus=async (req,res) => {
     }
     
 }
+
 
 module.exports={loadOfferPage,createOffer,editOffer,toggleOfferStatus}

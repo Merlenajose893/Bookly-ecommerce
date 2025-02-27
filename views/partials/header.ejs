@@ -28,20 +28,118 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet" />
+    <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet"> -->
+  
+    <style>
+      .dropdown-menu {
+  display: none;
+}
+.dropdown-menu.show {
+  display: block;
+}
+.carousel-item {
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .carousel-caption {
+            padding: 2rem;
+            bottom: 50%;
+            transform: translateY(50%);
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .carousel-title {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            animation: fadeInDown 1s;
+        }
+
+        .carousel-heading {
+            font-size: 3.5rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 1s;
+        }
+
+        .shop-btn {
+            background: #ffffff;
+            color: #000000;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 20px;
+            border: 2px solid #ffffff;
+        }
+
+        .shop-btn:hover {
+            background: transparent;
+            color: #ffffff;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 45px;
+            height: 45px;
+            background: #000;
+            border-radius: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+    </style>
   </head>
 
   <body>
     <!-- Topbar Start -->
     <div class="container-fluid">
+    
+   
+      
       <div class="row bg-secondary py-2 px-xl-5">
         <div class="col-lg-6 d-none d-lg-block">
+          
           <div class="d-inline-flex align-items-center">
             <a class="text-dark" href="">FAQs</a>
             <span class="text-muted px-2">|</span>
             <a class="text-dark" href="">Help</a>
             <span class="text-muted px-2">|</span>
             <a class="text-dark" href="">Support</a>
+           
+            
+            
+          
+            
           </div>
+         
         </div>
         <div class="col-lg-6 text-center text-lg-right">
           <div class="d-inline-flex align-items-center">
@@ -72,26 +170,51 @@
           </a>
         </div>
         <div class="col-lg-6 col-6 text-left">
-          <form action="">
+          <form action="/" method="get">
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search for Books" />
+              <input type="text" class="form-control" placeholder="Search for Books" name="search" value="<%=searchQuery%>" />
               <div class="input-group-append">
                 <span class="input-group-text bg-transparent text-primary">
-                  <i class="fa fa-search"></i>
+                 
+                  <!-- <i class="fa fa-search"></i> -->
+                  <button type="submit" style="background-color:#D19C97;">Search</button>
                 </span>
               </div>
             </div>
+            
+          <!-- </form> -->
+          
           </form>
         </div>
+        
         <div class="col-lg-3 col-6 text-right">
-          <a href="" class="btn border">
-            <i class="fas fa-heart text-primary"></i>
-            <span class="badge">0</span>
-          </a>
-          <a href="" class="btn border">
-            <i class="fas fa-shopping-cart text-primary"></i>
-            <span class="badge">0</span>
-          </a>
+          <div class="dropdown">
+            <a 
+              class="btn border" 
+              href="#" 
+              role="button" 
+              id="profileDropdown" 
+              onclick="toggleDropdown(event)">
+              <i class="fa fa-user" aria-hidden="true"></i>
+              <span class="badge">0</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li class="dropdown-header"> <%= userLogged && userLogged.name ? userLogged.name : (userLogged ? 'User (No name available)' : 'Guest') %></li>
+              <li><a class="dropdown-item" href="/profiledashboard">Profile Dashboard</a></li>
+             
+            </ul>
+            <a href="/wishlist" class="btn border">
+              <i class="fas fa-heart text-primary"></i>
+              <span class="badge">0</span>
+            </a>
+            <a href="/cart" class="btn border">
+              <i class="fas fa-shopping-cart text-primary"></i>
+              <span class="badge">0</span>
+            </a>
+          </div>
+         
+          
+          
         </div>
       </div>
     </div>
@@ -151,7 +274,7 @@
               <div class="navbar-nav mr-auto py-0">
                 <a href="/" class="nav-item nav-link active">Home</a>
                 <a href="/shop" class="nav-item nav-link">Shop</a>
-                <a href="detail.html" class="nav-item nav-link">Genres</a>
+                <a href="" class="nav-item nav-link">Genres</a>
                 <div class="nav-item dropdown">
                   
                 
@@ -161,80 +284,129 @@
 
                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                   <div class="dropdown-menu rounded-0 m-0">
-                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
+                    <a href="/cart" class="dropdown-item">Shopping Cart</a>
                     <a href="/checkout" class="dropdown-item">Checkout</a>
                   </div>
                 </div>
-                <a href="/about" class="nav-item nav-link">Contact</a>
-                <a href="/contact" class="nav-item nav-link">About</a>
+                <a href="/contact" class="nav-item nav-link">Contact</a>
+                <!-- <a href="/contact" class="nav-item nav-link">About</a> -->
               </div>
               <div class="col-lg-3 col-6 text-right">
-                <% if (session.user) { %> <!-- If the user is logged in -->
-                  <a href="/logout" class="btn border">
-                    <i class="fas fa-sign-out-alt text-primary"></i>
-                    <span>Logout</span>
-                  </a>
-                <% } else { %> <!-- If the user is not logged in -->
-                  <a href="/login" class="btn border">
-                    <i class="fas fa-sign-in-alt text-primary"></i>
-                    <span>Login</span>
-                  </a>
+        
+                <% if (isAuthenticated) { %>
+                    <a href="/logout" class="btn border">
+                        <i class="fas fa-sign-out-alt text-primary"></i>
+                       
+                        <span>Logout</span>
+                    </a>
+                <% } else { %>
+                    <a href="/login" class="btn border">
+                        <i class="fas fa-sign-in-alt text-primary"></i>
+                        <span>Login</span>
+                    </a>
                 <% } %>
-              </div>
+            </div>
+            
               
             
 
               
             </div>
           </nav>
-          <div id="header-carousel" class="carousel slide" data-ride="carousel">
+          <div id="header-carousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
-              <div class="carousel-item active" style="height: 410px">
-                <img class="img-fluid" src="img/carousel-1.jpg" alt="Image" />
-                <div
-                  class="carousel-caption d-flex flex-column align-items-center justify-content-center"
-                >
-                  <div class="p-3" style="max-width: 700px">
-                    <h4 class="text-light text-uppercase font-weight-medium mb-3">
-                      10% Off Your First Order
-                    </h4>
-                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">
-                      Fashionable Dress
-                    </h3>
-                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
-                  </div>
+                <div class="carousel-item active">
+                    <img src="/img/carousel-1.jpg" class="w-100 h-100 object-fit-cover" alt="Books Collection">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <h4 class="text-light text-uppercase font-weight-medium mb-3">
+                            10% Off Your First Order
+                        </h4>
+                        <h3 class="display-4 text-white font-weight-semi-bold mb-4">
+                            Wide Range Of Books
+                        </h3>
+                        <a href="#" class="shop-btn">Shop Now</a>
+                    </div>
                 </div>
-              </div>
-              <div class="carousel-item" style="height: 410px">
-                <img class="img-fluid" src="img/carousel-2.jpg" alt="Image" />
-                <div
-                  class="carousel-caption d-flex flex-column align-items-center justify-content-center"
-                >
-                  <div class="p-3" style="max-width: 700px">
-                    <h4 class="text-light text-uppercase font-weight-medium mb-3">
-                      10% Off Your First Order
-                    </h4>
-                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">
-                      Reasonable Price
-                    </h3>
-                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
-                  </div>
+                <div class="carousel-item">
+                    <img src="/img/carousel-2.jpg" class="w-100 h-100 object-fit-cover" alt="Books Discount">
+                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
+                        <h4 class="text-light text-uppercase font-weight-medium mb-3">
+                            10% Off Your First Order
+                        </h4>
+                        <h3 class="display-4 text-white font-weight-semi-bold mb-4">
+                            Reasonable Price
+                        </h3>
+                        <a href="/shop" class="shop-btn">Shop Now</a>
+                    </div>
                 </div>
-              </div>
             </div>
-            <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
-              <div class="btn btn-dark" style="width: 45px; height: 45px">
-                <span class="carousel-control-prev-icon mb-n2"></span>
-              </div>
-            </a>
-            <a class="carousel-control-next" href="#header-carousel" data-slide="next">
-              <div class="btn btn-dark" style="width: 45px; height: 45px">
-                <span class="carousel-control-next-icon mb-n2"></span>
-              </div>
-            </a>
-          </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
         </div>
       </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function toggleDropdown(event) {
+  event.preventDefault(); // Prevent default link behavior
+  const dropdown = event.target.closest('.dropdown'); // Find the closest dropdown container
+  const menu = dropdown.querySelector('.dropdown-menu'); // Find the dropdown menu
+
+  if (menu.classList.contains('show')) {
+    menu.classList.remove('show'); // Close the dropdown if it's open
+  } else {
+    menu.classList.add('show'); // Open the dropdown
+  }
+}
+
+    </script>
+    <script>
+      document.getElementById("searchForm").addEventListener("submit", async function (event) {
+          event.preventDefault(); // Prevent page refresh
+          const query = document.getElementById("searchInput").value.trim(); // Get search text
+  
+          if (query) {
+              try {
+                  const response = await fetch(`/search?query=${searchQuery}`); // Send search request
+                  const data = await response.json();
+  
+                  if (data.bookId) {
+                      window.location.href = `/book/${data.id}`; // Redirect to book details page
+                  } else {
+                      alert("Book not found!"); // Show alert if book not found
+                  }
+              } catch (error) {
+                  console.error("Error searching for book:", error);
+              }
+          }
+      });
+  </script>
+  <script>
+    document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        
+        let searchQuery = document.getElementById("searchInput").value.trim();
+        
+        if (searchQuery) {
+            fetch(`/check-category?search=${searchQuery}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isCategory) {
+                        window.location.href = `/genres/${data.categoryId}`; // Redirects to the correct route
+                    } else {
+                        window.location.href = `/?search=${encodeURIComponent(searchQuery)}`;
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    });
+    </script>
+    
+  
   </body>
 </html>

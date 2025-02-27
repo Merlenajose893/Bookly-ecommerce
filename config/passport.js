@@ -16,10 +16,11 @@ async (accessToken, refreshToken, profile, done) => {
 
         // Look for an existing user in the database with the Google ID
         let user = await User.findOne({ googleId: profile.id });
-
+        
         if (user) {
             // If the user exists, return the user object
             console.log("Existing User:", user);
+
             return done(null, user);
         } else {
             // If the user does not exist, create a new user

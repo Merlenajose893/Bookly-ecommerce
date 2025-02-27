@@ -105,14 +105,17 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link" data-toggle="dropdown">Genres <i class="fa fa-angle-down float-right mt-1"></i></a>
                             <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                <a href="" class="dropdown-item">Fiction</a>
-                                <a href="" class="dropdown-item">Non fiction</a>
-                                <a href="" class="dropdown-item">Academics</a>
-                            </div>
-                        </div>
-                        <a href="" class="nav-item nav-link">Science-Fiction & Fantasy</a>
-                        <a href="" class="nav-item nav-link">Mystery & Thriller</a>
-                        <a href="" class="nav-item nav-link">Children's Book</a>
+                                <% if (genres && genres.length) { %>
+                                    <% genres.forEach(genre => { %>
+                                        <% if (!genre.isDeleted) { %> <!-- Check if genre is not deleted -->
+                                            <a href="/genres/<%= genre._id %>" class="dropdown-item">
+                                                <%= genre.name %>
+                                            </a>
+                                        <% } %>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p class="dropdown-item">No genres available</p>
+                                <% } %>
                         
                     </div>
                 </nav>
@@ -127,17 +130,17 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link active">Shop</a>
-                            <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
+                            <a href="/" class="nav-item nav-link">Home</a>
+                            <a href="/shop" class="nav-item nav-link active">Shop</a>
+                            <a href="/details" class="nav-item nav-link">Shop Detail</a>
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
+                                    <a href="/cart" class="dropdown-item">Shopping Cart</a>
+                                    <a href="/checkout" class="dropdown-item">Checkout</a>
                                 </div>
                             </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="/contact" class="nav-item nav-link">Contact</a>
                         </div>
                         
                     </div>
@@ -280,36 +283,63 @@
                         </div>
                     </div>
                     <% books.forEach(function(book) { %>
-                        <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
-                            <div class="card product-item border-0 mb-4">
-                                <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                                    <% if (book.images && book.images.length > 0) { %>
-                                        <!-- Display the first image from the 'images' array with appropriate styling -->
-                                        <img class="img-fluid w-100" src="/uploads/<%= book.images[0].split('/').pop() %>" alt="Book Image">
-                                    <% } else { %>
-                                        <!-- Placeholder image if no images are available -->
-                                        <img class="img-fluid w-100" src="/path/to/placeholder.jpg" alt="Placeholder Image">
+                        <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                            <div class="card h-100 product-card shadow-sm hover:shadow-lg transition-all duration-300">
+                                <div class="position-relative">
+                                    <!-- Ribbon for sales price if available -->
+                                    <% if (book.salesPrice < book.regularPrice) { %>
+                                        <div class="position-absolute top-0 right-0 bg-danger text-white px-3 py-1 m-2 rounded-pill">
+                                            Sale
+                                        </div>
                                     <% } %>
-                                </div>
-                                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                    <h6 class="text-truncate mb-3"><%= book.title %></h6>
-                                    <p><%= book.author %></p>
                                     
-                                    <div class="d-flex justify-content-center">
-                                        <h6>$<%= book.regularPrice %></h6><h6 class="text-muted ml-2"><del>$<%= book.salesPrice %></del></h6>
+                                    <!-- Book Image -->
+                                    <div class="product-img-wrapper position-relative overflow-hidden" style="aspect-ratio: 2/3;">
+                                        <% if (book.images && book.images.length > 0) { %>
+                                            <img class="position-absolute w-100 h-100" 
+                                                 src="/uploads/<%= book.images[0].split('/').pop() %>" 
+                                                 alt="<%= book.title %>"
+                                                 style="object-fit: cover; transition: transform 0.3s ease;">
+                                        <% } else { %>
+                                            <img class="position-absolute w-100 h-100" 
+                                                 src="/path/to/placeholder.jpg" 
+                                                 alt="Placeholder Image"
+                                                 style="object-fit: cover; transition: transform 0.3s ease;">
+                                        <% } %>
                                     </div>
                                 </div>
-                                <div class="card-footer d-flex justify-content-between bg-light border">
-                                    <a href="/book/<%= book._id %>" class="btn btn-sm text-dark p-0">
-                                        <i class="fas fa-eye text-primary mr-1"></i>View Detail
-                                    </a>
-                                    <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                    
+                                <!-- Book Details -->
+                                <div class="card-body d-flex flex-column justify-content-between p-4">
+                                    <div>
+                                        <h5 class="card-title mb-2 text-truncate fw-bold"><%= book.title %></h5>
+                                        <p class="text-muted mb-3 fs-6"><%= book.author %></p>
+                                        
+                                        <!-- Price Section -->
+                                        <div class="d-flex align-items-center gap-2 mb-3">
+                                            <h6 class="fw-bold text-primary mb-0">$<%= book.regularPrice %></h6>
+                                            <% if (book.salesPrice < book.regularPrice) { %>
+                                                <h6 class="text-muted mb-0"><del>$<%= book.salesPrice %></del></h6>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <a href="/book/<%= book._id %>" class="btn btn-outline-primary btn-sm">
+                                            <i class="fas fa-eye me-2"></i>View Details
+                                        </a>
+                                        <form action="/cart" method="POST" class="mb-0">
+                                            <input type="hidden" name="productId" value="<%= book.id %>">
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+                                            </button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
                     <% }); %>
-                    
                     <div class="col-12 pb-1">
                         <nav aria-label="Page navigation">
                           <ul class="pagination justify-content-center mb-3">

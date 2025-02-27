@@ -1,0 +1,142 @@
+
+:root {
+    --dark-bg: #1e1e2d;
+    --sidebar-bg: #1a1a27;
+    --content-bg: #151521;
+    --text-color: #92929f;
+    --text-muted: #6d6d80;
+    --border-color: #2b2b40;
+    --input-bg: #1b1b29;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+}
+/* Add this to your stylesheet */
+#imgView1, #imgView2, #imgView3, #imgView4 {
+    display: block !important; /* Override inline style */
+    max-width: 100%;
+    height: 400px; /* Fixed height for cropper area */
+    background: #f0f0f0;
+}
+
+.image-cropper {
+    width: 100%;
+    min-height: 400px;
+    position: relative;
+}
+
+.sidebar {
+    background-color: var(--sidebar-bg);
+    height: 100vh;
+    padding: 20px;
+    border-right: 1px solid var(--border-color);
+}
+
+.sidebar h3 {
+    color: #ffffff;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.main-container {
+    background-color: var(--content-bg);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.nav-link {
+    color: var(--text-color) !important;
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: var(--dark-bg);
+    color: #ffffff !important;
+}
+
+.nav-link.active {
+    background-color: var(--dark-bg);
+    color: #ffffff !important;
+}
+
+.search-box {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.search-box:focus {
+    background-color: var(--input-bg);
+    border-color: #0d6efd;
+    color: var(--text-color);
+    box-shadow: none;
+}
+
+.table {
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+.table th {
+    border-bottom: 2px solid var(--border-color);
+    color: #701e1e;
+}
+
+.table td {
+    border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
+    font-size: small;
+}
+
+.product-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.btn-update {
+    background-color: #0c8;
+    color: white;
+    border: none;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+}
+
+.form-control, .form-select {
+    background-color: var(--input-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg);
+    border-color: #0d6efd;
+    color: var(--text-color);
+    box-shadow: none;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+.status-online {
+    background-color: #0c8;
+}
+
+.status-offline {
+    background-color: #dc3545;
+}

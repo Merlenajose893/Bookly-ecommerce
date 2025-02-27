@@ -1,142 +1,227 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookly - Orders Dashboard</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <style>
-        .sidebar-link {
-            color: #666;
-            text-decoration: none;
-            transition: color 0.3s;
-            padding: 8px 0;
-            display: block;
-        }
-        .sidebar-link:hover {
-            color: #333;
-        }
-        .sidebar-link.active {
-            background-color: #f8d7da;
-            margin: 0 -1rem;
-            padding: 8px 1rem;
-        }
-        .newsletter-section {
-            background-color: #f8d7da;
-        }
-        .table th {
-            font-weight: 500;
-            color: #666;
-        }
-        .view-link {
-            color: #28a745;
-            text-decoration: none;
-        }
-        .view-link:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body class="bg-light">
-    <!-- Breadcrumb -->
-    <div class="bg-white py-2">
-        <div class="container">
-            <nav>
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item"><a href="#" class="text-secondary text-decoration-none">Home</a></li>
-                    <li class="breadcrumb-item text-secondary">Account</li>
-                </ol>
-            </nav>
-        </div>
-    </div>
-
-    <div class="container py-4">
-        <h1 class="mb-4">Bookly</h1>
-        <div class="row g-4">
-            <!-- Sidebar -->
-            <div class="col-12 col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-th-large me-2"></i>
-                            Dashboard
-                        </a>
-                        <a href="#" class="sidebar-link active">
-                            <i class="fas fa-shopping-bag me-2"></i>
-                            Orders
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-user me-2"></i>
-                            Update Profile
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-wallet me-2"></i>
-                            Wallet
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-map-marker-alt me-2"></i>
-                            My Address
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-key me-2"></i>
-                            Change Password
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-sign-out-alt me-2"></i>
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
-
+<%- include('../../views/partials/profileHeader.ejs') -%>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.min.css" rel="stylesheet">
+<style>
+  .img-thumbnail {
+    max-width: 50px;
+    max-height: 70px;
+    object-fit: cover;
+  }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
             <!-- Main Content -->
             <div class="col-12 col-md-9">
-                <div class="card">
-                    <div class="card-header bg-light">
-                        <h5 class="mb-0">Your Orders</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Orders</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th>Totals</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>#1357</td>
-                                        <td>March 19, 2022</td>
-                                        <td>Processing</td>
-                                        <td>$125.00</td>
-                                        <td><a href="#" class="view-link">View</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#2468</td>
-                                        <td>June 29, 2022</td>
-                                        <td>Completed</td>
-                                        <td>$364.00</td>
-                                        <td><a href="#" class="view-link">View</a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#2366</td>
-                                        <td>August 02, 2022</td>
-                                        <td>Completed</td>
-                                        <td>$280.00</td>
-                                        <td><a href="#" class="view-link">View</a></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="card shadow-sm">
+                  <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                      <i class="fas fa-shopping-bag me-2"></i>Your Orders
+                    </h5>
+                    <span class="badge bg-light text-dark">
+                      <%= order.length %> Order<%= order.length !== 1 ? 's' : '' %>
+                    </span>
+                  </div>
+              
+                  <% if (order.length > 0 && order) { %>
+                    <% order.forEach((order) => { %>
+                      <div class="card-body border-bottom">
+                        <!-- Order Summary -->
+                        <div class="row mb-4">
+                          <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                              <div class="card-body">
+                                <h6 class="card-title text-muted">Order Details</h6>
+                                <ul class="list-unstyled">
+                                  <li>
+                                    <strong>Order ID:</strong> 
+                                    <span class="text-primary"><%= order.orderId %></span>
+                                  </li>
+                                  <li>
+                                    <strong>Order Date:</strong> 
+                                    <%= order.createdAt ? order.createdAt.toLocaleString() : "N/A" %>
+                                  </li>
+                                  <li>
+                                    <strong>Status:</strong> 
+                                    <span class="badge 
+                                      <%= order.status === 'Delivered' ? 'bg-success' : 
+                                        order.status === 'Processing' ? 'bg-warning' : 
+                                        order.status === 'Shipped' ? 'bg-info' : 'bg-secondary' %>">
+                                      <%= order.status %>
+                                    </span>
+                                  </li>
+                                </ul>
+                                <% if (order.status === 'Pending' || order.status==='Paid'){ %>
+                                    <form action="/profileorder/cancel/<%= order._id %>" method="POST">
+                                      <button type="submit" class="btn btn-danger mt-3">Cancel Order</button>
+
+                                     
+                                    </form>
+                                    <form action="/profileorder/viewOrder/<%=order._id%>">
+                                      <button type="submit" class="btn btn-primary mt-3">View Order</button
+                                    </form>
+                                    
+                                  <% } %>
+                                  <% if (order.status === 'Delivered') { %>
+                                    <form action="/profileorder/return/<%= order._id %>" method="POST" class="p-4 shadow rounded">
+                                      <h4 class="mb-3">Return Order</h4>
+                                  
+                                      <!-- Order ID Input -->
+                                      <div class="mb-3">
+                                          <label for="orderId" class="form-label">Order ID</label>
+                                          <input type="text" id="orderId" name="orderId" class="form-control" required value="<%= order.orderId %>" readonly>
+                                      </div>
+                                  
+                                      <!-- Product Selection -->
+                                      <div class="mb-3">
+                                          <label for="product" class="form-label">Select Product</label>
+                                          <select id="product" name="productId" class="form-control" required>
+                                              <option value="" disabled selected>Select a product</option>
+                                              <% order.books.forEach(item => { %>
+                                                  <option value="<%= item.productId._id.toString()%>">
+                                                      <%= item.productId.title %> 
+                                                  </option>
+                                              <% }) %>
+                                          </select>
+                                      </div>
+                                  
+                                      <!-- Return Reason Textarea -->
+                                      <div class="mb-3">
+                                          <label for="reason" class="form-label">Reason for Return</label>
+                                          <textarea id="reason" name="reason" class="form-control" rows="3" required placeholder="Briefly explain why you are returning this product"></textarea>
+                                      </div>
+                                  
+                                      <!-- Submit Button -->
+                                      <button type="submit" class="btn btn-danger w-100">Submit Return Request</button>
+                                  </form>
+                                  
+                                <% } else { %>
+                                    <p class="alert alert-warning">You can only return orders that have been delivered.</p>
+                                <% } %>
+                                <a href="/profileorder/invoice/<%= order._id %>" class="btn btn-primary">Download Invoice</a>
+
+                                
+                              </div>
+                            </div>
+                          </div>
+              
+                          <div class="col-md-6">
+                            <div class="card bg-light border-0">
+                              <div class="card-body">
+                                <h6 class="card-title text-muted">Payment Information</h6>
+                                <ul class="list-unstyled">
+                                  <li>
+                                    <strong>Payment Method:</strong> 
+                                    <%= order.paymentMethod %>
+                                  </li>
+                                  <li>
+                                    <strong>Total Amount:</strong> 
+                                    <span class="text-success fw-bold">
+                                      ₹<%= order.totalAmount.toFixed(2)%>
+                                    </span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
                         </div>
+              
+                        <!-- Books in Order -->
+                        <div class="card mb-4">
+                          <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                              <i class="fas fa-book me-2"></i>Books in this Order
+                            </h6>
+                          </div>
+                          <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                              <thead class="table-light">
+                                <tr>
+                                  <th>Book Title</th>
+                                  <th class="text-center">Quantity</th>
+                                  <th class="text-end">Price</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <% order.books.forEach(function(book) { %>
+                                  <tr>
+                                    <td>
+                                      <div class="d-flex align-items-center">
+                                        <img src="/uploads/<%= book.productId.images[0] %>" 
+                                             alt="Book Cover" 
+                                             class="img-thumbnail me-3" 
+                                             style="width: 50px; height: 70px; object-fit: cover;">
+                                        <%= book.productId.title %>
+                                      </div>
+                                    </td>
+                                    <td class="text-center"><%= book.quantity %></td>
+                                    <td class="text-end">
+                                      ₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %>
+                                    </td>
+                                  </tr>
+                                <% }) %>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+              
+                        <!-- Shipping Address -->
+                        <div class="card">
+                          <div class="card-header bg-light">
+                            <h6 class="mb-0">
+                              <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
+                            </h6>
+                          </div>
+                          <div class="card-body">
+                            <p class="mb-0">
+                              <% if (order.shippingAddress) { %>
+                                <%= order.shippingAddress.name %><br>
+                                <!-- <%= order.shippingAddress.address %><br> -->
+                                <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%= order.shippingAddress.pincode %><br>
+                                Phone: <%= order.shippingAddress.phone %>
+                              <% } else { %>
+                                No address found
+                              <% } %>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    <% }) %>
+                  <% } else { %>
+                    <div class="card-body text-center">
+                      <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                      <p class="text-muted">You haven't placed any orders yet.</p>
+                      <a href="/shop" class="btn btn-primary">Start Shopping</a>
                     </div>
+                  <% } %>
                 </div>
-            </div>
+              </div>
         </div>
+        <nav>
+          <!-- Pagination Controls -->
+<% if (totalPages > 1) { %>
+  <nav aria-label="Orders Pagination">
+    <ul class="pagination justify-content-center mt-4">
+      
+      <!-- Previous Page -->
+      <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+        <a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
+      </li>
+
+      <!-- Page Numbers -->
+      <% for (let i = 1; i <= totalPages; i++) { %>
+        <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+          <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+        </li>
+      <% } %>
+
+      <!-- Next Page -->
+      <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+        <a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a>
+      </li>
+
+    </ul>
+  </nav>
+<% } %>
+
+        </nav>
 
         <!-- Newsletter Section -->
         <div class="newsletter-section mt-4 p-4 rounded">
@@ -195,5 +280,108 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      function cancelOrder(orderId) {
+          Swal.fire({
+              title: 'Are you sure?',
+              text: "You won't be able to revert this!",
+              icon: 'warning',
+              html: `
+                  <p>Please provide a reason for cancellation:</p>
+                  <textarea id="cancellationReason" class="form-control" rows="3" placeholder="Enter reason..."></textarea>
+              `,
+              showCancelButton: true,
+              confirmButtonText: 'Yes, cancel it!',
+              cancelButtonText: 'No, keep it',
+              preConfirm: () => {
+                  const reason = document.getElementById('cancellationReason').value;
+                  if (!reason) {
+                      Swal.showValidationMessage('Please enter a reason for cancellation.');
+                  }
+                  return reason; // Return the reason to use in the form submission
+              }
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  // If confirmed, submit the form to cancel the order
+                  const form = document.createElement('form');
+                  form.action = `/profileorder/cancel/${orderId}`;
+                  form.method = 'POST';
+  
+                  // Add the cancellation reason as a hidden input
+                  const reasonInput = document.createElement('input');
+                  reasonInput.type = 'hidden';
+                  reasonInput.name = 'cancellationReason';
+                  reasonInput.value = result.value; // Get the reason from SweetAlert2
+                  form.appendChild(reasonInput);
+  
+                  document.body.appendChild(form);
+                  form.submit(); // Submit the form to cancel the order
+              }
+          });
+      }
+  </script>
+  <script>
+    document.querySelector("form").addEventListener("submit", function(event) {
+      event.preventDefault(); // Stop submission temporarily for debugging
+  
+      const formData = new FormData(this);
+      console.log("🔹 Product ID Sent:", formData.get("productId"));
+      console.log("🔹 Quantity:", formData.get("quantity"));
+      console.log("🔹 Reason:", formData.get("reason"));
+  
+      // Submit after logging
+      this.submit();
+    });
+  </script>
+  <script>
+    async function returnOrder(orderId, productId, reason) {
+  try {
+    const response = await fetch("/return-order", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId,
+        productId,
+        reason,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    // Redirect to profile order page after successful return
+    window.location.href = "/profileorder";
+
+  } catch (error) {
+    console.error("Error returning order:", error);
+    alert(error.message); // Show an alert with the error message
+  }
+}
+
+// Example usage: Call this function when a return button is clicked
+document.getElementById("returnButton").addEventListener("click", function () {
+  const orderId = document.getElementById("orderId").value;
+  const productId = document.getElementById("productId").value;
+  const reason = document.getElementById("returnReason").value;
+
+  if (!reason.trim()) {
+    alert("Please provide a return reason.");
+    return;
+  }
+
+  returnOrder(orderId, productId, reason);
+});
+
+  </script>
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 </html>

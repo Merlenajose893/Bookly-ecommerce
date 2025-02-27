@@ -1,24 +1,24 @@
-const {User} = require('../models/userSchema');
+const { User } = require('../models/userSchema');
 const userAuth = (req, res, next) => {
     if (req.session.user) {
         User.findById(req.session.user)
             .then(user => {
                 if (!user) {
-                    // User not found
                     return res.redirect('/login');
                 }
 
                 if (user.isBlocked) {
-                    // Blocked users are redirected
                     return res.redirect('/login');
                 }
 
+                // Allow access to the route if the user is not blocked and is authenticated
                 if (user.isAdmin) {
-                    // Allow admins to proceed regardless of isBlocked status
+                    // Admin-specific logic can go here if needed
+                    // For example, you can allow admins to access certain routes or dashboards
                     return next();
                 }
 
-                // Allow non-blocked, non-admin users
+                // For regular users, allow access
                 next();
             })
             .catch(error => {
@@ -26,31 +26,26 @@ const userAuth = (req, res, next) => {
                 res.status(500).send('Internal Server Error');
             });
     } else {
-        // User not logged in
         res.redirect('/login');
     }
 };
 
 
-const adminAuth=(req,res,next)=>
-{
-    User.findOne({isAdmin:true}).then(data=>
-    {
-        if(data)
-        {
+const adminAuth = (req, res, next) => {
+    User.findOne({ isAdmin: true }).then(data => {
+        if (data) {
             next();
+        } else {
+            res.redirect('/admin/login');
         }
-        else
-        {
-            res.redirect('/admin/login')
-        }
-    }).catch(error=>
-    {
-        console.log('Error in admin authentication',error);
+    }).catch(error => {
+        console.log('Error in admin authentication', error);
         res.status(500).send('Internal Server Error');
-        
-    })
-}
-module.exports={
-    userAuth,adminAuth 
-}
+    });
+};
+
+module.exports = {
+    userAuth,
+    adminAuth,
+    
+};

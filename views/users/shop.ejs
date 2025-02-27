@@ -20,9 +20,332 @@
 
     <!-- Libraries Stylesheet -->
     <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+    <style>
+        .product-card {
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-card:hover .product-img-wrapper img {
+            transform: scale(1.05);
+        }
+        
+        .product-img-wrapper {
+            background-color: #f8f9fa;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+        }
+        
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .btn-outline-primary {
+            color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        
+        .filter-section {
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+        }
+        .custom-control-input:checked ~ .custom-control-label::before {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .badge {
+            padding: 0.5em 0.75em;
+            background-color: #f8f9fa;
+        }
+        .sort-select {
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        .filter-section {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.filter-section h5 {
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.custom-control {
+    position: relative;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.custom-control:hover {
+    background-color: #f7fafc;
+}
+
+.custom-control-input {
+    position: absolute;
+    opacity: 0;
+    z-index: -1;
+}
+
+.custom-control-label {
+    position: relative;
+    margin-bottom: 0;
+    padding-left: 28px;
+    cursor: pointer;
+    color: #4a5568;
+    font-size: 15px;
+    display: block;
+    transition: color 0.2s ease;
+}
+
+.custom-control-label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e0;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+.custom-control-label:after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 7px;
+    width: 6px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.custom-control-input:checked ~ .custom-control-label:before {
+    border-color: #4299e1;
+    background-color: #4299e1;
+}
+
+.custom-control-input:checked ~ .custom-control-label:after {
+    opacity: 1;
+}
+
+.custom-control-input:focus ~ .custom-control-label:before {
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+}
+
+.custom-control-label:hover {
+    color: #2d3748;
+}
+
+#applyFilters {
+    background-color: #4299e1;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-weight: 500;
+    color: white;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+    width: 100%;
+}
+
+#applyFilters:hover {
+    background-color: #3182ce;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(66, 153, 225, 0.1);
+}
+
+#applyFilters:active {
+    transform: translateY(0);
+}
+
+/* Add responsive styles */
+@media (max-width: 768px) {
+    .filter-section {
+        padding: 16px;
+    }
+    
+    .custom-control {
+        padding: 10px 12px;
+    }
+    
+    .custom-control-label {
+        font-size: 14px;
+    }
+}
+.filter-section {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 24px;
+}
+
+.filter-section h5 {
+    color: #2d3748;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.sort-select {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 15px;
+    color: #4a5568;
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234a5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.sort-select:hover {
+    border-color: #cbd5e0;
+    background-color: #fff;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.15);
+    background-color: #fff;
+}
+
+.sort-select option {
+    padding: 12px;
+    background-color: #fff;
+    color: #2d3748;
+}
+
+/* Add custom styling for the options dropdown */
+.sort-select option:checked {
+    background-color: #4299e1;
+    color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .filter-section {
+        padding: 16px;
+    }
+
+    .sort-select {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+}
+
+/* For Firefox */
+.sort-select {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 #f8fafc;
+}
+
+/* For Chrome/Safari/Edge */
+.sort-select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sort-select::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 4px;
+}
+
+.sort-select::-webkit-scrollbar-thumb {
+    background-color: #cbd5e0;
+    border-radius: 4px;
+    border: 2px solid #f8fafc;
+}
+
+.sort-select::-webkit-scrollbar-thumb:hover {
+    background-color: #a0aec0;
+}
+.wishlist-toggle {
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.wishlist-toggle:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-toggle.in-wishlist .wishlist-icon {
+    color: #72353b;
+    font-weight: 900;
+}
+
+.wishlist-toggle .wishlist-icon {
+    color: #6c757d;
+}
+.wishlist-btn {
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.1);
+}
+
+.wishlist-btn i {
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover i {
+    color: #dc3545 !important;
+}
+    
+        </style>
 </head>
 
 <body>
@@ -65,23 +388,38 @@
                 </a>
             </div>
             <div class="col-lg-6 col-6 text-left">
-                <form action="">
+                <form action="/shop" method="GET" class="mb-4">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search for products">
-                        <div class="input-group-append">
-                            <span class="input-group-text bg-transparent text-primary">
-                                <i class="fa fa-search"></i>
-                            </span>
-                        </div>
+                      <input
+                        type="text"
+                        name="search"
+                        class="form-control"
+                        placeholder="Search by title or author..."
+                        value="<%= searchQuery %>"
+                      />
+               <button type="submit" style="
+    background-color: #D19C97;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+">
+     Search
+</button>
+
                     </div>
-                </form>
+                  </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
+                <a href="/wishlist" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
                     <span class="badge">0</span>
                 </a>
-                <a href="" class="btn border">
+                <a href="/cart" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
                     <span class="badge">0</span>
                 </a>
@@ -129,17 +467,17 @@
                     </button>
                     <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                         <div class="navbar-nav mr-auto py-0">
-                            <a href="index.html" class="nav-item nav-link">Home</a>
-                            <a href="shop.html" class="nav-item nav-link active">Shop</a>
-                            <a href="detail.html" class="nav-item nav-link">Shop Detail</a>
+                            <a href="/" class="nav-item nav-link">Home</a>
+                            <a href="/shop" class="nav-item nav-link active">Shop</a>
+                            <!-- <a href="detail.html" class="nav-item nav-link">Shop Detail</a> -->
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Pages</a>
                                 <div class="dropdown-menu rounded-0 m-0">
-                                    <a href="cart.html" class="dropdown-item">Shopping Cart</a>
-                                    <a href="checkout.html" class="dropdown-item">Checkout</a>
+                                    <a href="/cart" class="dropdown-item">Shopping Cart</a>
+                                    <a href="/checkout" class="dropdown-item">Checkout</a>
                                 </div>
                             </div>
-                            <a href="contact.html" class="nav-item nav-link">Contact</a>
+                            <a href="/contact" class="nav-item nav-link">Contact</a>
                         </div>
                         
                     </div>
@@ -152,7 +490,7 @@
 
     <!-- Page Header Start -->
     <div class="container-fluid bg-secondary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+        <div class="d-flex flex-column align-items-center justify-content-center p-4" style="min-height: 100px; padding: 2rem">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Our Shop</h1>
             <div class="d-inline-flex">
                 <p class="m-0"><a href="">Home</a></p>
@@ -169,86 +507,53 @@
         <div class="row px-xl-5">
             <!-- Shop Sidebar Start -->
             <div class="col-lg-3 col-md-12">
+                <!-- Sort By Start -->
+                <div class="filter-section">
+                    <h5 class="font-weight-semi-bold mb-4">Sort By</h5>
+                    <select class="form-select sort-select" id="sortOptions">
+                        <option value="featured" selected>Featured</option>
+                        <option value="popularity">Popularity</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="rating">Average Rating</option>
+                        <option value="new">New Arrivals</option>
+                        <option value="name-asc">Name: A to Z</option>
+                        <option value="name-desc">Name: Z to A</option>
+                    </select>
+                </div>
+                <!-- Sort By End -->
+        
                 <!-- Price Start -->
-                <div class="border-bottom mb-4 pb-4">
-                    <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
-                    <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="price-all">
-                            <label class="custom-control-label" for="price-all">All Price</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-1">
-                            <label class="custom-control-label" for="price-1">$0 - $100</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-2">
-                            <label class="custom-control-label" for="price-2">$100 - $200</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-3">
-                            <label class="custom-control-label" for="price-3">$200 - $300</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="price-4">
-                            <label class="custom-control-label" for="price-4">$300 - $400</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="price-5">
-                            <label class="custom-control-label" for="price-5">$400 - $500</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
-                    </form>
-                </div>
+               
                 <!-- Price End -->
-                
-                <!-- Color Start -->
-                <div class="border-bottom mb-4 pb-4">
+        
+                <!-- Genre Start -->
+                <div class="filter-section">
                     <h5 class="font-weight-semi-bold mb-4">Filter by genre</h5>
-                    <form>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" checked id="color-all">
-                            <label class="custom-control-label" for="price-all">All genre</label>
-                            <span class="badge border font-weight-normal">1000</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-1">
-                            <label class="custom-control-label" for="color-1">Fictions</label>
-                            <span class="badge border font-weight-normal">150</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-2">
-                            <label class="custom-control-label" for="color-2">Non-Fictions</label>
-                            <span class="badge border font-weight-normal">295</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-3">
-                            <label class="custom-control-label" for="color-3">Academics</label>
-                            <span class="badge border font-weight-normal">246</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                            <input type="checkbox" class="custom-control-input" id="color-4">
-                            <label class="custom-control-label" for="color-4">Mystery and Thriller</label>
-                            <span class="badge border font-weight-normal">145</span>
-                        </div>
-                        <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                            <input type="checkbox" class="custom-control-input" id="color-5">
-                            <label class="custom-control-label" for="color-5">Science Fiction and Fantasy</label>
-                            <span class="badge border font-weight-normal">168</span>
-                        </div>
+                    <form id="filterForm" action="/shop" method="GET">
+                        <% genres.forEach(genre => { %>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" 
+  id="genre-<%= genre._id %>" 
+  name="genres" 
+  value="<%= genre.name %>"
+  <%= (Array.isArray(selectedGenres) && selectedGenres.includes(genre.name)) ? "checked" : "" %> >
+
+                                <label class="custom-control-label" for="genre-<%= genre._id %>"><%= genre.name %></label>
+                            </div>
+                        <% }) %>
+                
+                        <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
                     </form>
                 </div>
-                <!-- Color End -->
-
-                <!-- Size Start -->
                 
-                <!-- Size End -->
+                
+                <!-- Genre End -->
+        
+                <!-- Apply Filters Button -->
+               
             </div>
+        
             <!-- Shop Sidebar End -->
 
 
@@ -257,58 +562,136 @@
                 <div class="row pb-3">
                     <div class="col-12 pb-1">
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <form action="">
+                            <form action="/shop" method="GET" class="mb-4">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search by name">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text bg-transparent text-primary">
-                                            <i class="fa fa-search"></i>
-                                        </span>
-                                    </div>
+                                  <input
+                                    type="text"
+                                    name="search"
+                                    class="form-control"
+                                    placeholder="Search by name"
+                                    value="<%= searchQuery %>"
+                                  />
+                                  <!-- <button type="submit" >Search</button> -->
+                                  <button type="submit" style="
+                                  background-color: #D19C97;
+                                  color: #1c1c1c;
+                                  border: none;
+                                  padding: 8px 16px;
+                                  border-radius: 5px;
+                                  font-size: 14px;
+                                  font-weight: normal;
+                                  cursor: pointer;
+                                  transition: background-color 0.3s, transform 0.2s;
+                              ">
+                                   Search
+                              </button>
+                              
                                 </div>
-                            </form>
-                            <div class="dropdown ml-4">
-                                <button class="btn border dropdown-toggle" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"
-                                        aria-expanded="false">
-                                            Sort by
-                                        </button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="triggerId">
-                                    <a class="dropdown-item" href="#">Latest</a>
-                                    <a class="dropdown-item" href="#">Popularity</a>
-                                    <a class="dropdown-item" href="#">Best Rating</a>
-                                </div>
-                            </div>
+                              </form>
+                           
                         </div>
                     </div>
                     <% books.forEach(function(book) { %>
-                        <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
-                            <div class="card product-item border-0 mb-4">
-                                <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                                    <% if (book.images && book.images.length > 0) { %>
-                                        <!-- Display the first image from the 'images' array with appropriate styling -->
-                                        <img class="img-fluid w-100" src="/uploads/<%= book.images[0].split('/').pop() %>" alt="Book Image">
-                                    <% } else { %>
-                                        <!-- Placeholder image if no images are available -->
-                                        <img class="img-fluid w-100" src="/path/to/placeholder.jpg" alt="Placeholder Image">
+                        <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                            <div class="card h-100 product-card shadow-sm hover:shadow-lg transition-all duration-300">
+                                <div class="position-relative">
+                                    <button class="btn wishlist-btn position-absolute top-0 end-0 m-2 bg-white rounded-circle p-2 shadow-sm" 
+                                    onclick="toggleWishlist('<%= book._id %>')"
+                                    data-book-id="<%= book._id %>"
+                                    <%= book.quantity === 0 ? 'disabled' : '' %>>
+                                <i class="fa-heart fa-regular text-danger" style="font-size: 20px;"></i>
+                            </button>
+                            
+
+                                    <!-- Ribbon for sales price if available -->
+                                    <% if (book.salesPrice < book.regularPrice) { %>
+                                        <div class="position-absolute top-0 right-0 bg-danger text-white px-3 py-1 m-2 rounded-pill">
+                                            Sale
+                                        </div>
                                     <% } %>
-                                </div>
-                                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                    <h6 class="text-truncate mb-3"><%= book.title %></h6>
-                                    <p><%= book.author %></p>
                                     
-                                    <div class="d-flex justify-content-center">
-                                        <h6>$<%= book.regularPrice %></h6><h6 class="text-muted ml-2"><del>$<%= book.salesPrice %></del></h6>
+                                    <!-- Book Image -->
+                                    <div class="product-img-wrapper position-relative overflow-hidden" style="aspect-ratio: 3/4; max-width: 200px; max-height: 260px;">
+                                        <% if (book.images && book.images.length > 0) { %>
+                                            <a href="/books/<%= book._id %>">
+                                                <img class="position-absolute w-100 h-100" 
+                                                     src="/uploads/<%= book.images[0].split('/').pop() %>" 
+                                                     alt="<%= book.title %>"
+                                                     style="object-fit: cover; transition: transform 0.3s ease;">
+                                            </a>
+                                        <% } else { %>
+                                            <a href="/books/<%= book._id %>">
+                                                <img class="position-absolute w-100 h-100" 
+                                                     src="/path/to/placeholder.jpg" 
+                                                     alt="Placeholder Image"
+                                                     style="object-fit: cover; transition: transform 0.3s ease;">
+                                            </a>
+                                        <% } %>
                                     </div>
                                 </div>
-                                <div class="card-footer d-flex justify-content-between bg-light border">
-                                    <a href="/book/<%= book._id %>" class="btn btn-sm text-dark p-0">
-                                        <i class="fas fa-eye text-primary mr-1"></i>View Detail
-                                    </a>
-                                    <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                    
+                                <!-- Book Details -->
+                                <div class="card-body d-flex flex-column justify-content-between p-4">
+                                    <div>
+                                        <!-- Offer Badge -->
+                                        <% if (book.appliedOffer) { %>
+                                            <div class="mb-2">
+                                                <span class="badge bg-danger">
+                                                    <% if (book.appliedOffer.discountType === 'percentage') { %>
+                                                        <%= book.appliedOffer.discountValue %>% Off
+                                                    <% } else { %>
+                                                        ₹<%= book.appliedOffer.discountValue %> Off
+                                                    <% } %>
+                                                </span>
+                                            </div>
+                                        <% } %>
+                                
+                                        <h5 class="card-title mb-2 text-truncate fw-bold"><%= book.title %></h5>
+                                        <p class="text-muted mb-3 fs-6"><%= book.author %></p>
+                                        
+                                        <p class="fw-bold">
+                                            <% if (book.quantity > 0) { %>
+                                                <span class="text-success">Stock Left: <%= book.quantity %></span>
+                                            <% } else { %>
+                                                <span class="text-danger">Out of Stock</span>
+                                            <% } %>
+                                        </p>
+                                
+                                        <!-- Updated Price Section -->
+                                        <div class="d-flex align-items-center gap-2 mb-3">
+                                            <h6 class="fw-bold text-primary mb-0">
+                                                ₹<%= book.finalPrice %>
+                                            </h6>
+                                            <% if (book.finalPrice < book.regularPrice) { %>
+                                                <h6 class="text-muted mb-0">
+                                                    <del>₹<%= book.regularPrice %></del>
+                                                </h6>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex justify-content-between align-items-center mt-3">
+                                        <a href="/book/<%= book._id %>" class="text-dark">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                
+                                        <% if (book.quantity > 0) { %>
+                                            <form action="/cart" method="POST" class="mb-0">
+                                                <input type="hidden" name="productId" value="<%= book._id %>">
+                                                <button type="submit" class="btn btn-link p-0 border-0">
+                                                    <i class="fas fa-shopping-cart text-dark"></i>
+                                                </button>
+                                            </form>
+                                        <% } else { %>
+                                            <button class="btn btn-secondary btn-sm" disabled>
+                                                <i class="fas fa-ban me-2"></i>Out of Stock
+                                            </button>
+                                        <% } %>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        
                     <% }); %>
                     
                     <div class="col-12 pb-1">
@@ -453,6 +836,78 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+        document.getElementById('sortOptions').addEventListener('change', function () {
+            const selectedSort = this.value;
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('sort', selectedSort);
+            window.location.href = currentUrl.toString();
+        });
+        
+       document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('applyFilters').addEventListener('click', function (event) {
+        event.preventDefault();
+        const selectedGenres = [];
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach((checkbox) => {
+            selectedGenres.push(checkbox.value);
+        });
+
+        if (selectedGenres.length === 0) {
+            alert('Please select at least one genre');
+            return;
+        }
+
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('genres', selectedGenres.join(','));
+        window.location.href = currentUrl.toString();
+    });
+});
+
+        </script>
+        <!-- SweetAlert2 CDN -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function toggleWishlist(bookId) {
+        fetch(`/wishlist/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ bookId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added to Wishlist!',
+                    text: 'Book has been added successfully.',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    window.location.href = data.redirect; // ✅ Redirect after success
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: data.message
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Something went wrong. Please try again.'
+            });
+        });
+    }
+</script>
+
+
+
 </body>
 
 </html>

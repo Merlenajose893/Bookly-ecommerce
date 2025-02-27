@@ -1,23 +1,18 @@
-const mongoose=require('mongoose');
-const {User} = require('../models/userSchema'); // Adjust the path to your User model
+const mongoose = require('mongoose');
+const { User } = require('../models/userSchema');
 
 const checkBlockedUser = async (req, res, next) => {
     try {
-        // Ensure session exists before accessing it
         if (req.session && req.session.user) {
             const user = await User.findById(req.session.user);
 
             if (user && user.isBlocked) {
-                // Set the message in the session without destroying it
-                req.session.message = 'Your account is blocked. Please contact support.';
-
-                // Redirect to homepage with the message
                 return res.redirect('/ban');
             } else {
-                next(); // Proceed if user is not blocked
+                next();
             }
         } else {
-            next(); // Proceed if no session
+            next();
         }
     } catch (error) {
         console.error('Error checking blocked user:', error);
@@ -26,5 +21,3 @@ const checkBlockedUser = async (req, res, next) => {
 };
 
 module.exports = { checkBlockedUser };
-
-

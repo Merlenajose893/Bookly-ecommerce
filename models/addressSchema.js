@@ -1,37 +1,47 @@
 const mongoose=require('mongoose');
+const { type } = require('os');
 const {Schema}=mongoose;
 const addressSchema=new Schema({
     userId:{type:mongoose.Schema.Types.ObjectId,ref:'User',required:true},
-    address_line1:{
-        type:String,required:true
-    },
-    address_line2:{
-        type:String,required:true
-    },
-    city:{
-        type:String,required:true
-    },
-    state:{
-        type:String,required:true
-    },
-    country:{
-        type:String,required:true
-    },
-    postal_code:{
-        type:String,required:true
-    },
-    phone_number:{
-        type:Number,required:true
-    },
-    isDefault:{
-        type:Boolean,required:true
-    },
-    createdAt:{
-        type:Date,required:Date.now()
-    },
-    updatedAt:{
-        type:Date,required:Date.now()
-    }
-});
+    address:[{
+       name:{
+        type:String,
+        required:true
+       },
+       phone:{
+        type:Number,
+        required:true
+       },
+       pincode:{
+        type:Number,
+        required:true
+       },
+       locality:{
+        type:String,
+        required:true
+       },
+       city:{
+        type:String,
+        required:true
+       },
+       state:{
+        type:String,
+        required:true
+       },
+       country:{
+         type:String,
+         required:true
+       },
+       addressType:{
+        type:String,
+        required:true
+       },
+       altPhone:{
+        type:Number,
+        required:false
+       },
+       
+    }]
+   });
 
 module.exports=mongoose.model('Address',addressSchema);
