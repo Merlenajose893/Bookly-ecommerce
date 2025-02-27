@@ -197,13 +197,116 @@ const adminLogout = (req, res) => {
           User: order.user ? order.user._id : "No User Populated"
         });
       });
+      const dateFilter = {
+        $match: {
+          createdAt: {
+            $gte: startDate ? new Date(startDate) : new Date(0),
+            $lte: endDate ? new Date(endDate) : new Date()
+          }
+        }
+      }
+      const topProducts = await Order.aggregate([
+        dateFilter,
+        { $unwind: "$books" },
+        {
+            $group: {
+                _id: "$books.productId",
+                totalSales: { $sum: "$books.quantity" }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 },
+        {
+            $lookup: {
+                from: "books",
+                localField: "_id",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        { $unwind: "$bookDetails" },
+        {
+            $project: {
+                title: "$bookDetails.title",
+                totalSales: "$totalSales"
+            }
+        }
+    ]);
 
+    // Top Categories
+    const topCategories = await Order.aggregate([
+      dateFilter,
+        { $unwind: "$books" },
+        {
+            $lookup: {
+                from: "books",
+                localField: "books.productId",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        { $unwind: "$bookDetails" },
+        { $unwind: "$bookDetails.genres" },{
+          $lookup:{
+            from:"genres",
+            localField:"bookDetails.genres",
+            foreignField:"_id",
+            as:"genreDetails"
+          }
+        },
+        {
+          $unwind:"$genreDetails"
+        },
+
+        {
+            $group: {
+                _id: "$genreDetails.name",
+                totalSales: { $sum: "$books.quantity" }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 }
+    ]);
+
+    // Top Brands
+    const topBrands = await Order.aggregate([
+      dateFilter,
+        { $unwind: "$books" },
+        {
+            $lookup: {
+                from: "books",
+                localField: "books.productId",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        { $unwind: "$bookDetails" },
+        {
+            $group: {
+                _id: "$bookDetails.publisher",
+                totalSales: { $sum: "$books.quantity" }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 }
+    ]);
+    console.log('Top',topCategories,topBrands,topProducts);
+    const monthlySales = await Order.aggregate([
+      {
+          $group: {
+              _id: { $month: "$createdAt" },
+              totalSales: { $sum: "$totalAmount" }
+          }
+      },
+      { $sort: { "_id": 1 } }
+  ]);
+    
       res.render('dashboard', {
         totalUsers, totalBooks, totalOrders, deliveredOrderedCount, totalRevenue,
         totalSales, totalDiscount, totalDailySales, totalWeeklySales, totalYearlySales,
         revenueAmount, totalMonthlySales, filter, startDate, endDate, reportData,
         currentPage: page,  
-        totalPages: totalPages 
+        totalPages: totalPages ,topProducts,topBrands,topCategories,monthlySales
       });
 
     } catch (error) {

@@ -18,6 +18,7 @@ router.get('/logout',adminController.adminLogout)// Handle login form submission
 
 // Admin Dashboard Route
 router.get('/', adminAuth, adminController.loadDashboard); 
+// router.get('/',adminController.getDashboardData);
 // router.get('/sales-report',adminController.salesReport) // Load the admin dashboard, after admin is authenticated
 router.get('/sales-report', adminController.salesReport);
 
