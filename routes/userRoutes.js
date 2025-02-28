@@ -100,6 +100,7 @@ router.post('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.get('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.post('/profileorder/return/:orderId',profileController.returnOrder)
 router.get('/profileorder/invoice/:orderId',profileController.generateInvoice);
+router.post('/profileorder/retry/:orderId',profileController.retryPayment);
 router.post('/resend-otp',userController.resendotp)
 
 router.get('/wishlist',wishlistController.loadWishlist);

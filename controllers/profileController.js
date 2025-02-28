@@ -9,6 +9,7 @@ const bcrypt=require('bcrypt');
 const PDFDocument=require('pdfkit');
 const fs = require('fs');
 const path=require('path');
+const {razorpay}=require('../utils/razorpay');
 const loaddashboard = async (req, res) => {
   try {
     const userId = req.session.user; // Match the key from login function
@@ -926,7 +927,31 @@ const returnOrder = async (req, res) => {
 };
 
 
-
+const retryPayment=async (req,res) => {
+  try {
+    const orderId=req.params.orderId;
+    const order=await Order.findById(orderId);
+    if(!order){
+      return res.status(404).send("Order not found");
+    }
+    const paymentOrder=await razorpay.orders.create({
+      amount:order.totalAmount*100,
+      currency:"INR",
+      receipt: `retry_${orderId}`,
+      payment_capture: 1,
+    });
+await Order.findByIdAndUpdate(orderId,{
+  paymentId:paymentOrder.id,
+  status:"Payment Pending",
+});
+// res.json({success:true,paymentOrder,order})
+res.redirect(`/checkout/${paymentOrder.id}`);
+  } catch (error) {
+    console.error("Error retrying payment:", error);
+    res.status(500).json({ error: "Error processing payment retry" });
+  }
+  
+}
 
 
 
@@ -948,5 +973,6 @@ module.exports = {
   changePassword,
   getTransactions,
   addMoney,
-  returnOrder
+  returnOrder,
+  retryPayment
 };

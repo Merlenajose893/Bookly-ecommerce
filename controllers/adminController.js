@@ -318,6 +318,10 @@ const adminLogout = (req, res) => {
   
   const salesReport = async (req, res) => {
     try {
+      const page = parseInt(req.query.page) || 1;  // Get page number from query, default is 1
+        const limit = 10;
+        const totalItems = await Order.countDocuments(); // Update this based on your model
+const totalPages = Math.ceil(totalItems / limit);
       console.log("Fetching Sales Report...");
       console.log("Request Query Params:", req.query);
   
@@ -408,8 +412,103 @@ console.log("Available Order Statuses:", statuses);
         generateExcel(reportData, totalSales, totalDiscount, excelPath, res);
         return;
       }
-  
-      res.render('dashboard', { totalSales, totalDiscount, reportData, filter, totalUsers, totalBooks });
+      const dateFilter = {
+        $match: {
+          createdAt: { $gte: start, $lte: end }
+        }
+      };
+      
+      const topProducts = await Order.aggregate([
+        dateFilter,
+        { $unwind: "$books" },
+        {
+            $group: {
+                _id: "$books.productId",
+                totalSales: { $sum: "$books.quantity" }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 },
+        {
+            $lookup: {
+                from: "books",
+                localField: "_id",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        { $unwind: "$bookDetails" },
+        {
+            $project: {
+                title: "$bookDetails.title",
+                totalSales: "$totalSales"
+            }
+        }
+    ]);
+
+    // Top Categories
+    const topCategories = await Order.aggregate([
+      dateFilter,
+        { $unwind: "$books" },
+        {
+            $lookup: {
+                from: "books",
+                localField: "books.productId",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        { $unwind: "$bookDetails" },
+        { $unwind: "$bookDetails.genres" },{
+          $lookup:{
+            from:"genres",
+            localField:"bookDetails.genres",
+            foreignField:"_id",
+            as:"genreDetails"
+          }
+        },
+        {
+          $unwind:"$genreDetails"
+        },
+
+        {
+            $group: {
+                _id: "$genreDetails.name",
+                totalSales: { $sum: "$books.quantity" }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 }
+    ]);
+
+    // Top Brands
+    const topBrands = await Order.aggregate([
+      dateFilter,
+        { $unwind: "$books" },
+        {
+            $lookup: {
+                from: "books",
+                localField: "books.productId",
+                foreignField: "_id",
+                as: "bookDetails"
+            }
+        },
+        { $unwind: "$bookDetails" },
+        {
+            $group: {
+                _id: "$bookDetails.publisher",
+                totalSales: { $sum: "$books.quantity" }
+            }
+        },
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 }
+    ]);const totalOrders = await Order.countDocuments();
+    const deliveredOrderedCount = await Order.countDocuments({ status: 'Delivered' });
+    const totalRevenue = await Order.aggregate([
+      { $group: { _id: null, totalRevenue: { $sum: "$totalAmount" } } }
+    ]);
+    const revenueAmount = totalRevenue.length > 0 ? totalRevenue[0].totalRevenue : 0;
+      res.render('dashboard', { totalSales, totalDiscount, reportData, filter, totalUsers, totalBooks,startDate,endDate,topProducts,topBrands,topCategories ,dateFilter,totalOrders,deliveredOrderedCount,revenueAmount,currentPage:page,totalPages});
   
     } catch (error) {
       console.error("Error fetching sales report:", error);

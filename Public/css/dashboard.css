@@ -14,22 +14,37 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
 }
 .chart-card {
+    width: 100%;
+    min-height: 400px;
     background: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
 }
 
-.chart-card h5 {
-    margin-bottom: 15px;
-    color: #333;
+.chart-container {
+    width: 100%;
+    height: auto;
+    min-height: 320px;
 }
 
 canvas {
-    max-height: 300px;
     width: 100% !important;
+    height: 100% !important;
 }
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .chart-card {
+        min-height: 350px;
+        padding: 15px;
+    }
+
+    .chart-title {
+        font-size: 1rem;
+    }
+}
+
 .sidebar {
     background-color: var(--sidebar-bg);
     height: 100vh;

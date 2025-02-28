@@ -6,192 +6,390 @@
     max-height: 70px;
     object-fit: cover;
   }
+  /* Add these custom styles to your CSS file */
+/* Enhanced responsiveness and positioning styles */
+
+/* Base styles */
+.card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  transition: all 0.2s;
+}
+
+.btn-sm {
+  padding: 0.35rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.badge {
+  font-weight: 500;
+  padding: 0.4em 0.6em;
+}
+
+/* Make sure text doesn't overflow on small screens */
+.min-width-0 {
+  min-width: 0;
+}
+
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+/* Order item container with max height and scrolling for many items */
+.order-items-container {
+  max-height: 250px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Custom scrollbar for order items */
+.order-items-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.order-items-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.order-items-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+/* Equal height cards */
+.h-100 {
+  height: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767.98px) {
+  /* Smaller padding on mobile */
+  .container-fluid {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  
+  /* Smaller font on mobile */
+  .fs-6 {
+    font-size: 1rem !important;
+  }
+  
+  /* Stack buttons for better mobile layout */
+  .d-flex.flex-wrap.gap-2 {
+    gap: 0.5rem !important;
+  }
+  
+  /* Make buttons take more space on mobile */
+  .d-flex.flex-wrap.gap-2 form, 
+  .d-flex.flex-wrap.gap-2 a, 
+  .d-flex.flex-wrap.gap-2 button {
+    min-width: 100px;
+    text-align: center;
+  }
+  
+  /* Better card spacing on mobile */
+  .card-body {
+    padding: 0.75rem;
+  }
+  
+  /* Smaller gap between columns */
+  .g-3 {
+    --bs-gutter-y: 1rem;
+  }
+}
+
+/* Medium screens */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  /* Adjust button sizing for medium screens */
+  .btn-sm {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Improve hover states */
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.list-group-item {
+  transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+/* Card backgrounds */
+.bg-light {
+  background-color: #f8f9fa !important;
+}
+
+/* Add some depth to cards */
+.card.border-0.bg-light {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Make modals look better on mobile */
+@media (max-width: 575.98px) {
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+}
+/* Smooth transitions for interactive elements */
+.btn, .badge {
+  transition: all 0.2s ease;
+}
+
+/* Hover effect for order items */
+.list-group-item {
+  transition: background-color 0.2s;
+}
+
+.list-group-item:hover {
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+/* Better spacing for mobile */
+@media (max-width: 768px) {
+  .d-flex.align-items-center.bg-light.p-3 {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .d-flex.align-items-center.bg-light.p-3 > div {
+    margin: 0 0 0.5rem 0 !important;
+  }
+  
+  .d-flex.align-items-center.bg-light.p-3 > .badge {
+    align-self: flex-start;
+  }
+  
+  .d-flex.flex-wrap.gap-2 {
+    justify-content: center !important;
+  }
+}
+
+/* Nicer buttons */
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Add a bit of depth to cards */
+.card {
+  transition: box-shadow 0.3s;
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.5.0/dist/sweetalert2.all.min.js"></script>
             <!-- Main Content -->
             <div class="col-12 col-md-9">
-                <div class="card shadow-sm">
-                  <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                      <i class="fas fa-shopping-bag me-2"></i>Your Orders
-                    </h5>
-                    <span class="badge bg-light text-dark">
-                      <%= order.length %> Order<%= order.length !== 1 ? 's' : '' %>
-                    </span>
-                  </div>
-              
-                  <% if (order.length > 0 && order) { %>
-                    <% order.forEach((order) => { %>
-                      <div class="card-body border-bottom">
-                        <!-- Order Summary -->
-                        <div class="row mb-4">
-                          <div class="col-md-6">
-                            <div class="card bg-light border-0">
-                              <div class="card-body">
-                                <h6 class="card-title text-muted">Order Details</h6>
-                                <ul class="list-unstyled">
-                                  <li>
-                                    <strong>Order ID:</strong> 
-                                    <span class="text-primary"><%= order.orderId %></span>
-                                  </li>
-                                  <li>
-                                    <strong>Order Date:</strong> 
-                                    <%= order.createdAt ? order.createdAt.toLocaleString() : "N/A" %>
-                                  </li>
-                                  <li>
-                                    <strong>Status:</strong> 
-                                    <span class="badge 
-                                      <%= order.status === 'Delivered' ? 'bg-success' : 
-                                        order.status === 'Processing' ? 'bg-warning' : 
-                                        order.status === 'Shipped' ? 'bg-info' : 'bg-secondary' %>">
-                                      <%= order.status %>
+              <div class="col-12">
+                <div class="container-fluid py-3 px-lg-4">
+                  <div class="row justify-content-center">
+                    <div class="col-12 col-xl-10">
+                      <!-- Orders Card -->
+                      <div class="card shadow-sm mb-4">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-2 py-md-3">
+                          <h5 class="mb-0 fs-6 fs-md-5">
+                            <i class="fas fa-shopping-bag me-2"></i>Your Orders
+                          </h5>
+                          <span class="badge bg-white text-primary">
+                            <%= order.length %> Order<%= order.length !== 1 ? 's' : '' %>
+                          </span>
+                        </div>
+                        
+                        <% if (order.length > 0 && order) { %>
+                          <div class="list-group list-group-flush">
+                            <% order.forEach((order) => { %>
+                              <div class="list-group-item p-0">
+                                <!-- Order Header - Responsive design -->
+                                <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center bg-light p-2 p-sm-3">
+                                  <div class="mb-2 mb-sm-0">
+                                    <span class="text-muted small">Order ID: </span>
+                                    <span class="text-primary fw-bold"><%= order.orderId %></span>
+                                  </div>
+                                  <div class="me-auto ms-0 ms-sm-3 mb-2 mb-sm-0">
+                                    <span class="text-muted small">
+                                      <%= order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A" %>
                                     </span>
-                                  </li>
-                                </ul>
-                                <% if (order.status === 'Pending' || order.status==='Paid'){ %>
-                                    <form action="/profileorder/cancel/<%= order._id %>" method="POST">
-                                      <button type="submit" class="btn btn-danger mt-3">Cancel Order</button>
-
-                                     
-                                    </form>
-                                    <form action="/profileorder/viewOrder/<%=order._id%>">
-                                      <button type="submit" class="btn btn-primary mt-3">View Order</button
-                                    </form>
-                                    
-                                  <% } %>
-                                  <% if (order.status === 'Delivered') { %>
-                                    <form action="/profileorder/return/<%= order._id %>" method="POST" class="p-4 shadow rounded">
-                                      <h4 class="mb-3">Return Order</h4>
-                                  
-                                      <!-- Order ID Input -->
-                                      <div class="mb-3">
-                                          <label for="orderId" class="form-label">Order ID</label>
-                                          <input type="text" id="orderId" name="orderId" class="form-control" required value="<%= order.orderId %>" readonly>
+                                  </div>
+                                  <span class="badge 
+                                    <%= order.status === 'Delivered' ? 'bg-success' : 
+                                        order.status === 'Processing' ? 'bg-warning text-dark' : 
+                                        order.status === 'Shipped' ? 'bg-info text-dark' : 
+                                        order.status === 'Payment Pending' ? 'bg-danger' : 'bg-secondary' %>">
+                                    <%= order.status %>
+                                  </span>
+                                </div>
+                                
+                                <!-- Order Content -->
+                                <div class="p-2 p-sm-3">
+                                  <div class="row g-3">
+                                    <!-- Order Details Column - More responsive -->
+                                    <div class="col-12 col-md-5">
+                                      <div class="card border-0 bg-light">
+                                        <div class="card-body p-3">
+                                          <h6 class="text-muted mb-3 border-bottom pb-2 d-flex align-items-center">
+                                            <i class="fas fa-money-bill-wave me-2"></i>Payment Information
+                                          </h6>
+                                          <div class="d-flex justify-content-between mb-2">
+                                            <span>Payment Method:</span>
+                                            <span class="fw-medium"><%= order.paymentMethod %></span>
+                                          </div>
+                                          <div class="d-flex justify-content-between">
+                                            <span>Total Amount:</span>
+                                            <span class="text-success fw-bold">₹<%= order.totalAmount.toFixed(2)%></span>
+                                          </div>
+                                          
+                                          <h6 class="text-muted mb-3 mt-4 border-bottom pb-2 d-flex align-items-center">
+                                            <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
+                                          </h6>
+                                          <address class="mb-0 small">
+                                            <% if (order.shippingAddress) { %>
+                                              <strong><%= order.shippingAddress.name %></strong><br>
+                                              <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %><br>
+                                              <%= order.shippingAddress.pincode %><br>
+                                              <i class="fas fa-phone-alt me-1"></i><%= order.shippingAddress.phone %>
+                                            <% } else { %>
+                                              No address found
+                                            <% } %>
+                                          </address>
+                                        </div>
                                       </div>
-                                  
-                                      <!-- Product Selection -->
-                                      <div class="mb-3">
-                                          <label for="product" class="form-label">Select Product</label>
-                                          <select id="product" name="productId" class="form-control" required>
+                                    </div>
+                                    
+                                    <!-- Order Items Column -->
+                                    <div class="col-12 col-md-7">
+                                      <div class="card border-0 bg-light h-100">
+                                        <div class="card-body p-3">
+                                          <h6 class="text-muted mb-3 border-bottom pb-2 d-flex align-items-center">
+                                            <i class="fas fa-book me-2"></i>Books in this Order
+                                          </h6>
+                                          <div class="mb-3 order-items-container">
+                                            <% order.books.forEach(function(book) { %>
+                                              <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                                <img src="/uploads/<%= book.productId.images[0] %>" 
+                                                    alt="Book Cover" 
+                                                    class="rounded me-3" 
+                                                    style="width: 35px; height: 50px; object-fit: cover;">
+                                                <div class="flex-grow-1 min-width-0">
+                                                  <div class="d-flex flex-column flex-sm-row justify-content-between">
+                                                    <span class="fw-medium text-truncate me-2"><%= book.productId.title %></span>
+                                                    <span class="ms-0 ms-sm-2 text-sm-end">₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %></span>
+                                                  </div>
+                                                  <div class="small text-muted">Qty: <%= book.quantity %></div>
+                                                </div>
+                                              </div>
+                                            <% }) %>
+                                          </div>
+                                          
+                                          <!-- Action Buttons - Better spacing and alignment -->
+                                          <div class="d-flex flex-wrap gap-2 mt-3 justify-content-center justify-content-sm-end">
+                                            <% if (order.status === 'Payment Pending') { %>
+                                              <form action="/profileorder/retry/<%= order._id %>" method="POST">
+                                                <button type="submit" class="btn btn-success btn-sm">
+                                                  <i class="fas fa-credit-card me-1"></i>Pay Now
+                                                </button>
+                                              </form>
+                                            <% } %>
+                                            
+                                            <% if (order.status === 'Pending' || order.status === 'Paid') { %>
+                                              <form action="/profileorder/cancel/<%= order._id %>" method="POST">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                  <i class="fas fa-times me-1"></i>Cancel
+                                                </button>
+                                              </form>
+                                            <% } %>
+                                            
+                                            <form action="/profileorder/viewOrder/<%= order._id %>">
+                                              <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>View Details
+                                              </button>
+                                            </form>
+                                            
+                                            <% if (order.status === 'Delivered') { %>
+                                              <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#returnModal<%= order._id %>">
+                                                <i class="fas fa-undo me-1"></i>Return
+                                              </button>
+                                            <% } %>
+                                            
+                                            <a href="/profileorder/invoice/<%= order._id %>" class="btn btn-outline-primary btn-sm">
+                                              <i class="fas fa-file-download me-1"></i>Invoice
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              <!-- Return Modal -->
+                              <% if (order.status === 'Delivered') { %>
+                                <div class="modal fade" id="returnModal<%= order._id %>" tabindex="-1" aria-hidden="true">
+                                  <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                      <div class="modal-header bg-light">
+                                        <h5 class="modal-title">Return Order #<%= order.orderId %></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                      </div>
+                                      <form action="/profileorder/return/<%= order._id %>" method="POST">
+                                        <div class="modal-body">
+                                          <input type="hidden" name="orderId" value="<%= order.orderId %>" readonly>
+                                          
+                                          <div class="mb-3">
+                                            <label for="product<%= order._id %>" class="form-label">Select Product</label>
+                                            <select id="product<%= order._id %>" name="productId" class="form-select" required>
                                               <option value="" disabled selected>Select a product</option>
                                               <% order.books.forEach(item => { %>
-                                                  <option value="<%= item.productId._id.toString()%>">
-                                                      <%= item.productId.title %> 
-                                                  </option>
+                                                <option value="<%= item.productId._id.toString()%>">
+                                                  <%= item.productId.title %> 
+                                                </option>
                                               <% }) %>
-                                          </select>
-                                      </div>
-                                  
-                                      <!-- Return Reason Textarea -->
-                                      <div class="mb-3">
-                                          <label for="reason" class="form-label">Reason for Return</label>
-                                          <textarea id="reason" name="reason" class="form-control" rows="3" required placeholder="Briefly explain why you are returning this product"></textarea>
-                                      </div>
-                                  
-                                      <!-- Submit Button -->
-                                      <button type="submit" class="btn btn-danger w-100">Submit Return Request</button>
-                                  </form>
-                                  
-                                <% } else { %>
-                                    <p class="alert alert-warning">You can only return orders that have been delivered.</p>
-                                <% } %>
-                                <a href="/profileorder/invoice/<%= order._id %>" class="btn btn-primary">Download Invoice</a>
-
-                                
-                              </div>
-                            </div>
-                          </div>
-              
-                          <div class="col-md-6">
-                            <div class="card bg-light border-0">
-                              <div class="card-body">
-                                <h6 class="card-title text-muted">Payment Information</h6>
-                                <ul class="list-unstyled">
-                                  <li>
-                                    <strong>Payment Method:</strong> 
-                                    <%= order.paymentMethod %>
-                                  </li>
-                                  <li>
-                                    <strong>Total Amount:</strong> 
-                                    <span class="text-success fw-bold">
-                                      ₹<%= order.totalAmount.toFixed(2)%>
-                                    </span>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-              
-                        <!-- Books in Order -->
-                        <div class="card mb-4">
-                          <div class="card-header bg-light">
-                            <h6 class="mb-0">
-                              <i class="fas fa-book me-2"></i>Books in this Order
-                            </h6>
-                          </div>
-                          <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                              <thead class="table-light">
-                                <tr>
-                                  <th>Book Title</th>
-                                  <th class="text-center">Quantity</th>
-                                  <th class="text-end">Price</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <% order.books.forEach(function(book) { %>
-                                  <tr>
-                                    <td>
-                                      <div class="d-flex align-items-center">
-                                        <img src="/uploads/<%= book.productId.images[0] %>" 
-                                             alt="Book Cover" 
-                                             class="img-thumbnail me-3" 
-                                             style="width: 50px; height: 70px; object-fit: cover;">
-                                        <%= book.productId.title %>
-                                      </div>
-                                    </td>
-                                    <td class="text-center"><%= book.quantity %></td>
-                                    <td class="text-end">
-                                      ₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %>
-                                    </td>
-                                  </tr>
-                                <% }) %>
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-              
-                        <!-- Shipping Address -->
-                        <div class="card">
-                          <div class="card-header bg-light">
-                            <h6 class="mb-0">
-                              <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
-                            </h6>
-                          </div>
-                          <div class="card-body">
-                            <p class="mb-0">
-                              <% if (order.shippingAddress) { %>
-                                <%= order.shippingAddress.name %><br>
-                                <!-- <%= order.shippingAddress.address %><br> -->
-                                <%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> - <%= order.shippingAddress.pincode %><br>
-                                Phone: <%= order.shippingAddress.phone %>
-                              <% } else { %>
-                                No address found
+                                            </select>
+                                          </div>
+                                          
+                                          <div class="mb-3">
+                                            <label for="reason<%= order._id %>" class="form-label">Reason for Return</label>
+                                            <textarea id="reason<%= order._id %>" name="reason" class="form-control" rows="3" required placeholder="Briefly explain why you are returning this product"></textarea>
+                                          </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                          <button type="submit" class="btn btn-danger">Submit Return Request</button>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
                               <% } %>
-                            </p>
+                            <% }) %>
                           </div>
-                        </div>
+                        <% } else { %>
+                          <div class="card-body text-center py-5">
+                            <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">You haven't placed any orders yet.</p>
+                            <a href="/shop" class="btn btn-primary">Start Shopping</a>
+                          </div>
+                        <% } %>
                       </div>
-                    <% }) %>
-                  <% } else { %>
-                    <div class="card-body text-center">
-                      <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
-                      <p class="text-muted">You haven't placed any orders yet.</p>
-                      <a href="/shop" class="btn btn-primary">Start Shopping</a>
                     </div>
-                  <% } %>
+                  </div>
                 </div>
+              </div>
               </div>
         </div>
         <nav>
@@ -379,7 +577,49 @@ document.getElementById("returnButton").addEventListener("click", function () {
 });
 
   </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    document.getElementById("pay-button").addEventListener("click", async () => {
+      try {
+        const orderId = "your_order_id"; // Fetch dynamically from backend
+        const response = await fetch(`/profileorder/pay/${orderId}`, {
+          method: "POST",
+        });
   
+        const data = await response.json();
+        if (!data.success) {
+          alert("Error processing payment.");
+          return;
+        }
+  
+        const options = {
+          key: "YOUR_RAZORPAY_KEY_ID", // Get from backend/env
+          amount: data.paymentOrder.amount,
+          currency: data.paymentOrder.currency,
+          name: "Your Company Name",
+          description: "Retry Payment",
+          order_id: data.paymentOrder.id,
+          handler: async function (response) {
+            alert("Payment Successful!");
+            // ✅ Redirect to order success page
+            window.location.href = "/order-success";
+          },
+          prefill: {
+            name: "User Name",
+            email: "user@example.com",
+            contact: "9999999999",
+          },
+          theme: { color: "#3399cc" },
+        };
+  
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } catch (error) {
+        console.error("Payment error:", error);
+        alert("Payment failed!");
+      }
+    });
+  </script>
   
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

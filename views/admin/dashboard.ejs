@@ -55,54 +55,64 @@
           <input type="hidden" name="includeCharts" value="true">
         </form>
       </div>
-    <!-- Top Products Chart -->
-    <div class="row mt-4">
-        <!-- Top Products Chart -->
-        <div class="col-md-4">
-            <div class="chart-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5>Top Selling Products</h5>
-                    <select class="chart-type-selector" data-chart="productsChart">
-                        <option value="bar">Bar</option>
-                        <option value="line">Line</option>
-                        <option value="pie">Pie</option>
-                    </select>
-                </div>
+    <!-- Top Selling Products Chart -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="chart-title">Top Selling Products</h5>
+                <select class="chart-type-selector" data-chart="productsChart">
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                    <option value="pie">Pie</option>
+                </select>
+            </div>
+            <div class="chart-container">
                 <canvas id="productsChart"></canvas>
-                
             </div>
         </div>
-        
-        <!-- Top Categories Chart -->
-        <div class="col-md-4">
-            <div class="chart-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5>Top Selling Categories</h5>
-                    <select class="chart-type-selector" data-chart="categoriesChart">
-                        <option value="pie">Pie</option>
-                        <option value="bar">Bar</option>
-                        <option value="line">Line</option>
-                    </select>
-                </div>
+    </div>
+</div>
+
+<!-- Top Selling Categories Chart -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="chart-title">Top Selling Categories</h5>
+                <select class="chart-type-selector" data-chart="categoriesChart">
+                    <option value="pie">Pie</option>
+                    <option value="bar">Bar</option>
+                    <option value="line">Line</option>
+                </select>
+            </div>
+            <div class="chart-container">
                 <canvas id="categoriesChart"></canvas>
             </div>
         </div>
-        
-        <!-- Top Brands Chart -->
-        <div class="col-md-4">
-            <div class="chart-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5>Top Selling Publishers</h5>
-                    <select class="chart-type-selector" data-chart="brandsChart">
-                        <option value="line">Line</option>
-                        <option value="bar">Bar</option>
-                        <option value="pie">Pie</option>
-                    </select>
-                </div>
+    </div>
+</div>
+
+<!-- Top Selling Publishers Chart -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="chart-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="chart-title">Top Selling Publishers</h5>
+                <select class="chart-type-selector" data-chart="brandsChart">
+                    <option value="line">Line</option>
+                    <option value="bar">Bar</option>
+                    <option value="pie">Pie</option>
+                </select>
+            </div>
+            <div class="chart-container">
                 <canvas id="brandsChart"></canvas>
             </div>
         </div>
     </div>
+</div>
+
+    
     
 </div>
 <!-- Top Products, Categories, and Publishers Tables -->
@@ -288,7 +298,7 @@
                             <!-- Date Filter Section -->
                             <div class="row mb-4">
                                 <div class="col-md-4">
-                                    <form method="GET" action="/admin">
+                                    <form method="GET" action="/admin/sales-report">
                                         <div class="form-group">
                                             <label class="form-label">Date Filter</label>
                                             <select id="dateFilter" class="form-select" onchange="handleFilterChange()">
@@ -344,17 +354,13 @@
                                     <% reportData.forEach(order => { %>
                                       <tr class="border-b">
                                         <td class="p-4"><%= order.orderId %></td>
-                                        <td class="p-4">
-                                          <% if (order.user) { %>
-                                            <%= order.user.name || order.user.email %>
-                                          <% } else { %>
-                                            Guest
-                                          <% } %>
-                                        </td>
-                                        <td class="p-4">₹<%= order.totalAmount %></td>
-                                        <td class="p-4">₹<%= order.discountAmount %></td>
-                                        <td class="p-4"><%= order.paymentMethod %></td>
-                                        <td class="p-4"><%= order.createdAt.toLocaleDateString() %></td>
+      <td class="p-4">
+        <%= order.customerName || 'Guest' %>
+      </td>
+      <td class="p-4">₹<%= order.payableAmount || 0 %></td>
+      <td class="p-4">₹<%= order.discount || 0 %></td>
+      <td class="p-4"><%= order.paymentMethod %></td>
+      <td class="p-4"><%= order.date %></td>
                                         <!-- <td class="p-4"><%= order.date %></td> -->
                                       </tr>
                                     <% }); %>
@@ -404,82 +410,137 @@
                 'rgba(255, 206, 86, 0.7)',
                 'rgba(75, 192, 192, 0.7)',
                 'rgba(153, 102, 255, 0.7)',
-                'rgba(255, 159, 64, 0.7)'
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(201, 203, 207, 0.7)',
+                'rgba(110, 220, 150, 0.7)',
+                'rgba(240, 130, 130, 0.7)',
+                'rgba(180, 180, 255, 0.7)'
             ];
-    
+        
             let chartInstances = {}; // Store chart instances for easy updates
-    
+        
             // Function to create a chart dynamically
             function createChart(chartType, ctx, labels, data, title) {
                 if (chartInstances[ctx]) {
                     chartInstances[ctx].destroy(); // Destroy the existing chart before creating a new one
                 }
+                
+                // Configure datasets based on chart type
+                let datasets = [{
+                    label: title,
+                    data: data,
+                    backgroundColor: chartColors.slice(0, labels.length),
+                    borderColor: chartType === 'line' ? 'rgba(54, 162, 235, 1)' : chartColors.map(color => color.replace('0.7', '1')).slice(0, labels.length),
+                    borderWidth: 1,
+                    fill: chartType === 'area',
+                    tension: 0.1
+                }];
+                
                 chartInstances[ctx] = new Chart(document.getElementById(ctx).getContext('2d'), {
                     type: chartType,
                     data: {
                         labels: labels,
-                        datasets: [{
-                            label: title,
-                            data: data,
-                            backgroundColor: chartColors,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            fill: chartType === 'line'
-                        }]
+                        datasets: datasets
                     },
                     options: {
                         responsive: true,
+                        maintainAspectRatio: false,
                         plugins: {
                             title: {
                                 display: true,
-                                text: title
+                                text: title,
+                                font: {
+                                    size: 16
+                                }
                             },
-                            legend: { display: chartType !== 'bar' } // Hide legend for bar charts
+                            legend: { 
+                                display: chartType === 'pie',
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        if (chartType === 'pie') {
+                                            const label = context.label || '';
+                                            const value = context.raw || 0;
+                                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                            const percentage = Math.round((value / total) * 100);
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        } else {
+                                            return `${context.dataset.label}: ${context.raw}`;
+                                        }
+                                    }
+                                }
+                            }
                         },
-                        scales: chartType !== 'pie' ? { y: { beginAtZero: true } } : {}
+                        scales: chartType !== 'pie' ? { 
+                            y: { 
+                                beginAtZero: true,
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Units Sold',
+                                    font: {
+                                        size: 14
+                                    }
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        } : {}
                     }
                 });
             }
-    
+        
             // Chart data
             const productsData = {
                 labels: <%- JSON.stringify(topProducts.map(p => p.title)) %>,
                 data: <%- JSON.stringify(topProducts.map(p => p.totalSales)) %>,
                 title: 'Top Selling Products'
             };
-    
+        
             const categoriesData = {
                 labels: <%- JSON.stringify(topCategories.map(c => c._id)) %>,
                 data: <%- JSON.stringify(topCategories.map(c => c.totalSales)) %>,
                 title: 'Top Selling Categories'
             };
-    
+        
             const brandsData = {
                 labels: <%- JSON.stringify(topBrands.map(b => b._id)) %>,
                 data: <%- JSON.stringify(topBrands.map(b => b.totalSales)) %>,
                 title: 'Top Selling Publishers'
             };
-    
-            // Initialize charts as bar by default
+        
+            // Initialize charts with their default types
             createChart('bar', 'productsChart', productsData.labels, productsData.data, productsData.title);
             createChart('pie', 'categoriesChart', categoriesData.labels, categoriesData.data, categoriesData.title);
             createChart('line', 'brandsChart', brandsData.labels, brandsData.data, brandsData.title);
-    
+        
             // Event listener for dropdown change
             document.querySelectorAll('.chart-type-selector').forEach(selector => {
                 selector.addEventListener('change', function() {
                     const chartId = this.dataset.chart;
                     const chartType = this.value;
                     let chartData;
-    
+        
                     if (chartId === 'productsChart') chartData = productsData;
                     if (chartId === 'categoriesChart') chartData = categoriesData;
                     if (chartId === 'brandsChart') chartData = brandsData;
-    
+        
                     createChart(chartType, chartId, chartData.labels, chartData.data, chartData.title);
                 });
             });
         });
-    </script>
+        </script>
     
     
     <script>
