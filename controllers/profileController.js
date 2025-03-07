@@ -364,30 +364,30 @@ console.log('Updated',updatedUser);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-const getOrderDetails=async (req,res) => {
-  try {
-    const orderId=req.params.orderId;
-    console.log('Order:',orderId);
-const order=await Order.findById(orderId).populate('books.productId').populate('user','name email')
-.populate({
-  path:'addressId',
-  select:'address'
-})    ;
-console.log('Order:',order);
+// const getOrderDetails=async (req,res) => {
+//   try {
+//     const orderId=req.params.orderId;
+//     console.log('Order:',orderId);
+// const order=await Order.findById(orderId).populate('books.productId').populate('user','name email')
+// .populate({
+//   path:'addressId',
+//   select:'address'
+// })    ;
+// console.log('Order:',order);
 
-if (!order) {
-  return res.status(404).json({ message: 'Order not found' });
-}
-res.render('profileorder',{order});
-  } catch (error) {
-    console.error('Error Getting Details',error);
-    res.status(500).json({
-      message: 'Internal server error',
-    });
+// if (!order) {
+//   return res.status(404).json({ message: 'Order not found' });
+// }
+// res.render('profileorder',{order});
+//   } catch (error) {
+//     console.error('Error Getting Details',error);
+//     res.status(500).json({
+//       message: 'Internal server error',
+//     });
     
-  }
+//   }
   
-}
+// }
 const loadOrder = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -668,12 +668,13 @@ const generateInvoice = async (req, res) => {
     
     // Calculate values
     const discountAmount = order.discountAmount || 0;
-    const finalTotal = totalAmount - discountAmount;
+    const finalTotal = totalAmount - discountAmount+50;
     
     // Add summary items
     doc.fontSize(10);
     addSummaryLine('Subtotal:', `₹${totalAmount.toFixed(2)}`);
     addSummaryLine('Discount:', `₹${discountAmount.toFixed(2)}`);
+    addSummaryLine('ShippingCost:', `₹50`);
     
     // Draw line before total
     doc.strokeColor('#aaaaaa')
@@ -926,36 +927,46 @@ const returnOrder = async (req, res) => {
   }
 };
 
-
-const retryPayment=async (req,res) => {
+const getOrderDetails=async (req,res) => {
   try {
-    const orderId=req.params.orderId;
-    const order=await Order.findById(orderId);
-    if(!order){
+    const {orderId}=req.body;
+    console.log('Order',orderId);
+    
+    const order=await Order.findOne({orderId});
+    console.log('ghjk',order);
+    
+    if (!order) {
       return res.status(404).send("Order not found");
     }
-    const paymentOrder=await razorpay.orders.create({
-      amount:order.totalAmount*100,
-      currency:"INR",
-      receipt: `retry_${orderId}`,
-      payment_capture: 1,
-    });
-await Order.findByIdAndUpdate(orderId,{
-  paymentId:paymentOrder.id,
-  status:"Payment Pending",
-});
-// res.json({success:true,paymentOrder,order})
-res.redirect(`/checkout/${paymentOrder.id}`);
+    if(!order.razorpay||!order.razorpay.orderId){
+        return res.status(404).send('No razor order');
+    }
+    res.json({
+      success: true,
+      razorpayOrderId: order.razorpay.orderId,
+      amount: order.totalAmount * 100, // Convert to paisa for Razorpay
+      shippingAddress: order.shippingAddress,
+  });
   } catch (error) {
-    console.error("Error retrying payment:", error);
-    res.status(500).json({ error: "Error processing payment retry" });
+    console.error("Error fetching order details:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
   
 }
 
 
+// app.post('/retry-payment', retryPayment);
 
-module.exports = {
+
+
+
+
+
+
+// module.exports = { verifyRazorPay };
+
+
+module.exports = {          
   loaddashboard,
   generateInvoice,
   
@@ -974,5 +985,7 @@ module.exports = {
   getTransactions,
   addMoney,
   returnOrder,
-  retryPayment
+  getOrderDetails
+  // retryPayment  
+  // verifyRazorPay
 };

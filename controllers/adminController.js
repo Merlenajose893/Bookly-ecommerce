@@ -339,25 +339,46 @@ const totalPages = Math.ceil(totalItems / limit);
         case 'weekly':
           start = new Date(today);
           start.setDate(today.getDate() - 7);
-          end = today;
+          start.setHours(0, 0, 0, 0); // Start at beginning of the day 7 days ago
+          end = new Date(today);
+          end.setHours(23, 59, 59, 999); // End at end of today
           break;
         case 'monthly':
           start = new Date(today.getFullYear(), today.getMonth(), 1);
-          end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+          start.setHours(0, 0, 0, 0);
+          end = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of current month
+          end.setHours(23, 59, 59, 999); // Include entire last day
           break;
         case 'yearly':
-          start = new Date(today.getFullYear(), 0, 1);
-          end = new Date(today.getFullYear(), 11, 31);
+          start = new Date(today.getFullYear(), 0, 1); // January 1st
+          start.setHours(0, 0, 0, 0);
+          end = new Date(today.getFullYear(), 11, 31); // December 31st
+          end.setHours(23, 59, 59, 999); // Include entire last day
           break;
-        case 'custom':
-          start = new Date(startDate);
-          end = new Date(endDate);
-          if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-            return res.status(400).json({ error: 'Invalid date format. Please use YYYY-MM-DD' });
-          }
-          break;
-        default:
-          return res.status(400).json({ error: 'Invalid filter. Please choose a valid filter.' });
+      // In salesReport controller
+case 'custom':
+  // Validate presence of dates
+  if (!startDate || !endDate) {
+    return res.status(400).json({ 
+      error: 'Start date and end date are required for custom range' 
+    });
+  }
+
+  // Parse dates with format validation
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!isoDateRegex.test(startDate) || !isoDateRegex.test(endDate)) {
+    return res.status(400).json({ 
+      error: 'Invalid date format. Use YYYY-MM-DD' 
+    });
+  }
+
+  start = new Date(startDate);
+  end = new Date(endDate);
+  
+  // Add time to end date to include entire day
+  end.setHours(23, 59, 59, 999);
+  break;
+          // return res.status(400).json({ error: 'Invalid filter' });
       }
   
       console.log("Final Start Date:", start);

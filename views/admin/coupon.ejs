@@ -162,8 +162,17 @@
             
                 <!-- Search Bar -->
                 <div class="search-container">
-                    <input type="text" class="form-control search-box" placeholder="Search">
-                    <button class="btn btn-search">Search</button>
+                    <form action="/admin/coupon" method="GET" class="d-flex">
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control search-box w-50"
+                            placeholder="Search Coupons"
+                            value="<%= search %>"> <!-- Preserve search term after submission -->
+                        <button class="btn btn-primary ms-2" type="submit">Search</button>
+                    </form>
+                    
+                    
                 </div>
                 <div class="d-flex mb-3">
                     <!-- Button trigger modal -->
@@ -279,6 +288,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- <script></script> -->
+    <!-- <script>
+        document.querySelector("form").addEventListener("submit", function (event) {
+            const searchInput = document.querySelector("input[name='search']");
+            searchInput.value = searchInput.value.trim(); // Remove extra spaces and tabs
+        });
+      </script> -->
+      
     <script>
         document.getElementById("couponForm").addEventListener("submit", async function(event) {
             event.preventDefault();

@@ -92,16 +92,23 @@ router.post('/place-order',userController.placeOrder);
 router.post('/create-razorpay-order', userController.createRazorOrder);
 router.post('/verify-razorpay-payment', userController.verifyRazorPay);
 
+router.get('/verify-razorpay-payment', userController.verifyRazorPay);
+
 router.get('/order-success/:orderId',userController.loadOrder);
+router.get('/order-failed',userController.loadOrderFailed)
 router.get('/profileorder',profileController.loadOrder);
+router.post('/profileorder',profileController.loadOrder)
+router.get('/profileorder/:orderId',profileController.loadOrder);
+router.post('/getOrderDetails',profileController.getOrderDetails);
 // router.post('/viewOrder/:orderId',userController.viewOrder);
 router.get('/profileorder/viewOrder/:orderId',userController.viewOrder)
 router.post('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.get('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.post('/profileorder/return/:orderId',profileController.returnOrder)
 router.get('/profileorder/invoice/:orderId',profileController.generateInvoice);
-router.post('/profileorder/retry/:orderId',profileController.retryPayment);
+// router.post('/profileorder/retry-payment/:orderId',profileController.retryPayment);
 router.post('/resend-otp',userController.resendotp)
+// router.post('/verify-payment',profileController.verifyRazorPay);
 
 router.get('/wishlist',wishlistController.loadWishlist);
 router.post('/wishlist/add',wishlistController.addWishlist);

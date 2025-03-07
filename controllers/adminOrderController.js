@@ -4,34 +4,49 @@ const Book=require('../models/bookSchema');
 const {User}=require('../models/userSchema');
 const getOrders = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;  // Get current page from query params
-        const limit = 10;  // Number of items per page
+        const page = parseInt(req.query.page) || 1; // Get current page
+        const limit = 10; // Number of items per page
         const skip = (page - 1) * limit;
 
-        // Get total count of orders
+        const searchQuery = req.query.search || ''; // Get search query
         const users = await User.find({ isAdmin: false });
-        const totalOrders = await Order.countDocuments({ user: { $in: users.map(user => user._id) } });
+
+        let filter = { user: { $in: users.map(user => user._id) } };
+
+        if (searchQuery) {
+            // Search by orderId, user name, or book title
+            filter.$or = [
+                { orderId: { $regex: searchQuery, $options: "i" } }, // Case-insensitive Order ID search
+                { 'books.productId.title': { $regex: searchQuery, $options: "i" } }, // Search by book title
+            ];
+
+            // Find users whose names match the search and add them to the filter
+            const matchingUsers = await User.find({ name: { $regex: searchQuery, $options: "i" } }, '_id');
+            if (matchingUsers.length > 0) {
+                filter.$or.push({ user: { $in: matchingUsers.map(user => user._id) } });
+            }
+        }
+
+        // Get total count of orders with filter
+        const totalOrders = await Order.countDocuments(filter);
         const totalPages = Math.ceil(totalOrders / limit);
 
-        // Get paginated orders
-        const orders = await Order.find({ 
-            user: { $in: users.map(user => user._id) } 
-        })
-        .populate('books.productId')  // Populate book details
-        .populate('user')             // Populate the entire user object
-        .skip(skip).sort({createdAt:-1})
-        .limit(limit)
-        .lean();
+        // Fetch orders
+        const orders = await Order.find(filter)
+            .populate('books.productId') // Populate book details
+            .populate('user') // Populate the user details
+            .skip(skip)
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .lean();
 
-        console.log('Orders', orders);
-        console.log(orders.orderId);
-        
+        console.log('Orders:', orders);
 
-        // Create pagination object
+        // Pagination object
         const pagination = {
             current: page,
-            previous: page > 1 ? `/admin/adminorders?page=${page - 1}` : null,
-            next: page < totalPages ? `/admin/adminorders?page=${page + 1}` : null,
+            previous: page > 1 ? `/admin/adminorders?page=${page - 1}&search=${searchQuery}` : null,
+            next: page < totalPages ? `/admin/adminorders?page=${page + 1}&search=${searchQuery}` : null,
             total: totalPages,
             pages: Array.from({ length: totalPages }, (_, i) => i + 1)
         };
@@ -40,14 +55,16 @@ const getOrders = async (req, res) => {
             orders,
             pagination,
             currentPage: page,
-            totalPages
+            totalPages,
+            searchQuery // Pass searchQuery to EJS
         });
-        
+
     } catch (error) {
         console.error('Error Fetching Orders:', error);
         res.status(500).send('Internal Server Error');
     }
 };
+
 
     const updateStatus = async (req, res) => {
         try {

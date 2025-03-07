@@ -296,93 +296,35 @@
                         
                         <div class="card-body">
                             <!-- Date Filter Section -->
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <form method="GET" action="/admin/sales-report">
-                                        <div class="form-group">
-                                            <label class="form-label">Date Filter</label>
-                                            <select id="dateFilter" class="form-select" onchange="handleFilterChange()">
-                                                <option value="daily">Daily</option>
-                                                <option value="weekly">Weekly</option>
-                                                <option value="monthly">Monthly</option>
-                                                <option value="yearly">Yearly</option>
-                                                <option value="custom">Custom Range</option>
-                                            </select>
-                                        </div>
-                                        
-                                        <div id="customDateRange" class="col-md-8" style="display: none;">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label">Start Date</label>
-                                                        <input type="date" id="startDate" class="form-control" name="startDate">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label class="form-label">End Date</label>
-                                                        <input type="date" id="endDate" class="form-control" name="endDate">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="filter" id="filter" value="daily"> <!-- default value -->
-                                        <button type="submit" class="btn btn-primary">Apply Filter</button>
-                                    </form>
-                            <!-- Summary Cards -->
-                            <div class="row mb-4">
-                                
-                                
-                            </div>
-                
-                            <!-- Sales Table -->
-                            <div class="w-full">
-                                <table class="w-full">
-                                  <thead>
-                                    <tr class="bg-gray-100">
-                                      <th class="p-4 text-left">Order ID</th>
-                                      <th class="p-4 text-left">Customer</th>
-                                      <th class="p-4 text-left">Amount</th>
-                                      <th class="p-4 text-left">Discount</th>
-                                      <th class="p-4 text-left">Payment Method</th>
-                                      <th class="p-4 text-left">Date</th>
-                                      <!-- <th class="p-4 text-left">Date</th> -->
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <% console.log("Report Data in View:", reportData); %>
-                                    <% reportData.forEach(order => { %>
-                                      <tr class="border-b">
-                                        <td class="p-4"><%= order.orderId %></td>
-      <td class="p-4">
-        <%= order.customerName || 'Guest' %>
-      </td>
-      <td class="p-4">₹<%= order.payableAmount || 0 %></td>
-      <td class="p-4">₹<%= order.discount || 0 %></td>
-      <td class="p-4"><%= order.paymentMethod %></td>
-      <td class="p-4"><%= order.date %></td>
-                                        <!-- <td class="p-4"><%= order.date %></td> -->
-                                      </tr>
-                                    <% }); %>
-                                  </tbody>
-                                  
-                                </table>
-                               
-                              </div>
-                              <div class="pagination">
-                                <% if (currentPage > 1) { %>
-                                  <a href="/admin?page=<%= currentPage - 1 %>" class="prev">Previous</a>
-                                <% } %>
-                              
-                                <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
-                              
-                                <% if (currentPage < totalPages) { %>
-                                  <a href="/admin?page=<%= currentPage + 1 %>" class="next">Next</a>
-                                <% } %>
-                              </div>
-                              
-                        </div>
-                    </div>
+                            <form method="GET" action="/admin/sales-report">
+                                <div class="form-group">
+                                    <label class="form-label">Date Filter</label>
+                                    <select id="dateFilter" class="form-select" name="filter" onchange="handleFilterChange()">
+                                        <option value="daily" <%= filter === 'daily' ? 'selected' : '' %>>Daily</option>
+                                        <option value="weekly" <%= filter === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                                        <option value="monthly" <%= filter === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                                        <option value="yearly" <%= filter === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                                        <!-- <option value="custom" <%= filter === 'custom' ? 'selected' : '' %>>Custom Range</option> -->
+                                        <option value="custom" <%= filter === 'custom' ? 'selected' : '' %>>Custom</option>
+                                    </select>
+                                </div>
+                            
+                                <!-- Custom Date Range -->
+                                <div id="customDateRange" class="col-md-8" style="display: <%= filter === 'custom' ? 'block' : 'none' %>;">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <input type="date" id="startDate" class="form-control" name="startDate" 
+                                               value="<%= startDate || '' %>" <%= filter === 'custom' ? 'required' : '' %>>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <input type="date" id="endDate" class="form-control" name="endDate" 
+                                               value="<%= endDate || '' %>" <%= filter === 'custom' ? 'required' : '' %>>
+                                      </div>
+                                    </div>
+                                  </div>
+                            
+                                <button type="submit" class="btn btn-primary">Apply Filter</button>
+                            </form>
                 </div>
 
 <!-- Download PDF Button -->
@@ -543,21 +485,7 @@
         </script>
     
     
-    <script>
-        function handleFilterChange() {
-            const filter = document.getElementById('dateFilter').value;
-            document.getElementById('filter').value = filter;
-    
-            if (filter === 'custom') {
-                document.getElementById('customDateRange').style.display = 'block';
-            } else {
-                document.getElementById('customDateRange').style.display = 'none';
-            }
-    
-            // Optionally submit the form on change (auto-submit):
-            // document.querySelector("form").submit();
-        }
-    </script>
+ 
     <script>
         function handleFilterChange() {
             const filterSelect = document.getElementById('dateFilter');
@@ -569,6 +497,19 @@
                 customDateRange.style.display = 'none';
             }
         }
+        
+        function validateForm() {
+  const filter = document.getElementById('dateFilter').value;
+  if (filter === 'custom') {
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    if (!startDate || !endDate) {
+      alert('Please select both start and end dates for custom range.');
+      return false; // Prevent form submission
+    }
+  }
+  return true; // Allow form submission
+}
         
         function exportReport(format) {
             const filter = document.getElementById('dateFilter').value;

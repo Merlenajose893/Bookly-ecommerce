@@ -166,24 +166,42 @@ const toggleProductStatus = async (req, res) => {
 // Assuming you're using a MongoDB model called 'Book'
 const getAllBooks = async (req, res) => {
   try {
+    // console.log(req.query.search);
+   
+    const { search, genre } = req.query;
+    console.log("Raw Query:", req.query);
+
+    
     const page = parseInt(req.query.page) || 1;
     const limit = 20; // Number of items per page
     const skip = (page - 1) * limit;
-    const genre = req.query.genre || '';
-    const search = req.query.search || '';
+    // const genre = req.query.genre || '';
+    // const search = req.query.search || '';
 
     // Fetch all genres
     const genres = await Genre.find({});
+    console.log(genres);
+    
 
     // Create filter for searching by title
-    const filter = {
-      title: { $regex: search, $options: 'i' }, // Case insensitive search for title
-    };
+    // const filter={};
+    // if (search) {
+    //   filter.title = { $regex: search, $options: 'i' };
+    // }
+    // if(genre)
+    // {
+    //   filter.genres = genre;
+    // }
+    const filter = {};
+    if (search) filter.title = { $regex: search, $options: "i" };
+    if (genre) filter.genres = genre;
+
+    // Debug the filter
+    console.log("Final Filter:", filter)
 
     // If a genre is selected, add it to the filter
-    if (genre) {
-      filter.genres = genre; // The genre field stores an array of ObjectIds in the Book model
-    }
+   console.log('Filter Object',filter);
+   
 
     // Fetch the books from the database
     const books = await Book.find(filter).skip(skip).limit(limit).populate('genres', 'name');

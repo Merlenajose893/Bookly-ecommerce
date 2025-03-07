@@ -4,15 +4,21 @@ const Coupon=require('../models/couponSchema');
 
 const loadCoupon = async (req, res) => {
     try {
-        // Get page and limit from query params
         const page = parseInt(req.query.page) || 1;
         const itemsPerPage = parseInt(req.query.limit) || 10;
+        const search = req.query.search ? req.query.search.trim() : ""; // Get search query and trim
 
-        // Count total documents in the Coupon collection
-        const totalCoupons = await Coupon.countDocuments();
+        // Create a filter object for searching
+        const filter = {};
+        if (search) {
+            filter.couponCode = { $regex: search, $options: "i" }; // Case-insensitive search
+        }
 
-        // Fetch paginated coupons
-        const coupons = await Coupon.find()
+        // Count total matching coupons
+        const totalCoupons = await Coupon.countDocuments(filter);
+
+        // Fetch paginated and filtered coupons
+        const coupons = await Coupon.find(filter)
             .skip((page - 1) * itemsPerPage)
             .limit(itemsPerPage);
 
@@ -21,10 +27,6 @@ const loadCoupon = async (req, res) => {
         const hasPrevPage = page > 1;
         const hasNextPage = page < totalPages;
 
-        // Generate page numbers for pagination
-        const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-        // Render the view and pass data
         res.render("coupon", {
             coupons,
             currentPage: page,
@@ -32,13 +34,16 @@ const loadCoupon = async (req, res) => {
             hasPrevPage,
             hasNextPage,
             totalPages,
-            pageNumbers, // Pass this to the template
+            pageNumbers: Array.from({ length: totalPages }, (_, i) => i + 1),
+            search, // Pass search value to template
         });
     } catch (error) {
         console.error("Error Loading Coupon:", error);
         res.status(500).send("Internal Server Error");
     }
 };
+
+
 
 
 const addCoupon = async (req, res) => {

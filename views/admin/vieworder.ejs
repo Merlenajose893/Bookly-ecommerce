@@ -237,7 +237,7 @@
                                     </div>
                                     <div class="col-md-2 text-end">
                                         <p class="mb-0">Price</p>
-                                        <p class="mb-0 fw-bold"> ₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %></p>
+                                        <p class="mb-0 fw-bold"> ₹<%= (book.productId.salesPrice * book.quantity).toFixed(2) %></p>
                                     </div>
                                 </div>
                             </div>
@@ -249,12 +249,17 @@
                             <div class="col-md-6">
                                 <h4>Payment Details</h4>
                                 <p class="mb-0">Payment Method: <%= order.paymentMethod %></p>
-                                <p>Payment Status: <%= order.paymentStatus %></p>
+                                <p>Payment Status: <%= order.status %></p>
                             </div>
+                            
                             <div class="col-md-6">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Subtotal:</span>
                                     <span>₹<%= order.totalAmount %></span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Discount:</span>
+                                    <span>₹<%= order.discountAmount %></span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span>Shipping:</span>
@@ -264,6 +269,7 @@
                                     <span>Total:</span>
                                     <span>₹<%= order.totalAmount + (order.shippingCost || 0) %></span>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>

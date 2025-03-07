@@ -8,33 +8,53 @@ const genreInfo = async (req, res) => {
     const page = parseInt(req.query.page) || 1; // Current page
     const limit = 4; // Number of items per page
     const skip = (page - 1) * limit; // Items to skip
+    console.log(req.query);
+    
 
-    // Fetch genres with pagination
-    const genres = await Genre.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit);
+    // Capture search query
+    const searchQuery = req.query.search ? req.query.search.trim() : "";
+
+    // Build filter object
+    const filter = searchQuery
+      ? { name: { $regex: new RegExp(searchQuery, "i") } } // Case-insensitive search
+      : {};
+
+    // Fetch genres with pagination and filtering
+    const genres = await Genre.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     // Total categories and pages
-    const totalCategories = await Genre.countDocuments();
+    const totalCategories = await Genre.countDocuments(filter);
     const totalPages = Math.ceil(totalCategories / limit);
 
     // Generate array for pagination
     const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
+    // Debugging logs
+    console.log("Search Query:", searchQuery);
+    console.log("Final Filter:", filter);
+
     // Render the template
     res.render('genres', {
-      genres: genres,
+      genres,
+      searchQuery, // Pass searchQuery to keep input value
       currentPage: page,
-      totalPages: totalPages,
-      totalCategories: totalCategories,
+      totalPages,
+      totalCategories,
       hasPrevPage: page > 1,
       hasNextPage: page < totalPages,
       itemsPerPage: limit,
-      pageNumbers: pageNumbers, // Pass page numbers
+      pageNumbers,
     });
   } catch (error) {
     console.error(error);
     res.redirect('/pageerror');
   }
 };
+
+
 
 // Add Genre Function
 const addGenre = async (req, res) => {

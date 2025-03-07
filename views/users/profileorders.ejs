@@ -288,7 +288,7 @@
                                                 <div class="flex-grow-1 min-width-0">
                                                   <div class="d-flex flex-column flex-sm-row justify-content-between">
                                                     <span class="fw-medium text-truncate me-2"><%= book.productId.title %></span>
-                                                    <span class="ms-0 ms-sm-2 text-sm-end">₹<%= (book.productId.regularPrice * book.quantity).toFixed(2) %></span>
+                                                    <span class="ms-0 ms-sm-2 text-sm-end">₹<%= (book.productId.salesPrice * book.quantity).toFixed(2) %></span>
                                                   </div>
                                                   <div class="small text-muted">Qty: <%= book.quantity %></div>
                                                 </div>
@@ -299,8 +299,8 @@
                                           <!-- Action Buttons - Better spacing and alignment -->
                                           <div class="d-flex flex-wrap gap-2 mt-3 justify-content-center justify-content-sm-end">
                                             <% if (order.status === 'Payment Pending') { %>
-                                              <form action="/profileorder/retry/<%= order._id %>" method="POST">
-                                                <button type="submit" class="btn btn-success btn-sm">
+                                              <!-- <form action="/profileorder/retry/<%= order._id %>" method="POST"> -->
+                                                <button type="submit" class="btn btn-success btn-sm" onclick="handlePayment('<%= order.orderId %>')">
                                                   <i class="fas fa-credit-card me-1"></i>Pay Now
                                                 </button>
                                               </form>
@@ -326,9 +326,12 @@
                                               </button>
                                             <% } %>
                                             
-                                            <a href="/profileorder/invoice/<%= order._id %>" class="btn btn-outline-primary btn-sm">
-                                              <i class="fas fa-file-download me-1"></i>Invoice
-                                            </a>
+                                            <% if (order.status === 'Delivered') { %>
+                                              <a href="/profileorder/invoice/<%= order._id %>" class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-file-download me-1"></i>Invoice
+                                              </a>
+                                            <% } %>
+                                            
                                           </div>
                                         </div>
                                       </div>
@@ -577,49 +580,104 @@ document.getElementById("returnButton").addEventListener("click", function () {
 });
 
   </script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <script>
-    document.getElementById("pay-button").addEventListener("click", async () => {
-      try {
-        const orderId = "your_order_id"; // Fetch dynamically from backend
-        const response = await fetch(`/profileorder/pay/${orderId}`, {
-          method: "POST",
-        });
-  
-        const data = await response.json();
-        if (!data.success) {
-          alert("Error processing payment.");
-          return;
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+      async function handlePayment(orderId) {
+        try {
+            if (!orderId) {
+                throw new Error("Order ID is missing.");
+            }
+    
+            // Fetch order details from the server
+            const response = await fetch("/getOrderDetails", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId }),
+            });
+    
+            if (!response.ok) {
+                throw new Error("Failed to fetch order details.");
+            }
+    
+            const orderData = await response.json();
+            if (!orderData.razorpayOrderId) {
+                throw new Error("No Razorpay order found. Please contact support.");
+            }
+            
+            console.log("Retrying payment with Razorpay Order ID:", orderData.razorpayOrderId);
+    
+            // Configure Razorpay options
+            const options = {
+                key: "rzp_test_pxX6lfY1EAcvNw", // Replace with your Razorpay Key ID
+                amount: orderData.amount, // Ensure amount matches the stored order
+                currency: "INR",
+                name: "Bookly",
+                description: "Order Payment",
+                order_id: orderData.razorpayOrderId, // Use the stored order ID
+                handler: async function (response) {
+                    console.log("Payment successful!", response);
+    
+                    // Verify payment with the backend
+                    const verifyResponse = await fetch("/verify-razorpay-payment", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                            orderId: orderId,  
+                        }),
+                    });
+    
+                    const verifyResult = await verifyResponse.json();
+                    console.log(verifyResult,'sdfghjkl;');
+                    
+    
+                    if (verifyResult.success) {
+                        await Swal.fire({
+                            icon: "success",
+                            title: "Payment Successful!",
+                            text: "Your payment has been processed successfully.",
+                            confirmButtonColor: "#3085d6",
+                            confirmButtonText: "OK",
+                        });
+                        window.location.reload();
+                    } else {
+                        await Swal.fire({
+                            icon: "error",
+                            title: "Payment Failed!",
+                            text: "Payment verification failed. Please try again.",
+                            confirmButtonColor: "#d33",
+                            confirmButtonText: "Retry",
+                        });
+                    }
+                },
+                prefill: {
+                    name: orderData.shippingAddress.name || "Customer Name",
+                    email: orderData.shippingAddress.email || "customer@example.com",
+                    contact: orderData.shippingAddress.phone || "9999999999",
+                },
+                theme: {
+                    color: "#3399cc",
+                },
+            };
+    
+            const razorpay = new Razorpay(options);
+            razorpay.open();
+        } catch (error) {
+            console.error("Payment error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Payment Error",
+                text: error.message || "Something went wrong. Please try again!",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "OK",
+            });
         }
+    }
+    </script>
+    
   
-        const options = {
-          key: "YOUR_RAZORPAY_KEY_ID", // Get from backend/env
-          amount: data.paymentOrder.amount,
-          currency: data.paymentOrder.currency,
-          name: "Your Company Name",
-          description: "Retry Payment",
-          order_id: data.paymentOrder.id,
-          handler: async function (response) {
-            alert("Payment Successful!");
-            // ✅ Redirect to order success page
-            window.location.href = "/order-success";
-          },
-          prefill: {
-            name: "User Name",
-            email: "user@example.com",
-            contact: "9999999999",
-          },
-          theme: { color: "#3399cc" },
-        };
-  
-        const rzp = new Razorpay(options);
-        rzp.open();
-      } catch (error) {
-        console.error("Payment error:", error);
-        alert("Payment failed!");
-      }
-    });
-  </script>
   
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

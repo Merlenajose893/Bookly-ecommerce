@@ -20,7 +20,15 @@ body {
     height: 400px; /* Fixed height for cropper area */
     background: #f0f0f0;
 }
+/* Hide original image by default */
+img[id^="imgView"] {
+    display: none !important;
+}
 
+/* Show cropped image container */
+.image-cropper {
+    display: none; /* Will be shown via JS */
+}
 .image-cropper {
     width: 100%;
     min-height: 400px;
@@ -33,6 +41,25 @@ body {
     padding: 20px;
     border-right: 1px solid var(--border-color);
 }
+.original-image {
+    /* Hide the original image but keep it in the DOM for Cropper */
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    height: 1px;
+    width: 1px;
+}
+.hidden-img {
+    display: none !important;
+}
+.cropper-container {
+    max-width: 500px;
+    max-height: 500px;
+}
+.hidden-preview {
+    position: absolute;
+    left: -9999px;
+  }
 
 .sidebar h3 {
     color: #ffffff;
