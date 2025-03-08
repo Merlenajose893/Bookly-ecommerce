@@ -261,12 +261,81 @@
               z-index: 1000;
             "
           ></div>
-          
+          <br>
+          <div class="book-images mb-4">
+            <!-- <br><br><br> -->
+            <h5 class="fw-bold mb-3" style="margin-top: 100px; ">Images of the Book</h5>
+            <div class="image-gallery"
+                 style="
+                    display: flex;
+                    gap: 12px;
+                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                 ">
+                <% if (book.images && book.images.length > 0) { %>
+                    <% book.images.forEach(function(image, index) { %>
+                        <div class="image-thumbnail"
+                             onclick="showImageModal('/uploads/<%= image.split('/').pop() %>')"
+                             style="
+                                width: 120px;
+                                height: 120px;
+                                border-radius: 8px;
+                                overflow: hidden;
+                                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                                transition: all 0.2s ease;
+                                cursor: pointer;
+                                position: relative;
+                             "
+                             onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.15)';"
+                             onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 2px 4px rgba(0, 0, 0, 0.1)';"
+                        >
+                            <img src="/uploads/<%= image.split('/').pop() %>"
+                                 alt="Book Image <%= index + 1 %>"
+                                 style="width: 100%; height: 100%; object-fit: cover;"
+                            />
+                            <div class="image-overlay"
+                                 style="
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    background: rgba(0, 0, 0, 0);
+                                    transition: background 0.2s ease;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    opacity: 0;
+                                 "
+                                 onmouseover="this.style.background='rgba(0, 0, 0, 0.3)'; this.style.opacity='1';"
+                                 onmouseout="this.style.background='rgba(0, 0, 0, 0)'; this.style.opacity='0';"
+                            >
+                                <i class="fas fa-search-plus" style="color: white; font-size: 18px;"></i>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-images"
+                         style="
+                            width: 100%;
+                            padding: 20px;
+                            text-align: center;
+                            color: #777;
+                            font-style: italic;
+                            background-color: #f8f8f8;
+                            border-radius: 8px;
+                         "
+                    >
+                        <i class="fas fa-image me-2"></i>No images available for this book.
+                    </div>
+                <% } %>
+            </div>
+        </div>
         </div>
 
         <div class="col-lg-7 pb-5">
           <!-- Title and Rating Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <h2 class="font-weight-bold mb-3"><%= book.title %></h2>
               <div class="d-flex align-items-center gap-2">
                   <div class="text-warning">
@@ -285,7 +354,7 @@
           </div>
       
           <!-- Price and Stock Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <div class="d-flex align-items-center justify-content-between">
                   <div>
                       <% if (book.salesPrice && book.salesPrice < book.regularPrice) { %>
@@ -310,7 +379,7 @@
           </div>
       
           <!-- Book Details Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <h5 class="fw-bold mb-4">Book Details</h5>
               <div class="row g-3">
                   <div class="col-md-6">
@@ -332,18 +401,18 @@
           </div>
       
           <!-- Description Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <h5 class="fw-bold mb-3">Description</h5>
               <p class="text-muted mb-0"><%= book.description %></p>
           </div>
       
           <!-- Special Offers Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <h5 class="fw-bold mb-3">Special Offers</h5>
               <% if (offers && offers.length > 0) { %>
                   <div class="offers-container">
                       <% offers.forEach(offer => { %>
-                          <div class="offer-card p-3 border rounded mb-3 bg-light">
+                          <div class="offer-item p-3 border rounded mb-3 bg-light">
                               <div class="d-flex align-items-center mb-2">
                                   <i class="fas fa-tag text-primary me-2"></i>
                                   <h6 class="mb-0">
@@ -353,8 +422,6 @@
                               <div class="offer-details">
                                   <% if (offer.offerType === 'Product') { %>
                                       <p class="mb-1"><small>On: <%= book.title %></small></p>
-                                      <!-- <p class="mb-1"><small>On: <%= offer.book ? offer.book.title : 'Unknown Book' %></small></p> -->
-
                                   <% } else if (offer.offerType === 'Category' && offer.category) { %>
                                       <p class="mb-1"><small>Category: <%= offer.category.name %></small></p>
                                   <% } else if (offer.offerType === 'Referral' && offer.referralCode) { %>
@@ -373,7 +440,7 @@
           </div>
       
           <!-- Format Selection Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <h5 class="fw-bold mb-3">Available Formats</h5>
               <div class="d-flex flex-wrap gap-3">
                   <% if (book.formats && book.formats.length > 0) { %>
@@ -392,17 +459,11 @@
           </div>
       
           <!-- Add to Cart Section -->
-          <div class="card border-0 shadow-sm p-4 mb-4">
+          <div class="p-4 mb-4 border-bottom">
               <div class="d-flex align-items-center justify-content-between">
                   <% if (book.quantity > 0) { %>
                       <form action="/cart" method="POST" class="d-flex align-items-center gap-3">
                           <input type="hidden" name="productId" value="<%= book.id %>">
-                          <!-- <div class="input-group" style="width: 120px;">
-                              <span class="input-group-text"><i class="fas fa-minus"></i></span>
-                              <input type="number" name="quantity" value="1" min="1" max="<%= book.quantity %>"
-                                  class="form-control text-center">
-                              <span class="input-group-text"><i class="fas fa-plus"></i></span>
-                          </div> -->
                           <button type="submit" class="btn btn-primary">
                               <i class="fas fa-shopping-cart me-2"></i>Add to Cart
                           </button>
@@ -416,7 +477,7 @@
           </div>
       
           <!-- Social Share Section -->
-          <div class="card border-0 shadow-sm p-4">
+          <div class="p-4">
               <div class="d-flex align-items-center">
                   <span class="me-3">Share on:</span>
                   <div class="d-flex gap-2">
@@ -436,49 +497,6 @@
               </div>
           </div>
       </div>
-        <div class="book-images mb-4">
-          <p><strong>Images of the Book:</strong></p>
-          <div
-            class="row"
-            style="
-              display: flex;
-              gap: 16px;
-              flex-wrap: wrap;
-              justify-content: center;
-              align-items: center;
-            "
-          >
-            <% if (book.images && book.images.length > 0) { %> <%
-            book.images.forEach(function(image, index) { %>
-            <div
-              class="image-container"
-              onclick="showImageModal('/uploads/<%= image.split('/').pop() %>')"
-              style="
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                width: 200px;
-                height: 150px;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-                overflow: hidden;
-                transition: transform 0.3s ease, box-shadow 0.3s ease;
-                background: linear-gradient(to bottom, #ffffff, #f0f0f0);
-                cursor: pointer;
-              "
-            >
-              <img
-                src="/uploads/<%= image.split('/').pop() %>"
-                alt="Book Image <%= index + 1 %>"
-                style="width: 100%; height: 100%; object-fit: cover"
-              />
-            </div>
-            <% }); %> <% } else { %>
-            <p style="color: #555; font-style: italic">No images available for this book.</p>
-            <% } %>
-          </div>
-        </div>
 
         <div
         id="imageModal"
@@ -492,7 +510,7 @@
           background: rgba(0, 0, 0, 0.8);
           justify-content: center;
           align-items: center;
-          z-index: 1000;
+          z-index  : 1000;
         "
       >
         <div

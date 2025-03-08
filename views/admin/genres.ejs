@@ -162,8 +162,22 @@
 
                 <!-- Search Bar -->
                 <div class="search-container">
-                    <input type="text" class="form-control search-box" placeholder="Search">
-                    <button class="btn btn-search">Search</button>
+                   <!-- Corrected search form -->
+<form method="GET" action="/admin/genres" class="search-container">
+    <div class="input-group">
+      <input 
+        type="text" 
+        class="form-control search-box" 
+        name="search"  
+        placeholder="Search genres..."
+        value="<%= searchQuery || '' %>"  
+      >
+      <input type="hidden" name="page" value="1">
+      <div class="input-group-append">
+        <button type="submit" class="btn btn-primary">Search</button> <!-- Changed to submit type -->
+      </div>
+    </div>
+  </form>
                 </div>
                 <div class="d-flex mb-3">
                     
@@ -179,17 +193,21 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form action="/admin/genres" method="POST" id="genreForm">
-                                    <div class="mb-3">
-                                        <label for="genreName" class="form-label">Name</label>
-                                        <input type="text" id="genreName" name="name" class="form-control" placeholder="Name" >
+                                <form id="genreForm" method="POST" action="/admin/genres">
+                                    <div class="form-group">
+                                      <label for="genreName">Genre Name</label>
+                                      <input type="text" class="form-control" id="genreName" name="genreName" placeholder="Enter genre name">
+                                      <div id="genreNameError" class="error-message"></div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="genreDescription" class="form-label">Description</label>
-                                        <textarea id="genreDescription" name="description" class="form-control" placeholder="Description" rows="3" ></textarea>
+                                    
+                                    <div class="form-group">
+                                      <label for="genreDescription">Genre Description</label>
+                                      <input type="text" class="form-control" id="genreDescription" name="genreDescription" placeholder="Enter genre description">
+                                      <div id="genreDescriptionError" class="error-message"></div>
                                     </div>
-                                    <button type="submit" class="btn btn-primary">Create</button>
-                                </form>
+                                    
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                  </form>
                                 
                             </div>
                             <div class="modal-footer">
@@ -278,91 +296,104 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    // Function to handle form submission
-    async function handleSubmit(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        const genreName = document.getElementById('genreName').value.trim();
-        const description = document.getElementById('genreDescription').value.trim();
-
-        // Regular expression to match alphabets and spaces only
-        const alphabetRegex = /^[a-zA-Z\s]+$/;
-
-        // Validate genre name
-        if (!genreName) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Genre Name',
-                text: 'Please enter a valid genre name.',
-            });
-            return; // Stop form submission
+    <script>
+        // Helper functions for inline errors
+        function showInlineError(element, message) {
+          element.textContent = message;
+          element.style.color = 'red';
         }
-
-        if (!alphabetRegex.test(genreName)) {
-            alert('Genre name must only contain letters and spaces.');
-            return; // Stop the form submission
+      
+        function clearInlineError(element) {
+          element.textContent = "";
         }
-
-        // Validate description
-        if (!description) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Description',
-                text: 'Please enter a valid description.',
-            });
-            return; // Stop form submission
-        }
-
-        if (!alphabetRegex.test(description)) {
-            alert('Description must only contain letters and spaces.');
-            return; // Stop the form submission
-        }
-
-        try {
+      
+        async function handleSubmit(event) {
+          event.preventDefault(); // Prevent the default form submission
+      
+          // Retrieve input values and trim whitespace
+          const genreName = document.getElementById('genreName').value.trim();
+          const description = document.getElementById('genreDescription').value.trim();
+      
+          // Retrieve error message elements
+          const genreNameErrorEl = document.getElementById('genreNameError');
+          const descriptionErrorEl = document.getElementById('genreDescriptionError');
+      
+          // Clear previous inline errors
+          clearInlineError(genreNameErrorEl);
+          clearInlineError(descriptionErrorEl);
+      
+          // Regular expression: allow only letters and spaces
+          const alphabetRegex = /^[a-zA-Z\s]+$/;
+          let isValid = true;
+      
+          // Validate Genre Name
+          if (!genreName) {
+            showInlineError(genreNameErrorEl, 'Please enter a valid genre name.');
+            isValid = false;
+          } else if (!alphabetRegex.test(genreName)) {
+            showInlineError(genreNameErrorEl, 'Genre name must only contain letters and spaces.');
+            isValid = false;
+          }
+      
+          // Validate Description
+          if (!description) {
+            showInlineError(descriptionErrorEl, 'Please enter a valid description.');
+            isValid = false;
+          } else if (!alphabetRegex.test(description)) {
+            showInlineError(descriptionErrorEl, 'Description must only contain letters and spaces.');
+            isValid = false;
+          }
+      
+          // Stop if any inline validations failed
+          if (!isValid) {
+            return;
+          }
+      
+          try {
             // Send data to the backend
             const response = await fetch('/admin/genres', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    name: genreName,
-                    description: description,
-                }),
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: genreName,
+                description: description,
+              }),
             });
-
-            // Handle response
+      
+            // Use Swal for messaging based on response
             if (response.status === 400) {
-                const data = await response.json();
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: data.error || 'An error occurred while adding the genre.',
-                });
-            } else if (response.ok) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Genre added successfully!',
-                }).then(() => {
-                    window.location.href = '/admin/genres'; // Redirect to genre page
-                });
-            } else {
-                throw new Error('Unexpected response');
-            }
-        } catch (error) {
-            Swal.fire({
+              const data = await response.json();
+              Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'An unexpected error occurred. Please try again later.',
+                text: data.error || 'An error occurred while adding the genre.',
+              });
+            } else if (response.ok) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: 'Genre added successfully!',
+              }).then(() => {
+                window.location.href = '/admin/genres'; // Redirect on success
+              });
+            } else {
+              throw new Error('Unexpected response');
+            }
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'An unexpected error occurred. Please try again later.',
             });
+          }
         }
-    }
-
-    // Attach the `handleSubmit` function to the form submission event
-    document.querySelector('form').addEventListener('submit', handleSubmit);
-</script>
+      
+        // Attach the handler to the form submission event
+        document.getElementById('genreForm').addEventListener('submit', handleSubmit);
+      </script>
+      
 
 <script>
     // Function to show the SweetAlert confirmation
@@ -383,6 +414,40 @@
       });
     }
   </script>
+  <!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchForm = document.querySelector('.search-container');
+      
+      searchForm.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Prevent the default full-page submission
+        
+        // Build the query string from the form data
+        const formData = new FormData(searchForm);
+        const params = new URLSearchParams(formData);
+        
+        try {
+          // Send a GET request to the search endpoint with query parameters
+          const response = await fetch(searchForm.action + '?' + params.toString(), {
+            method: 'GET',
+            headers: {
+              'Accept': 'text/html'
+            }
+          });
+          
+          if (response.ok) {
+            // Assume the server responds with HTML that you can insert into the page
+            const html = await response.text();
+            // Display the search results inside the results container
+            document.getElementById('resultsContainer').innerHTML = html;
+          } else {
+            console.error('Search request failed with status:', response.status);
+          }
+        } catch (error) {
+          console.error('Error while fetching search results:', error);
+        }
+      });
+    });
+  </script> -->
   
 
 </body>

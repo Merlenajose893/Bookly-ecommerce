@@ -9,25 +9,49 @@ const {Genre}=require('../models/GenresSchema');
 
 const loadOfferPage = async (req, res) => {
     try {
-        let page = parseInt(req.query.page) || 1;  // Get the page number from query, default to 1
-        let limit = 10;  // Number of offers per page
-        let skip = (page - 1) * limit;  
-
-        const totalOffers = await Offer.countDocuments(); // Get total number of offers
-        const totalPages = Math.ceil(totalOffers / limit); // Calculate total pages
-
-        const offers = await Offer.find().populate('product category').skip(skip).limit(limit);
-        const books=await Book.find({isDeleted:false})
-        const genres=await Genre.find({isListed:false});
-        console.log('Offers',offers);
-        // Fetch paginated offers
-
-        res.render('offer', { offers, page, totalPages,books ,genres}); // Pass pagination data to EJS
+      // Parse the page number, default to 1 if not provided
+      let page = parseInt(req.query.page) || 1;
+      let limit = 10;  // Number of offers per page
+      let skip = (page - 1) * limit;  
+  
+      // Build a filter object for the offers
+      let filter = {};
+  
+      // If a search query is provided, add search conditions
+      if (req.query.search) {
+        const searchQuery = req.query.search.trim();
+        // Filter using offerType, discountType, or referralCode (adjust fields as necessary)
+        filter.$or = [
+          { offerType: { $regex: searchQuery, $options: 'i' } },
+          { discountType: { $regex: searchQuery, $options: 'i' } },
+          { referralCode: { $regex: searchQuery, $options: 'i' } }
+        ];
+        console.log("Search filter applied:", filter.$or);
+      }
+  
+      // Get total count of offers matching the filter
+      const totalOffers = await Offer.countDocuments(filter);
+      const totalPages = Math.ceil(totalOffers / limit);
+  
+      // Fetch the offers with pagination and populate product and category details
+      const offers = await Offer.find(filter)
+        .populate('product category')
+        .skip(skip)
+        .limit(limit);
+  
+      // Fetch additional data (books and genres) as needed
+      const books = await Book.find({ isDeleted: false });
+      const genres = await Genre.find({ isListed: false });
+      console.log('Offers fetched:', offers.length);
+  
+      // Render the offer view with the filtered and paginated offers
+      res.render('offer', { offers, page, totalPages, books, genres });
     } catch (error) {
-        console.error('Error Loading Offer:', error);
-        res.status(500).send("Internal Server Error");
+      console.error('Error Loading Offer:', error);
+      res.status(500).send("Internal Server Error");
     }
-};
+  };
+  
 const createOffer = async (req, res) => {
     try {
         const { offerType, product, category, referralCode, discountType, discountValue, startDate, endDate, isActive } = req.body;

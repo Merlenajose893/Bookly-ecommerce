@@ -22,6 +22,10 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
   rel="stylesheet"
 />
+<link
+  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
+  rel="stylesheet"
+/>
 
 </head>
 <body>
@@ -45,7 +49,8 @@
             <div class="col-md-10 main-container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <input type="text" class="form-control search-box" placeholder="Search products">
+                       <input type="button" value="<%=searchQuery%>"><!-- Add form wrapper with GET method -->
+
                     </div>
                     <div>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
@@ -69,13 +74,13 @@
                                     <div id="isbn-error" class="error-message"></div>
                                     <div class="mb-3">
                                         <label for="bookName" class="form-label">Title</label>
-                                        <input type="text" id="bookName" class="form-control" name="title" >
+                                        <input type="text" id="title"class="form-control" name="title" >
                                     </div>
                                     <div id="title-error" class="error-message"></div>
                                     
                                   <div class="mb-3">
                                     <label for="bookName" class="form-label">Author</label>
-                                    <input type="text" id="bookName" class="form-control" name="author" >
+                                    <input type="text" id="author" class="form-control" name="author" >
                                 </div>
                                 <div id="author-error" class="error-message"></div>
                                 <div class="mb-3">
@@ -100,27 +105,26 @@
 
                               <div class="mb-3">
                                 <label for="bookName" class="form-label">Regular Price</label>
-                                <input type="text" id="bookName" class="form-control" name="regularPrice" >
+                                <input type="text" id="regularPrice" class="form-control" name="regularPrice" >
                             </div>
                             <div id="regularPrice-error" class="error-message"></div>
                             <div class="mb-3">
                               <label for="bookName" class="form-label">Sales Price</label>
-                              <input type="text" id="bookName" class="form-control" name="salesPrice" >
+                              <input type="text" id="salesPrice" class="form-control" name="salesPrice" >
                           </div>
                           <div id="salesPrice-error" class="error-message"></div>
                           <div class="mb-3">
-                            <label for="bookName" class="form-label">Stock</label>
+                            <label for="stockInput" class="form-label">Stock</label>
                             <input 
-                                type="number" 
-                                id="stockInput" 
-                                class="form-control" 
-                                name="quantity" 
-                                value="<%= books.quantity %>" 
-                                
-                                oninput="validateStock()">
-                            <div id="quantity-error" class="error-message text-danger" style="display: none;"></div>
+                              type="number" 
+                              id="stockInput" 
+                              class="form-control" 
+                              name="quantity" 
+                              value="<%= books.quantity %>"
+                              oninput="validateStock()">
+                            <div id="stockInput-error" class="error-message text-danger" style="display: none;"></div>
                             <p id="stockStatus" class="mt-2"></p>
-                        </div>
+                          </div>
                         
                         <div class="mb-3">
                           <label for="bookName" class="form-label">Description</label>
@@ -517,78 +521,76 @@
                                                       <div class="container mt-4">
                                                         <!-- Image 1 -->
                                                         <div class="card mb-4">
-                                                            <div class="card-header">Upload and Crop Image 1</div>
-                                                            <div class="card-body">
-                                                                <!-- Original Image Preview -->
-                                                                <div class="mb-3">
-                                                                    <img id="imgView1" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
-                                                                </div>
-                                                    
-                                                                <!-- File Input -->
-                                                                <div class="mb-3">
-                                                                    <input class="form-control" type="file" name="image1" id="input1" accept="image/*">
-                                                                </div>
-                                                    
-                                                                <!-- Cropper Container -->
-                                                                <div id="croppedContainer1" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
-                                                                    <img id="croppedImg1" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
-                                                                    <button type="button" id="saveButton1" class="btn btn-primary">Save Cropped Image</button>
-                                                                </div>
+                                                          <div class="card-header">Upload and Crop Image 1</div>
+                                                          <div class="card-body">
+                                                            <!-- Original Image Preview (for cropping) -->
+                                                            <div class="mb-3">
+                                                              <img id="imgView1" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
                                                             </div>
+                                                            <!-- File Input -->
+                                                            <div class="mb-3">
+                                                              <input class="form-control" type="file" name="image1" id="input1" accept="image/*">
+                                                            </div>
+                                                            <!-- Cropper Container & Cropped Image Preview -->
+                                                            <div id="croppedContainer1" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
+                                                              <img id="croppedImg1" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
+                                                              <button type="button" id="saveButton1" class="btn btn-primary">Save Cropped Image</button>
+                                                            </div>
+                                                          </div>
                                                         </div>
-                                                    
-                                                        <!-- Repeat the structure for other images -->
+                                                      
                                                         <!-- Image 2 -->
                                                         <div class="card mb-4">
-                                                            <div class="card-header">Upload and Crop Image 2</div>
-                                                            <div class="card-body">
-                                                                <div class="mb-3">
-                                                                    <img id="imgView2" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <input class="form-control" type="file" name="image2" id="input2" accept="image/*">
-                                                                </div>
-                                                                <div id="croppedContainer2" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
-                                                                    <img id="croppedImg2" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
-                                                                    <button type="button" id="saveButton2" class="btn btn-primary">Save Cropped Image</button>
-                                                                </div>
+                                                          <div class="card-header">Upload and Crop Image 2</div>
+                                                          <div class="card-body">
+                                                            <div class="mb-3">
+                                                              <img id="imgView2" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
                                                             </div>
+                                                            <div class="mb-3">
+                                                              <input class="form-control" type="file" name="image2" id="input2" accept="image/*">
+                                                            </div>
+                                                            <div id="croppedContainer2" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
+                                                              <img id="croppedImg2" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
+                                                              <button type="button" id="saveButton2" class="btn btn-primary">Save Cropped Image</button>
+                                                            </div>
+                                                          </div>
                                                         </div>
-                                                    
+                                                      
                                                         <!-- Image 3 -->
                                                         <div class="card mb-4">
-                                                            <div class="card-header">Upload and Crop Image 3</div>
-                                                            <div class="card-body">
-                                                                <div class="mb-3">
-                                                                    <img id="imgView3" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <input class="form-control" type="file" name="image3" id="input3" accept="image/*">
-                                                                </div>
-                                                                <div id="croppedContainer3" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
-                                                                    <img id="croppedImg3" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
-                                                                    <button type="button" id="saveButton3" class="btn btn-primary">Save Cropped Image</button>
-                                                                </div>
+                                                          <div class="card-header">Upload and Crop Image 3</div>
+                                                          <div class="card-body">
+                                                            <div class="mb-3">
+                                                              <img id="imgView3" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
                                                             </div>
+                                                            <div class="mb-3">
+                                                              <input class="form-control" type="file" name="image3" id="input3" accept="image/*">
+                                                            </div>
+                                                            <div id="croppedContainer3" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
+                                                              <img id="croppedImg3" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
+                                                              <button type="button" id="saveButton3" class="btn btn-primary">Save Cropped Image</button>
+                                                            </div>
+                                                          </div>
                                                         </div>
-                                                    
+                                                      
                                                         <!-- Image 4 -->
                                                         <div class="card mb-4">
-                                                            <div class="card-header">Upload and Crop Image 4</div>
-                                                            <div class="card-body">
-                                                                <div class="mb-3">
-                                                                    <img id="imgView4" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <input class="form-control" type="file" name="image4" id="input4" accept="image/*">
-                                                                </div>
-                                                                <div id="croppedContainer4" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
-                                                                    <img id="croppedImg4" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
-                                                                    <button type="button" id="saveButton4" class="btn btn-primary">Save Cropped Image</button>
-                                                                </div>
+                                                          <div class="card-header">Upload and Crop Image 4</div>
+                                                          <div class="card-body">
+                                                            <div class="mb-3">
+                                                              <img id="imgView4" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
                                                             </div>
+                                                            <div class="mb-3">
+                                                              <input class="form-control" type="file" name="image4" id="input4" accept="image/*">
+                                                            </div>
+                                                            <div id="croppedContainer4" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
+                                                              <img id="croppedImg4" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
+                                                              <button type="button" id="saveButton4" class="btn btn-primary">Save Cropped Image</button>
+                                                            </div>
+                                                          </div>
                                                         </div>
-                                                    </div>
+                                                      </div>
+                                                      
                                                     
 
                                                     <button type="submit" class="btn btn-primary" >Update</button>
@@ -622,7 +624,7 @@
         <ul class="pagination justify-content-center">
             <!-- Previous Page Link -->
             <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
-                <a class="page-link" href="?page=<%= page - 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Previous">
+                <a class="page-link" href="?page=<%= page - 1 %>&search=<%= searchQuery %>&genre=<%= genre %>" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -630,13 +632,13 @@
             <!-- Page Number Links -->
             <% for (let i = 1; i <= totalPages; i++) { %>
                 <li class="page-item <%= page === i ? 'active' : '' %>">
-                    <a class="page-link" href="?page=<%= i %>&search=<%= search %>&genre=<%= genre %>"><%= i %></a>
+                    <a class="page-link" href="?page=<%= i %>&search=<%= searchQuery %>&genre=<%= genre %>"><%= i %></a>
                 </li>
             <% } %>
 
             <!-- Next Page Link -->
             <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
-                <a class="page-link" href="?page=<%= page + 1 %>&search=<%= search %>&genre=<%= genre %>" aria-label="Next">
+                <a class="page-link" href="?page=<%= page + 1 %>&search=<%= searchQuery %>&genre=<%= genre %>" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
@@ -725,9 +727,83 @@
     initCropper("input4", "imgView4", "croppedContainer4", "croppedImg4", "saveButton4");
   });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Function to load the image file into the <img> element
+      function loadImagePreview(event, imgElement, callback) {
+        const file = event.target.files[0];
+        if (!file || !file.type.startsWith("image/")) return;
+        
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imgElement.src = e.target.result;
+          // Display the image so Cropper.js can initialize properly
+          imgElement.style.display = "block";
+          // Once the image is fully loaded, execute the callback
+          imgElement.onload = function () {
+            if (typeof callback === "function") {
+              callback();
+            }
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+      
+      // Function to initialize Cropper.js for one image input
+      function initCropper(inputId, imgViewId, croppedContainerId, croppedImgId, saveButtonId) {
+        const input = document.getElementById(inputId);
+        const imgView = document.getElementById(imgViewId);
+        let cropper = null;
+        
+        // When a file is selected...
+        input.addEventListener("change", function (event) {
+          loadImagePreview(event, imgView, function () {
+            // Destroy any existing cropper instance
+            if (cropper) {
+              cropper.destroy();
+            }
+            // Initialize Cropper.js on the now-visible image element
+            cropper = new Cropper(imgView, {
+              aspectRatio: 1,      // Change this as needed (e.g., 16/9, 4/3)
+              viewMode: 2,         // Constrain the crop box within the image
+              autoCropArea: 0.8,   // 80% of the image is used as the default crop box
+              responsive: true,
+              ready: function () {
+                // Show the cropping container once Cropper is ready
+                document.getElementById(croppedContainerId).style.display = "flex";
+              }
+            });
+          });
+        });
+        
+        // When the "Save Cropped Image" button is clicked...
+        document.getElementById(saveButtonId).addEventListener("click", function () {
+          if (cropper) {
+            const canvas = cropper.getCroppedCanvas();
+            const croppedImg = document.getElementById(croppedImgId);
+            // Set the cropped image's source to the cropped canvas data
+            croppedImg.src = canvas.toDataURL("image/png");
+            croppedImg.style.display = "block";
+            // Optionally, hide the cropper image and destroy the instance:
+            imgView.style.display = "none";
+            cropper.destroy();
+            cropper = null;
+          }
+        });
+      }
+      
+      // Initialize Cropper.js for all four images
+      initCropper("input1", "imgView1", "croppedContainer1", "croppedImg1", "saveButton1");
+      initCropper("input2", "imgView2", "croppedContainer2", "croppedImg2", "saveButton2");
+      initCropper("input3", "imgView3", "croppedContainer3", "croppedImg3", "saveButton3");
+      initCropper("input4", "imgView4", "croppedContainer4", "croppedImg4", "saveButton4");
+    });
+  </script>
+  
 
       
-    <script>
+    <!-- <script>
         document.addEventListener("DOMContentLoaded", () => {
           const form = document.querySelector("form");
           const isbnInput = document.getElementById("isbn");
@@ -755,11 +831,24 @@
           };
       
           function showError(input, message) {
-            const errorDiv = document.getElementById(`${input.id}-error`);
-            errorDiv.textContent = message;
-            errorDiv.style.display = "block";
-            input.classList.add("is-invalid");
-          }
+  if (!input || !input.id) {
+    console.error('Invalid input element:', input);
+    return;
+  }
+
+  const errorDiv = document.getElementById(`${input.id}-error`);
+  
+  if (!errorDiv) {
+    console.error(`Error container not found for: ${input.id}-error`);
+    console.log('Current input element:', input);
+    return;
+  }
+
+  // Only proceed if elements are valid
+  errorDiv.textContent = message;
+  errorDiv.style.display = "block";
+  input.classList.add("is-invalid");
+}
       
           function clearError(input) {
             const errorDiv = document.getElementById(`${input.id}-error`);
@@ -856,7 +945,7 @@
             }
           });
         });
-      </script>
+      </script> -->
       
     <script>
         function deleteImage(imageFileName, bookId) {

@@ -27,6 +27,7 @@
                     <a class="nav-link" href="/admin/books">Book Management</a>
                     <a class="nav-link" href="/admin/genres">Category Management</a>
                     <a class="nav-link" href="/admin/adminorders">Order Management</a>
+                    <a class="nav-link" href="/admin/coupon">Coupon Management</a>
                     <a class="nav-link active" href="/admin/offers">Offer Management</a>
                 </nav>
             </div>
@@ -34,9 +35,16 @@
             <!-- Main Content -->
             <div class="col-md-10 main-container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <input type="text" class="form-control w-50" placeholder="Search offers">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#offerModal">Create Offer</button>
-                </div>
+                    <input 
+                      type="text" 
+                      id="offerSearchInput"
+                      class="form-control w-50" 
+                      placeholder="Search offers">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#offerModal">
+                      Create Offer
+                    </button>
+                  </div>
+                  
 
                 <!-- Create Offer Modal -->
                 <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
@@ -462,6 +470,22 @@ function toggleOfferStatus(offerId, button) {
  <script>
     console.log(typeof Swal); // Should print "function" if loaded correctly
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const offerSearchInput = document.getElementById('offerSearchInput');
+      
+      offerSearchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault(); // Prevent any default behavior
+          const query = offerSearchInput.value.trim();
+          // Build the URL with the search query and reset page to 1
+          const targetUrl = '/admin/offer?search=' + encodeURIComponent(query) + '&page=1';
+          window.location.href = targetUrl;
+        }
+      });
+    });
+  </script>
+  
 
 </body>
 </html>

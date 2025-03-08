@@ -1048,55 +1048,109 @@ const showGenre = async (req, res) => {
   try {
     const genreId = req.params.id;
 
-    // Validate if the ID is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(genreId)) {
       return res.status(400).send('Invalid Genre ID');
     }
 
     const genre = await Genre.findById(genreId);
-    if (!genre) {
-      return res.status(404).send('Genre not found');
-    }
-    if (genre.isDeleted) {
-      res.render('categoryban');
-      return; // Stop further processing if the genre is deleted
+    if (!genre || genre.isDeleted) {
+      return res.render('categoryban');
     }
 
-    // Define itemsPerPage for pagination
     const itemsPerPage = 10;
     const currentPage = parseInt(req.query.page) || 1;
+    const filter = { genres: genreId, 'genres.isDeleted': { $ne: true } };
 
-    // Fetch total book count for the genre (excluding blocked genres)
-    const totalBooks = await Book.countDocuments({
-      genres: genreId,
-      'genres.isDeleted': { $ne: true },
-    });
+    // Extract selected genres from the query parameters
+    let selectedGenres = [];
+    if (req.query.genres) {
+      selectedGenres = Array.isArray(req.query.genres)
+        ? req.query.genres
+        : req.query.genres.split(',');
+    }
 
-    // Fetch books with pagination (excluding blocked genres)
-    const books = await Book.find({
-      genres: genreId,
-      'genres.isDeleted': { $ne: true },
-    })
+    // Apply filtering based on genres
+    if (selectedGenres.length > 0) {
+      const genreDocs = await Genre.find({ name: { $in: selectedGenres } }).select('_id');
+      const genreIds = genreDocs.map((g) => g._id);
+      filter.genres = { $in: genreIds };
+    }
+
+    // Sorting options
+    const sortOptions = {
+      'popularity': { salesCount: -1 },
+      'price-low': { salesPrice: 1 },
+      'price-high': { salesPrice: -1 },
+      'rating': { averageRating: -1 },
+      'new': { createdAt: -1 },
+      'name-asc': { title: 1 },
+      'name-desc': { title: -1 }
+    };
+    const sortOption = sortOptions[req.query.sort] || { createdAt: -1 };
+
+    // Get paginated books
+    const totalBooks = await Book.countDocuments(filter);
+    let books = await Book.find(filter)
       .populate('genres')
+      .populate('offerId')
+      .sort(sortOption)
       .skip((currentPage - 1) * itemsPerPage)
       .limit(itemsPerPage);
 
-    // Fetch all genres for dropdown
+    // Process offers for books
+    const currentDate = new Date();
+    books = await Promise.all(books.map(async (book) => {
+      let finalPrice = book.salesPrice || book.regularPrice;
+      let appliedOffer = null;
+
+      // Check for active product-specific offers
+      if (book.offerId && book.offerId.isActive && book.offerId.endDate >= currentDate) {
+        appliedOffer = book.offerId;
+      } else {
+        // Check for active category offers
+        const categoryOffer = await Offer.findOne({
+          category: { $in: book.genres },
+          isActive: true,
+          endDate: { $gte: currentDate }
+        }).sort({ discountValue: -1 }).limit(1);
+
+        if (categoryOffer) appliedOffer = categoryOffer;
+      }
+
+      // Apply discount
+      if (appliedOffer) {
+        finalPrice = appliedOffer.discountType === 'percentage'
+          ? finalPrice - (finalPrice * appliedOffer.discountValue / 100)
+          : finalPrice - appliedOffer.discountValue;
+        finalPrice = Math.max(finalPrice, 0);
+      }
+
+      return {
+        ...book.toObject(),
+        finalPrice: finalPrice.toFixed(2),
+        appliedOffer
+      };
+    }));
+
+    // Fetch all genres
     const genres = await Genre.find({ isDeleted: false });
 
-    // Render the 'genre' view with the genre, books, and genres
     res.render('genre', {
       genre,
       books,
       currentPage,
       totalPages: Math.ceil(totalBooks / itemsPerPage),
-      genres, // Pass genres to the view
+      genres,
+      selectedGenres,  // Pass selectedGenres to the view
     });
+
   } catch (error) {
     console.error('Error in showGenre:', error);
     res.status(500).send('Server Error');
   }
 };
+
+
 
 const showBookDetails = async (req, res) => {
   try {

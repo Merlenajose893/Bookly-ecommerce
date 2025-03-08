@@ -4,7 +4,7 @@ const mongoose=require('mongoose');
 const bcrypt=require('bcrypt');
 const customerInfo = async (req, res) => {
   try {
-    let search = req.query.search || '';
+    let search = req.query.query || '';
     let page = parseInt(req.query.page) || 1;
     let limit = 10;
     let skip = (page - 1) * limit;

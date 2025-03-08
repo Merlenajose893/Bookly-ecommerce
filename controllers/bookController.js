@@ -212,7 +212,7 @@ const getAllBooks = async (req, res) => {
     // Pass the data to the EJS view
     res.render('books', {
       books,
-      search,
+      searchQuery:search,
       page,
       totalPages,
       genre,
