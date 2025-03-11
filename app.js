@@ -50,7 +50,7 @@ app.set('views', [
 ]);
 
 // Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'Public/uploads')));
 
 
 // Set up routes

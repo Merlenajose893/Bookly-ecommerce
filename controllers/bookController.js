@@ -251,7 +251,7 @@ const deleteSingleImage = async (req, res) => {
     console.log('Updated book:', book);
 
     // Delete the image file
-    const imagePath = path.join(__dirname, '..', 'public', 'uploads', imageNameToServer);
+    const imagePath = path.join(__dirname, '..', 'Public', 'uploads', imageNameToServer);
     console.log('Image Path:', imagePath);
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);

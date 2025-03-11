@@ -4,7 +4,7 @@ const multer = require('multer');
 // Storage configuration for multer
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/'); // Ensure this directory exists
+        cb(null, 'Public/uploads/'); // Ensure this directory exists
     },
     filename: function (req, file, cb) {
         const ext = path.extname(file.originalname);
