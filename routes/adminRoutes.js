@@ -69,14 +69,14 @@ router.post('/delete-books/:bookId', bookController.deleteProduct);
 router.post('/undelete-books/:bookId', bookController.undeleteProduct);
 router.post('/books/delete-image',bookController.deleteSingleImage);
 router.get('/books/delete-image',bookController.deleteSingleImage);
-router.get('/adminorders',adminOrderController.getOrders);
+router.get('/adminorders',adminAuth,adminOrderController.getOrders);
 router.post('/adminorders/updateStatus/:orderId',adminOrderController.updateStatus);
 router.get('/adminorders/updateStatus',adminOrderController.updateStatus);
 router.get('/adminorders/viewOrder/:orderId',adminOrderController.viewOrders);
 
 //Coupon Management
 
-router.get('/coupon',CouponController.loadCoupon);
+router.get('/coupon',adminAuth,CouponController.loadCoupon);
 router.post('/coupon',CouponController.addCoupon);
 router.get('/updateCoupon/:couponId',CouponController.loadUpdateCoupon)
 router.post('/updateCoupon/:couponId',CouponController.updatedCoupon)
@@ -84,7 +84,7 @@ router.post("/toggleCouponStatus/:couponId", CouponController.toggleCouponStatus
 
 //OfferMangement
 
-router.get('/offer',OfferController.loadOfferPage)
+router.get('/offer',adminAuth,OfferController.loadOfferPage)
 router.post('/offer',OfferController.createOffer)
 router.post('/offer/edit/:offerId',OfferController.editOffer)
 router.post("/offer/toggle/:offerId", OfferController.toggleOfferStatus);
