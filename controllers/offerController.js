@@ -162,3 +162,7 @@ const toggleOfferStatus=async (req,res) => {
 
 
 module.exports={loadOfferPage,createOffer,editOffer,toggleOfferStatus}
+
+
+
+//dfffffffffffffffffffffffffffffffffffff
