@@ -410,6 +410,7 @@
 ">
      Search
 </button>
+<a href="/shop" class="btn btn-secondary" style="margin-left: 10px;">Clear</a>
 
                     </div>
                   </form>
@@ -906,7 +907,12 @@
     }
 </script>
 
-
+<script>
+    window.onload = function () {
+      document.querySelector('input[name="search"]').value = '';
+    };
+  </script>
+  
 
 </body>
 
