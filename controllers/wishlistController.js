@@ -72,63 +72,70 @@ return res.json({success:true,redirect:'/wishlist'})
         
     }
 }
-const addWishlistToCart=async (req,res) => {
+const addWishlistToCart = async (req, res) => {
     try {
-        const userId=req.session.user;
-        console.log(userId);
-        if(!userId)
-        {
-            res.redirect('/login')
+        const userId = req.session.user;
+        if (!userId) {
+            return res.redirect('/login');
         }
-        const bookId=req.body.bookId;
-        if(!bookId)
-        {
-            return res.status(400).json('No book is found')
+
+        const bookId = req.body.bookId;
+        if (!bookId) {
+            return res.status(400).json('No book is found');
         }
-        console.log('Book',bookId);
-        const book=await Book.findById(bookId)
-        let wishlist=await Wishlist.findOne({userId});
-        console.log(wishlist);
-        if(!wishlist || !wishlist.bookId.includes(bookId))
-        {
-            return res.status(400).json({message:'Book Not fOund In wishlist'});
+
+        const book = await Book.findById(bookId);
+        let wishlist = await Wishlist.findOne({ userId });
+        
+        if (!wishlist || !wishlist.bookId.includes(bookId)) {
+            return res.status(400).json({ message: 'Book not found in wishlist' });
         }
-wishlist.bookId=wishlist.bookId.filter(id=>id.toString()!==bookId);
-await wishlist.save();
-let cart=await Cart.findOne({userId});
-if(!cart)
-{
-    res.status(400).json({message:'No cart is found'});
-}
-let existingItem=cart.items.find(item=>item.productId.toString()===bookId);
-if(existingItem){
-    existingItem.quantity+=1;
-    // existingItem.totalPrice=existingItem.quantity+book.salesPrice;
-    existingItem.totalPrice = existingItem.quantity * book.salesPrice;
 
+        // Remove book from wishlist
+        wishlist.bookId = wishlist.bookId.filter(id => id.toString() !== bookId);
+        await wishlist.save();
 
-}
-else
-{
-    cart.items.push({
-        productId: book._id,
-        quantity: 1,
-        price: book.salesPrice,
-        totalPrice: book.salesPrice
-    });
+        // Find or create cart
+        let cart = await Cart.findOne({ userId });
+        if (!cart) {
+            cart = new Cart({
+                userId,
+                items: [{
+                    productId: book._id,
+                    quantity: 1,
+                    price: book.salesPrice,
+                    totalPrice: book.salesPrice
+                }],
+                subTotal: book.salesPrice
+            });
+            await cart.save();
+        } else {
+            // Check if the book is already in the cart
+            let existingItem = cart.items.find(item => item.productId.toString() === bookId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+                existingItem.totalPrice = existingItem.quantity * book.salesPrice;
+            } else {
+                cart.items.push({
+                    productId: book._id,
+                    quantity: 1,
+                    price: book.salesPrice,
+                    totalPrice: book.salesPrice
+                });
+            }
 
-}
-cart.subTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
-await cart.save();
+            cart.subTotal = cart.items.reduce((sum, item) => sum + item.totalPrice, 0);
+            await cart.save();
+        }
 
-return res.status(200).json({ success: true, message: "Book moved to cart" })
+        return res.status(200).json({ success: true, message: 'Book moved to cart' });
 
     } catch (error) {
         console.error("Error moving book to cart:", error);
-        res.status(500).json({ message: "Server error" }); 
+        res.status(500).json({ message: "Server error" });
     }
-    
 }
+
 const removeBookFromWishlist = async (req, res) => {
     try {
         const userId = req.session.user;
