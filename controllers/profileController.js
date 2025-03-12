@@ -771,8 +771,10 @@ const cancelOrder = async (req, res) => {
       });
       await transaction.save();
     
-    
+      // Instead of continuing, return from the function
+      wallet = newWallet;  // Assign the new wallet to continue processing
     }
+    
     
     // If wallet exists, update its balance
     wallet.balance += refundAmount;

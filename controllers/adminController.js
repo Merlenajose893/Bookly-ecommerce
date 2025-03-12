@@ -339,47 +339,44 @@ const totalPages = Math.ceil(totalItems / limit);
         case 'weekly':
           start = new Date(today);
           start.setDate(today.getDate() - 7);
-          start.setHours(0, 0, 0, 0); // Start at beginning of the day 7 days ago
+          start.setHours(0, 0, 0, 0);
           end = new Date(today);
-          end.setHours(23, 59, 59, 999); // End at end of today
+          end.setHours(23, 59, 59, 999);
           break;
         case 'monthly':
           start = new Date(today.getFullYear(), today.getMonth(), 1);
           start.setHours(0, 0, 0, 0);
-          end = new Date(today.getFullYear(), today.getMonth() + 1, 0); // Last day of current month
-          end.setHours(23, 59, 59, 999); // Include entire last day
+          end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+          end.setHours(23, 59, 59, 999);
           break;
         case 'yearly':
-          start = new Date(today.getFullYear(), 0, 1); // January 1st
+          start = new Date(today.getFullYear(), 0, 1);
           start.setHours(0, 0, 0, 0);
-          end = new Date(today.getFullYear(), 11, 31); // December 31st
-          end.setHours(23, 59, 59, 999); // Include entire last day
+          end = new Date(today.getFullYear(), 11, 31);
+          end.setHours(23, 59, 59, 999);
           break;
-      // In salesReport controller
-case 'custom':
-  // Validate presence of dates
-  if (!startDate || !endDate) {
-    return res.status(400).json({ 
-      error: 'Start date and end date are required for custom range' 
-    });
-  }
-
-  // Parse dates with format validation
-  const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
-  if (!isoDateRegex.test(startDate) || !isoDateRegex.test(endDate)) {
-    return res.status(400).json({ 
-      error: 'Invalid date format. Use YYYY-MM-DD' 
-    });
-  }
-
-  start = new Date(startDate);
-  end = new Date(endDate);
-  
-  // Add time to end date to include entire day
-  end.setHours(23, 59, 59, 999);
-  break;
-          // return res.status(400).json({ error: 'Invalid filter' });
+        case 'custom':
+          if (!startDate || !endDate) {
+            return res.status(400).json({ error: 'Start date and end date are required for custom range' });
+          }
+      
+          const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
+          if (!isoDateRegex.test(startDate) || !isoDateRegex.test(endDate)) {
+            return res.status(400).json({ error: 'Invalid date format. Use YYYY-MM-DD' });
+          }
+      
+          start = new Date(startDate);
+          end = new Date(endDate);
+          end.setHours(23, 59, 59, 999);
+          break;
+          default:
+            start = new Date("2000-01-01"); // Default to earliest date
+            end = new Date(); // Default to today
+            break;
+        
       }
+      console.log("Received Filter:", filter);
+      
   
       console.log("Final Start Date:", start);
       console.log("Final End Date:", end);
@@ -403,7 +400,9 @@ console.log("Available Order Statuses:", statuses);
         payableAmount: order.totalAmount || 0.00,
         paymentMethod: order.paymentMethod || "Unknown",
         discount: order.discountAmount !== undefined ? order.discountAmount : 0.00,
-        date: order.createdAt ? order.createdAt.toISOString().split('T')[0] : "Unknown"
+        date: order.createdAt 
+        ? new Date(order.createdAt).toLocaleDateString("en-IN") // Indian date format
+        : "Unknown"
       }));
   
       console.log("Generated Report Data:", reportData);
@@ -533,178 +532,128 @@ console.log("Available Order Statuses:", statuses);
   
     } catch (error) {
       console.error("Error fetching sales report:", error);
-      res.status(500).json({ success: false, message: "Server error" });
+      // res.status(500).json({ success: false, message: "Server error" });
+      res.redirect('/pageNotFound')
     }
   };
   
-
   const generatePDF = (reportData, totalSales, totalDiscount, filePath, res) => {
-    // Initialize PDF document with better margins
-    const doc = new PDFDocument({ 
-        margin: 50,
-        size: 'A4',
-        bufferPages: true
-    });
-    
+    const doc = new PDFDocument({ margin: 50, size: 'A4', bufferPages: true });
+
     const dirPath = path.dirname(filePath);
     if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
-    
+
     const stream = fs.createWriteStream(filePath);
     doc.pipe(stream);
-    
-    // Title Section with more spacing and styling
-    doc.font('Helvetica-Bold')
-       .fontSize(24)
-       .text('Sales Report', { align: 'center' });
-    
-    // Format current date for report header
-    const formattedDate = new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-    });
-    
-    // Add report date - aligned with table
-    doc.font('Helvetica')
-       .fontSize(12)
-       .text(formattedDate, 50, doc.y + 10);
-    
+
+    // Title Section
+    doc.font('Helvetica-Bold').fontSize(24).text('Sales Report', { align: 'left' });
+
+    // Format current date
+    const formattedDate = new Date().toLocaleDateString('en-IN');
+
+    // Add report date
+    doc.font('Helvetica').fontSize(12).text(`Report Date: ${formattedDate}`, 50, doc.y + 10);
     doc.moveDown(3);
-    
-    // Table Headers with improved styling
-    const headers = ['Order ID', 'Customer', 'Amount (₹)', 'Discount (₹)', 'Payment Method', 'Date'];
-    const columnWidths = [160, 100, 100, 80, 120, 80];  // Adjusted widths to match image
-    const startX = 50;
+
+    // Adjusted Column Widths - Slightly reduced to ensure table fits on left side
+    const columnWidths = [100, 100, 90, 70, 110, 80]; // Adjusted widths
+    const headers = ['Order ID', 'Customer', 'Amount (₹)', 'Discount (₹)', 'Payment Method', 'Order Date'];
+    const startX = 50; // Keep left margin consistent
     let startY = doc.y;
-    
-    // Draw Table Header with gradient-like background
-    doc.rect(startX, startY, columnWidths.reduce((a, b) => a + b, 0), 30)
-       .fill('#2c3e50');
-    
-    // Header text
-    doc.font('Helvetica-Bold').fontSize(12);
+
+    // Table Header Background
+    doc.rect(startX, startY, columnWidths.reduce((a, b) => a + b, 0), 30).fill('#2c3e50');
+    doc.font('Helvetica-Bold').fontSize(12).fillColor('white');
+
+    // Draw Table Headers
     headers.forEach((header, i) => {
-        doc.fillColor('white')
-           .text(header, 
-                startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, 
-                startY + 10,
-                {
-                    width: columnWidths[i] - 10,
-                    align: 'left'  // All headers left-aligned
-                });
+        doc.text(header, startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, startY + 10, {
+            width: columnWidths[i] - 10,
+            align: 'left'
+        });
     });
-    
+
     startY += 35;
     doc.fillColor('black').font('Helvetica').fontSize(10);
-    
-    // Draw Table Rows with improved styling
+
+    // Table Rows
     reportData.forEach((order, rowIndex) => {
-      // If the next row would exceed the page height, create a new page
-      if (startY + 30 > doc.page.height - 80) {  // Keeping margin for footer
-          doc.addPage();
-          startY = 50; // Reset start position for new page
-  
-          // Redraw table headers for new page
-          doc.rect(startX, startY, columnWidths.reduce((a, b) => a + b, 0), 30)
-             .fill('#2c3e50');
-  
-          doc.font('Helvetica-Bold').fontSize(12);
-          headers.forEach((header, i) => {
-              doc.fillColor('white')
-                 .text(header, startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, startY + 10, {
-                     width: columnWidths[i] - 10,
-                     align: 'left'
-                 });
-          });
-  
-          startY += 35;
-          doc.fillColor('black').font('Helvetica').fontSize(10);
-      }
-  
-      // Alternate row background
-      if (rowIndex % 2 === 0) {
-          doc.rect(startX, startY - 5, columnWidths.reduce((a, b) => a + b, 0), 25).fill('#f8f9fa');
-      }
-  
-      const orderDate = order.date ? new Date(order.date).toLocaleDateString('en-IN') : 'N/A';
-  
-      const row = [
-          order.orderId || 'N/A',
-          order.customerName || 'Guest',
-          `₹${order.payableAmount.toFixed(2)}`,
-          `₹${order.discount.toFixed(2)}`,
-          order.paymentMethod || 'Unknown',
-          orderDate
-      ];
-  
-      row.forEach((text, i) => {
-          doc.fillColor('black')
-             .text(text, startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, startY, {
-                 width: columnWidths[i] - 10,
-                 align: 'left'
-             });
-      });
-  
-      startY += 25;
-  });
-  
-    
-    // Summary Section with enhanced styling
+        if (startY + 30 > doc.page.height - 80) { 
+            doc.addPage();
+            startY = 50;
+
+            // Redraw Headers on New Page
+            doc.rect(startX, startY, columnWidths.reduce((a, b) => a + b, 0), 30).fill('#2c3e50');
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('white');
+            headers.forEach((header, i) => {
+                doc.text(header, startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, startY + 10, {
+                    width: columnWidths[i] - 10,
+                    align: 'left'
+                });
+            });
+
+            startY += 35;
+            doc.fillColor('black').font('Helvetica').fontSize(10);
+        }
+
+        if (rowIndex % 2 === 0) {
+            doc.rect(startX, startY - 5, columnWidths.reduce((a, b) => a + b, 0), 25).fill('#f8f9fa');
+        }
+
+        // Format Order Date
+        // const orderDate = order.date ? new Date(order.date).toLocaleDateString('en-IN') : 'N/A';
+// Format Order Date (Ensure consistency)
+const parseDate = (dateStr) => {
+  const parts = dateStr.split('/'); // Split the date
+  if (parts.length === 3) {
+      const day = parts[0].padStart(2, '0');
+      const month = parts[1].padStart(2, '0');
+      const year = parts[2];
+      return `${day}/${month}/${year}`;
+  }
+  return 'N/A'; // Fallback for invalid dates
+};
+
+const orderDate = order.date ? parseDate(order.date) : 'N/A';
+console.log("Formatted Order Date:", orderDate);
+
+        // Adjusted Text Alignment
+        const row = [
+            order.orderId || 'N/A',
+            order.customerName || 'Guest',
+            `₹${order.payableAmount.toFixed(2)}`,
+            `₹${order.discount.toFixed(2)}`,
+            order.paymentMethod || 'Unknown',
+            orderDate
+        ];
+
+        row.forEach((text, i) => {
+            doc.fillColor('black').text(text, 
+                startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0) + 5, 
+                startY, {
+                    width: columnWidths[i] - 10,
+                    align: 'left'
+                });
+        });
+
+        startY += 25;
+    });
+
+    // Add summary at the bottom
     doc.moveDown(2);
-    
-    // Add summary box
-    const summaryX = doc.page.width - 250;
-    const summaryY = startY + 20;
-    
-    doc.rect(summaryX, summaryY, 200, 80)
-       .fill('#f8f9fa')
-       .stroke('#d1d1d1');
-    
-    doc.font('Helvetica-Bold').fontSize(14);
-    
-    // Summary title
-    doc.fillColor('#2c3e50')
-       .text('Summary', summaryX + 70, summaryY + 10);
-    
-    // Summary details with right-aligned values
-    doc.fontSize(12);
-    
-    // Total Sales row
-    doc.font('Helvetica-Bold')
-       .text('Total Sales:', summaryX + 20, summaryY + 35);
-    doc.font('Helvetica')
-       .text(`₹${totalSales.toFixed(2)}`, summaryX + 120, summaryY + 35, {
-           align: 'right',
-           width: 60
-       });
-    
-    // Total Discount row   
-    doc.font('Helvetica-Bold')
-       .text('Total Discount:', summaryX + 20, summaryY + 55);
-    doc.font('Helvetica')
-       .text(`₹${totalDiscount.toFixed(2)}`, summaryX + 120, summaryY + 55, {
-           align: 'right',
-           width: 60
-       });
-    
-    // Add page numbers
-    const pages = doc.bufferedPageRange();
-    for (let i = 0; i < pages.count; i++) {
-        doc.switchToPage(i);
-        doc.fontSize(10)
-           .text(`Page ${i + 1} of ${pages.count}`,
-                50,
-                doc.page.height - 50,
-                { align: 'center' });
-    }
-    
-    // Finalize PDF
+    doc.font('Helvetica-Bold').fontSize(12);
+    doc.text(`Total Sales: ₹${totalSales.toFixed(2)}`, 50);
+    doc.text(`Total Discount: ₹${totalDiscount.toFixed(2)}`, 50);
+
     doc.end();
-    
+
     stream.on('finish', () => {
         res.download(filePath, 'salesReport.pdf');
     });
 };
+
+
 
 
 
