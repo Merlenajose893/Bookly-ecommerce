@@ -278,91 +278,91 @@
         
                     <!-- Sales Report Section -->
                    <!-- Sales Report Section -->
-                   <div class="container mt-4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-white">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h3 class="card-title fw-bold mb-0">Sales Report</h3>
-                                <div class="btn-group">
-                                    <button onclick="exportReport('pdf')" class="btn btn-primary me-2">
-                                        <i class="fas fa-file-pdf me-2"></i>Export PDF
-                                    </button>
-                                    <button onclick="exportReport('excel')" class="btn btn-success">
-                                        <i class="fas fa-file-excel me-2"></i>Export Excel
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="card-body">
-                            <!-- Date Filter Section -->
-                            <form method="GET" action="/admin/sales-report" class="mb-4">
-                                <div class="form-group mb-3">
-                                    <label class="form-label fw-semibold">Date Filter</label>
-                                    <select id="dateFilter" class="form-select" name="filter" onchange="handleFilterChange()">
-                                        <option value="daily" <%= filter === 'daily' ? 'selected' : '' %>>Daily</option>
-                                        <option value="weekly" <%= filter === 'weekly' ? 'selected' : '' %>>Weekly</option>
-                                        <option value="monthly" <%= filter === 'monthly' ? 'selected' : '' %>>Monthly</option>
-                                        <option value="yearly" <%= filter === 'yearly' ? 'selected' : '' %>>Yearly</option>
-                                        <option value="custom" <%= filter === 'custom' ? 'selected' : '' %>>Custom</option>
-                                    </select>
-                                </div>
-                            
-                                <!-- Custom Date Range -->
-                                <div id="customDateRange" class="col-md-8 mb-3" style="display: <%= filter === 'custom' ? 'block' : 'none' %>;">
-                                    <div class="row g-2">
-                                      <div class="col-md-6">
-                                        <label class="form-label small">Start Date</label>
-                                        <input type="date" id="startDate" class="form-control" name="startDate" 
-                                               value="<%= startDate || '' %>" <%= filter === 'custom' ? 'required' : '' %>>
-                                      </div>
-                                      <div class="col-md-6">
-                                        <label class="form-label small">End Date</label>
-                                        <input type="date" id="endDate" class="form-control" name="endDate" 
-                                               value="<%= endDate || '' %>" <%= filter === 'custom' ? 'required' : '' %>>
-                                      </div>
-                                    </div>
-                                </div>
-                            
-                                <div class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary">Apply Filter</button>
-                                    <button type="button" id="clearFilters" class="btn btn-outline-secondary">Clear Filters</button>
-                                </div>
-                            </form>
-                
-                            <div class="card-body p-0">
-                                <h5 class="mb-3 fw-bold text-start">Order Details</h5>
-                                <div class="table-responsive">
-                                    <table class="table table-striped table-hover align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th class="text-nowrap">Order ID</th>
-                                                <th class="text-nowrap">Customer Name</th>
-                                                <th class="text-nowrap">Payable Amount</th>
-                                                <th class="text-nowrap">Payment Method</th>
-                                                <th class="text-nowrap">Discount</th>
-                                                <th class="text-nowrap">Date</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <% reportData.forEach(order => { %>
-                                            <tr>
-                                                <td class="fw-medium"><%= order.orderId %></td>
-                                                <td><%= order.customerName %></td>
-                                                <td class="text-end">₹<%= order.payableAmount %></td>
-                                                <td><%= order.paymentMethod %></td>
-                                                <td class="text-end">₹<%= order.discount %></td>
-                                                <td><%= order.date %></td>
-                                            </tr>
-                                            <% }); %>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                <div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="card-title fw-bold mb-0">Sales Report</h3>
+                <div class="btn-group">
+                    <button onclick="exportReport('pdf')" class="btn btn-primary me-2">
+                        <i class="fas fa-file-pdf me-2"></i>Export PDF
+                    </button>
+                    <button onclick="exportReport('excel')" class="btn btn-success">
+                        <i class="fas fa-file-excel me-2"></i>Export Excel
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <!-- Date Filter Section -->
+            <form method="GET" action="/admin/sales-report" class="mb-4">
+                <div class="form-group mb-3">
+                    <label class="form-label fw-semibold">Date Filter</label>
+                    <select id="dateFilter" class="form-select" name="filter" onchange="handleFilterChange()">
+                        <option value="daily" <%= filter === 'daily' ? 'selected' : '' %>>Daily</option>
+                        <option value="weekly" <%= filter === 'weekly' ? 'selected' : '' %>>Weekly</option>
+                        <option value="monthly" <%= filter === 'monthly' ? 'selected' : '' %>>Monthly</option>
+                        <option value="yearly" <%= filter === 'yearly' ? 'selected' : '' %>>Yearly</option>
+                        <option value="custom" <%= filter === 'custom' ? 'selected' : '' %>>Custom</option>
+                    </select>
+                </div>
+            
+                <!-- Custom Date Range -->
+                <div id="customDateRange" class="col-md-8 mb-3" style="display: <%= filter === 'custom' ? 'block' : 'none' %>;">
+                    <div class="row g-2">
+                      <div class="col-md-6">
+                        <label class="form-label small">Start Date</label>
+                        <input type="date" id="startDate" class="form-control" name="startDate" 
+                               value="<%= startDate || '' %>" <%= filter === 'custom' ? 'required' : '' %>>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label small">End Date</label>
+                        <input type="date" id="endDate" class="form-control" name="endDate" 
+                               value="<%= endDate || '' %>" <%= filter === 'custom' ? 'required' : '' %>>
+                      </div>
                     </div>
                 </div>
-                
+            
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Apply Filter</button>
+                    <button type="button" id="clearFilters" class="btn btn-outline-secondary">Clear Filters</button>
+                </div>
+            </form>
+
+            <div class="card-body p-0">
+                <h5 class="mb-3 fw-bold text-start">Order Details</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-nowrap">Order ID</th>
+                                <th class="text-nowrap">Customer Name</th>
+                                <th class="text-nowrap">Payable Amount</th>
+                                <th class="text-nowrap">Payment Method</th>
+                                <th class="text-nowrap">Discount</th>
+                                <th class="text-nowrap">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% reportData.forEach(order => { %>
+                            <tr>
+                                <td class="fw-medium"><%= order.orderId %></td>
+                                <td><%= order.customerName %></td>
+                                <td class="text-end">₹<%= order.payableAmount %></td>
+                                <td><%= order.paymentMethod %></td>
+                                <td class="text-end">₹<%= order.discount %></td>
+                                <td><%= order.date %></td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
         <!-- <div class="image-container">
             <img src="/img/manager.png" alt="Manager Icon" width="50px" height="50px">
         </div> -->
