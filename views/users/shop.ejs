@@ -545,6 +545,7 @@
                         <% }) %>
                 
                         <button type="submit" class="btn btn-primary mt-3">Apply Filters</button>
+                        <button type="button" id="clearFilters" class="btn btn-secondary mt-3">Clear Filters</button>
                     </form>
                 </div>
                 
@@ -912,6 +913,23 @@
       document.querySelector('input[name="search"]').value = '';
     };
   </script>
+  <script>
+    document.getElementById("clearFilters").addEventListener("click", function() {
+        // Reset the form
+        document.getElementById("filterForm").reset();
+
+        // Uncheck all checkboxes manually (as reset() may not work in some cases)
+        document.querySelectorAll("#filterForm input[type='checkbox']").forEach(checkbox => {
+            checkbox.checked = false;
+        });
+
+        // Reset the sorting dropdown to default
+        document.getElementById("sortOptions").value = "featured";
+
+        // Optionally, submit the form after clearing
+        document.getElementById("filterForm").submit();
+    });
+</script>
   
 
 </body>
