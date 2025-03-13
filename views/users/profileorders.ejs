@@ -326,7 +326,7 @@
                                               </button>
                                             <% } %>
                                             
-                                            <% if (order.status === 'Delivered') { %>
+                                            <% if (order.status === 'Delivered'||order.status==='Paid') { %>
                                               <a href="/profileorder/invoice/<%= order._id %>" class="btn btn-outline-primary btn-sm">
                                                 <i class="fas fa-file-download me-1"></i>Invoice
                                               </a>
