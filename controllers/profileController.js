@@ -410,8 +410,12 @@ const loadOrder = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .lean();
+      // console.log(order.books.productId,'fghjkl');
+      
 
     console.log("Fetched Orders:", order); // Debugging output
+    const allBooks = order.flatMap(o => o.books);
+console.log(allBooks,'fghjkvbnm');
 
     res.render('profileorders', {
       order,
