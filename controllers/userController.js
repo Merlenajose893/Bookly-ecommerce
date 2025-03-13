@@ -899,38 +899,39 @@ const logout = (req, res) => {
 
 const loadBookDetails = async (req, res) => {
   try {
-    console.log('⏳ Request received for book details.');
+    console.log('Request received for book details.');
 
     const user = req.user;
     if (user && user.isBlocked) {
-      console.log('🚫 User is blocked:', user._id);
+      console.log('User is blocked:', user._id);
       return res
         .status(403)
         .send('<h1 style="background-color:red; color:white;">Access Denied: Your account is blocked.</h1>');
     }
 
     const { id: bookId } = req.params;
-    console.log('📖 Requested Book ID:', bookId);
+    console.log('Requested Book ID:', bookId);
 
+    // Validate Book ID format (MongoDB ObjectId)
     if (!bookId.match(/^[0-9a-fA-F]{24}$/)) {
-      console.log('❌ Invalid Book ID format.');
+      console.log('Invalid Book ID format.');
       return res.status(400).json({ success: false, message: 'Invalid book ID format' });
     }
 
-    const book = await Book.findById(bookId)
-      .populate('genres', 'name')
-      .populate('offerId');
+    // Fetch book details
+    const book = await Book.findById(bookId).populate('genres', 'name').populate('offerId');
 
-    console.log('📘 Book Details:', book);
-    console.log('🔗 Book Offer ID:', book.offerId);
-
+    // Ensure `book` exists before accessing `offerId`
     if (!book || book.isDeleted) {
-      console.log('❌ Book not found or deleted.');
-      return res.render('productban');
+      console.log('Book not found or deleted.');
+      return res.render('productban'); // or return a 404 JSON response
     }
 
+    // Check if `offerId` exists before accessing it
+    console.log('Book Offer ID:', book.offerId ? book.offerId : 'No Offer Found');
+
     const currentDate = new Date();
-    console.log('📅 Current Date:', currentDate);
+    console.log('Current Date:', currentDate);
 
     // Fetch Product-Specific Offer
     const productOffer = await Offer.findOne({
@@ -939,7 +940,7 @@ const loadBookDetails = async (req, res) => {
       endDate: { $gte: currentDate },
     });
 
-    console.log('🏷️ Product Offer:', productOffer);
+    console.log('Product Offer:', productOffer || 'No product offer');
 
     // Fetch Category-Based Offer (if no product-specific offer exists)
     let categoryOffer = null;
@@ -951,22 +952,16 @@ const loadBookDetails = async (req, res) => {
       });
     }
 
-    console.log('📂 Category Offer:', categoryOffer);
+    console.log('Category Offer:', categoryOffer || 'No category offer');
 
     const genres = await Genre.find({ isListed: true });
-    console.log('📚 Available Genres:', genres);
+    console.log('Available Genres:', genres);
 
     // Apply Discount Logic
     let finalPrice = book.regularPrice;
-    let appliedOffer = null;
+    let appliedOffer = productOffer || categoryOffer || null;
 
-    if (productOffer) {
-      appliedOffer = productOffer;
-    } else if (categoryOffer) {
-      appliedOffer = categoryOffer;
-    }
-
-    console.log('🎯 Applied Offer:', appliedOffer);
+    console.log('Applied Offer:', appliedOffer || 'No applied offer');
 
     if (appliedOffer) {
       if (appliedOffer.discountType === 'Percentage') {
@@ -979,7 +974,7 @@ const loadBookDetails = async (req, res) => {
     finalPrice = Math.max(finalPrice, 0); // Ensure price is not negative
     book.salesPrice = finalPrice;
 
-    console.log('💰 Final Sales Price:', book.salesPrice);
+    console.log('Final Sales Price:', book.salesPrice);
 
     // Fetch Related Books
     const relatedBooks = await Book.find({
@@ -988,14 +983,14 @@ const loadBookDetails = async (req, res) => {
       isDeleted: false,
     }).limit(4);
 
-    console.log('📖 Related Books:', relatedBooks);
+    console.log('Related Books:', relatedBooks);
 
     // Prepare `offers` array for rendering
     const offers = [];
     if (productOffer) offers.push(productOffer);
     if (categoryOffer) offers.push(categoryOffer);
 
-    console.log('🛒 Offers Available:', offers);
+    console.log('Offers Available:', offers);
 
     // Render the 'details' view
     return res.render('details', {
@@ -1003,14 +998,14 @@ const loadBookDetails = async (req, res) => {
       appliedOffer,
       relatedBooks,
       genres,
-      offers, // Now correctly passing offers
+      offers,
     });
-
   } catch (error) {
-    console.error('❌ Error loading book details:', error);
+    console.error('Error loading book details:', error);
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
 
 
 
