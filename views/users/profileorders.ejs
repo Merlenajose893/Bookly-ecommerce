@@ -280,21 +280,44 @@
                                           </h6>
                                           <div class="mb-3 order-items-container">
                                             <% order.books.forEach(function(book) { %>
-                                              <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
-                                                <img src="/uploads/<%= book.productId.images[0] %>" 
-                                                    alt="Book Cover" 
-                                                    class="rounded me-3" 
-                                                    style="width: 35px; height: 50px; object-fit: cover;">
-                                                <div class="flex-grow-1 min-width-0">
-                                                  <div class="d-flex flex-column flex-sm-row justify-content-between">
-                                                    <span class="fw-medium text-truncate me-2"><%= book.productId.title %></span>
-                                                    <span class="ms-0 ms-sm-2 text-sm-end">₹<%= (book.productId.salesPrice * book.quantity).toFixed(2) %></span>
+                                              <% if (book.productId) { %>
+                                                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                                  <% if (book.productId.images && book.productId.images.length > 0) { %>
+                                                    <img src="/uploads/<%= book.productId.images[0] %>" 
+                                                        alt="Book Cover" 
+                                                        class="rounded me-3" 
+                                                        style="width: 35px; height: 50px; object-fit: cover;">
+                                                  <% } else { %>
+                                                    <img src="/uploads/default-book-cover.jpg" 
+                                                        alt="No Image Available" 
+                                                        class="rounded me-3" 
+                                                        style="width: 35px; height: 50px; object-fit: cover;">
+                                                  <% } %>
+                                          
+                                                  <div class="flex-grow-1 min-width-0">
+                                                    <div class="d-flex flex-column flex-sm-row justify-content-between">
+                                                      <span class="fw-medium text-truncate me-2"><%= book.productId.title %></span>
+                                                      <span class="ms-0 ms-sm-2 text-sm-end">
+                                                        ₹<%= (book.productId.salesPrice * book.quantity).toFixed(2) %>
+                                                      </span>
+                                                    </div>
+                                                    <div class="small text-muted">Qty: <%= book.quantity %></div>
                                                   </div>
-                                                  <div class="small text-muted">Qty: <%= book.quantity %></div>
                                                 </div>
-                                              </div>
+                                              <% } else { %>
+                                                <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+                                                  <img src="/uploads/default-book-cover.jpg" 
+                                                      alt="No Image Available" 
+                                                      class="rounded me-3" 
+                                                      style="width: 35px; height: 50px; object-fit: cover;">
+                                                  <div class="flex-grow-1 min-width-0">
+                                                    <span class="fw-medium text-truncate me-2 text-danger">Product Not Available</span>
+                                                  </div>
+                                                </div>
+                                              <% } %>
                                             <% }) %>
                                           </div>
+                                          
                                           
                                           <!-- Action Buttons - Better spacing and alignment -->
                                           <div class="d-flex flex-wrap gap-2 mt-3 justify-content-center justify-content-sm-end">
