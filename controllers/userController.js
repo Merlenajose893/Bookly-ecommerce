@@ -987,8 +987,8 @@ const loadBookDetails = async (req, res) => {
 
     // Prepare `offers` array for rendering
     const offers = [];
-    if (productOffer) offers.push(productOffer);
-    if (categoryOffer) offers.push(categoryOffer);
+    if (productOffer?.isActive) offers.push(productOffer);
+    if (categoryOffer?.isActive) offers.push(categoryOffer);
 
     console.log('Offers Available:', offers);
 
