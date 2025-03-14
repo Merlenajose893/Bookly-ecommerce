@@ -727,7 +727,7 @@ const loadShop = async (req, res) => {
         { title: { $regex: searchQuery, $options: 'i' } },
         { author: { $regex: searchQuery, $options: 'i' } },
       ];
-      console.log("Search filter applied:", filter.$or);
+      // console.log("Search filter applied:", filter.$or);
     }
 
     // Handle genres filter
@@ -736,13 +736,13 @@ const loadShop = async (req, res) => {
       selectedGenres = Array.isArray(req.query.genres)
         ? req.query.genres
         : req.query.genres.split(',');
-      console.log("Selected genres:", selectedGenres);
+      // console.log("Selected genres:", selectedGenres);
     }
 
     if (selectedGenres.length > 0) {
       const genreDocs = await Genre.find({ name: { $in: selectedGenres } }).select('_id');
       const genreIds = genreDocs.map((genre) => genre._id);
-      console.log("Genre IDs found:", genreIds);
+      // console.log("Genre IDs found:", genreIds);
 
       if (genreIds.length > 0) {
         filter.genres = { $in: genreIds };
@@ -761,12 +761,12 @@ const loadShop = async (req, res) => {
     };
 
     const sortOption = sortOptions[req.query.sort] || { createdAt: -1 };
-    console.log("Sorting option selected:", sortOption);
+    // console.log("Sorting option selected:", sortOption);
 
     // Get paginated books
     const totalItems = await Book.countDocuments(filter);
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    console.log(`Total books found: ${totalItems}, Total pages: ${totalPages}`);
+    // console.log(`Total books found: ${totalItems}, Total pages: ${totalPages}`);
 
     let books = await Book.find(filter)
       .populate('genres')
@@ -774,19 +774,19 @@ const loadShop = async (req, res) => {
       .sort(sortOption)
       .skip((page - 1) * itemsPerPage)
       .limit(itemsPerPage);
-    console.log("Books fetched from DB:", books.length);
+    // console.log("Books fetched from DB:", books.length);
 
     // Process offers for each book
     books = await Promise.all(books.map(async (book) => {
       let finalPrice = book.salesPrice || book.regularPrice;
       let appliedOffer = null;
 
-      console.log(`Processing book: ${book.title}, Regular price: ${book.regularPrice}, Sales price: ${book.salesPrice}`);
+      // console.log(`Processing book: ${book.title}, Regular price: ${book.regularPrice}, Sales price: ${book.salesPrice}`);
 
       // Check product-specific offer
       if (book.offerId && book.offerId.isActive && book.offerId.endDate >= currentDate) {
         appliedOffer = book.offerId;
-        console.log(`Applied product offer: ${appliedOffer.discountType} - ${appliedOffer.discountValue}`);
+        // console.log(`Applied product offer: ${appliedOffer.discountType} - ${appliedOffer.discountValue}`);
       } else {
         // Check category offers
         const categoryOffer = await Offer.findOne({
@@ -797,7 +797,7 @@ const loadShop = async (req, res) => {
 
         if (categoryOffer) {
           appliedOffer = categoryOffer;
-          console.log(`Applied category offer: ${appliedOffer.discountType} - ${appliedOffer.discountValue}`);
+          // console.log(`Applied category offer: ${appliedOffer.discountType} - ${appliedOffer.discountValue}`);
         }
       }
 
@@ -810,12 +810,12 @@ const loadShop = async (req, res) => {
           finalPrice = finalPrice - appliedOffer.discountValue;
         }
         finalPrice = Math.max(finalPrice, 0);
-        console.log('Fin',finalPrice);
+        // console.log('Fin',finalPrice);
       }
 
-      console.log(`Final price after discount: ${finalPrice}`);
+      // console.log(`Final price after discount: ${finalPrice}`);
 book.salesPrice=finalPrice;
-console.log('Sales',book.salesPrice);
+// console.log('Sales',book.salesPrice);
 
       // Create new object to avoid modifying original document
       return {
@@ -831,8 +831,8 @@ console.log('Sales',book.salesPrice);
       Offer.find({ isActive: true, endDate: { $gte: currentDate } })
     ]);
 
-    console.log("Genres fetched:", genres.length);
-    console.log("Active offers fetched:", offers.length);
+    // console.log("Genres fetched:", genres.length);
+    // console.log("Active offers fetched:", offers.length);
 
     res.render('shop', {
       books,
@@ -855,7 +855,7 @@ console.log('Sales',book.salesPrice);
 const getBooksById = async (req, res) => {
   try {
     const bookId = req.params.id;
-    console.log('Received Book ID:', bookId);
+    // console.log('Received Book ID:', bookId);
 
     // Validate the ID format
     if (!mongoose.Types.ObjectId.isValid(bookId)) {
@@ -864,7 +864,7 @@ const getBooksById = async (req, res) => {
 
     // Find the book by its ID
     const book = await Book.findById(bookId); // Using findById for simplicity
-    console.log('Found Book:', book);
+    // console.log('Found Book:', book);
 
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
@@ -899,22 +899,22 @@ const logout = (req, res) => {
 
 const loadBookDetails = async (req, res) => {
   try {
-    console.log('Request received for book details.');
+    // console.log('Request received for book details.');
 
     const user = req.user;
     if (user && user.isBlocked) {
-      console.log('User is blocked:', user._id);
+      // console.log('User is blocked:', user._id);
       return res
         .status(403)
         .send('<h1 style="background-color:red; color:white;">Access Denied: Your account is blocked.</h1>');
     }
 
     const { id: bookId } = req.params;
-    console.log('Requested Book ID:', bookId);
+    // console.log('Requested Book ID:', bookId);
 
     // Validate Book ID format (MongoDB ObjectId)
     if (!bookId.match(/^[0-9a-fA-F]{24}$/)) {
-      console.log('Invalid Book ID format.');
+      // console.log('Invalid Book ID format.');
       return res.status(400).json({ success: false, message: 'Invalid book ID format' });
     }
 
@@ -923,15 +923,15 @@ const loadBookDetails = async (req, res) => {
 
     // Ensure `book` exists before accessing `offerId`
     if (!book || book.isDeleted) {
-      console.log('Book not found or deleted.');
+      // console.log('Book not found or deleted.');
       return res.render('productban'); // or return a 404 JSON response
     }
 
     // Check if `offerId` exists before accessing it
-    console.log('Book Offer ID:', book.offerId ? book.offerId : 'No Offer Found');
+    // console.log('Book Offer ID:', book.offerId ? book.offerId : 'No Offer Found');
 
     const currentDate = new Date();
-    console.log('Current Date:', currentDate);
+    // console.log('Current Date:', currentDate);
 
     // Fetch Product-Specific Offer
     const productOffer = await Offer.findOne({
@@ -940,7 +940,7 @@ const loadBookDetails = async (req, res) => {
       endDate: { $gte: currentDate },
     });
 
-    console.log('Product Offer:', productOffer || 'No product offer');
+    // console.log('Product Offer:', productOffer || 'No product offer');
 
     // Fetch Category-Based Offer (if no product-specific offer exists)
     let categoryOffer = null;
@@ -952,16 +952,16 @@ const loadBookDetails = async (req, res) => {
       });
     }
 
-    console.log('Category Offer:', categoryOffer || 'No category offer');
+    // console.log('Category Offer:', categoryOffer || 'No category offer');
 
     const genres = await Genre.find({ isListed: true });
-    console.log('Available Genres:', genres);
+    // console.log('Available Genres:', genres);
 
     // Apply Discount Logic
     let finalPrice = book.regularPrice;
     let appliedOffer = productOffer || categoryOffer || null;
 
-    console.log('Applied Offer:', appliedOffer || 'No applied offer');
+    // console.log('Applied Offer:', appliedOffer || 'No applied offer');
 
     if (appliedOffer) {
       if (appliedOffer.discountType === 'Percentage') {
@@ -974,7 +974,7 @@ const loadBookDetails = async (req, res) => {
     finalPrice = Math.max(finalPrice, 0); // Ensure price is not negative
     book.salesPrice = finalPrice;
 
-    console.log('Final Sales Price:', book.salesPrice);
+    // console.log('Final Sales Price:', book.salesPrice);
 
     // Fetch Related Books
     const relatedBooks = await Book.find({
@@ -983,14 +983,14 @@ const loadBookDetails = async (req, res) => {
       isDeleted: false,
     }).limit(4);
 
-    console.log('Related Books:', relatedBooks);
+    // console.log('Related Books:', relatedBooks);
 
     // Prepare `offers` array for rendering
     const offers = [];
     if (productOffer?.isActive) offers.push(productOffer);
     if (categoryOffer?.isActive) offers.push(categoryOffer);
 
-    console.log('Offers Available:', offers);
+    // console.log('Offers Available:', offers);
 
     // Render the 'details' view
     return res.render('details', {
