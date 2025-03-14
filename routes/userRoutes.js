@@ -105,7 +105,7 @@ router.get('/profileorder/viewOrder/:orderId',userController.viewOrder)
 router.post('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.get('/profileorder/cancel/:orderId',profileController.cancelOrder);
 // router.post('/profileorder/return/:orderId',profileController.returnOrder)
-router.post('/profileorder/return/:orderId/:productId', profileController.returnOrder);
+router.post('/profileorder/return/:orderId', profileController.returnOrder);
 
 router.get('/profileorder/invoice/:orderId',profileController.generateInvoice);
 // router.post('/profileorder/retry-payment/:orderId',profileController.retryPayment);
