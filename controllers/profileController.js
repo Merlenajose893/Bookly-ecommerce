@@ -723,6 +723,10 @@ const generateInvoice = async (req, res) => {
 const cancelOrder = async (req, res) => {
   try {
     const userId = req.session.user; 
+    if(!userId)
+    {
+      return res.redirect('/login')
+    }
     // Assuming the user ID is stored in the session
     const orderId = req.params.orderId;
     console.log('OrderId',orderId);
