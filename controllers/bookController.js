@@ -10,70 +10,47 @@ const sharp = require('sharp');
 const addProducts = async (req, res) => {
   try {
     const books = req.body;
-    console.log('Received request body:', books);
-    if (!books) {
-      return res.redirect('/admin/books', { message: 'No books provided' });
-    }
+    if (!books) return res.redirect("/admin/books", { message: "No books provided" });
 
-    // Access the genre ID
-    const genreId = books.books.genre; // Assuming the genre ID is being sent from the client
-    console.log('Genre ID:', genreId);
-
-    // Find the genre by ID
+    const genreId = books.books.genre;
     const genre = await Genre.findById(genreId);
-    console.log('Found Genre:', genre);
+    if (!genre) return res.status(400).json({ error: "Invalid Genre ID" });
 
-    // Check if the genre exists
-    if (!genre) {
-      return res.status(400).json({ error: 'Invalid Genre ID' });
-    }
-
-    // Check if the book already exists
     const bookExists = await Book.findOne({ title: books.title });
-    if (bookExists) {
-      return res.status(400).json('Book already exists');
-    }
+    if (bookExists) return res.status(400).json("Book already exists");
 
-    // Handle file uploads for images
-    const images = [];
-    if (req.files) {
-      const imageFields = ['image1', 'image2', 'image3', 'image4'];
-      for (const field of imageFields) {
-        if (req.files[field]) {
-          images.push(req.files[field][0].filename);
-        }
-      }
-    }
+    const images = req.files
+      ? ["image1", "image2", "image3", "image4"].reduce((acc, field) => {
+          if (req.files[field]) acc.push(req.files[field][0].filename);
+          return acc;
+        }, [])
+      : [];
 
-    // Ensure at least 2 images exist
-    if (images.length < 2) {
-      return res.status(400).json({ error: 'At least 2 images are required for the book.' });
-    }
+    if (images.length < 2) return res.status(400).json({ error: "At least 2 images are required for the book." });
 
-    // Create a new book
     const newBook = new Book({
       title: books.title,
       author: books.author,
       publisher: books.publisher,
       description: books.description,
       regularPrice: books.regularPrice,
-      genres: [genreId], // Store the genre ID as a reference
+      genres: [genreId],
       salesPrice: books.salesPrice,
       createdOn: new Date(),
       quantity: books.quantity,
       isbn: books.isbn,
-      formats: books.formats || '', // Split formats into an array if necessary
-      images: images, // Attach the images
+      formats: books.formats || "",
+      images,
     });
 
-    // Save the new book to the database
     await newBook.save();
-    return res.redirect('/admin/books');
+    res.redirect("/admin/books");
   } catch (error) {
-    console.error('Error saving book:', error);
-    return res.status(500).json({ message: 'Server Error', error: error.message });
+    console.error("Error saving book:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
   }
 };
+
 
 const editProduct = async (req, res) => {
   try {
@@ -86,7 +63,7 @@ const editProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product Not Found' });
     }
 
-    // Update the fields if provided
+    
     if (isbn) book.isbn = isbn;
     if (title) book.title = title;
     if (author) book.author = author;
@@ -96,7 +73,7 @@ const editProduct = async (req, res) => {
     if (quantity) book.quantity = quantity;
     if (formats) book.formats = formats;
 
-    // Update genres if provided
+  
     if (genre) {
       let genreIds = genre;
       if (typeof genre === 'string') {
@@ -114,7 +91,7 @@ const editProduct = async (req, res) => {
       book.genres = genreDocs.map((g) => g._id);
     }
 
-    // Handle image updates without overwriting existing images
+  
     if (req.files) {
       const imageFields = ['image1', 'image2', 'image3', 'image4'];
       const newImagePaths = [];
@@ -127,11 +104,11 @@ const editProduct = async (req, res) => {
       }
 
       if (newImagePaths.length > 0) {
-        book.images = [...book.images, ...newImagePaths]; // Append new images to the existing array
+        book.images = [...book.images, ...newImagePaths]; 
       }
     }
 
-    // Save the updated book document
+
     const updatedBook = await book.save();
     console.log(updatedBook);
     
@@ -152,7 +129,7 @@ const toggleProductStatus = async (req, res) => {
       return res.status(400).json({ message: 'Book not found' });
     }
 
-    // Toggle the `isDeleted` status
+
     book.isDeleted = !book.isDeleted;
     await book.save();
 
@@ -163,56 +140,32 @@ const toggleProductStatus = async (req, res) => {
   }
 };
 
-// Assuming you're using a MongoDB model called 'Book'
 const getAllBooks = async (req, res) => {
   try {
-    // console.log(req.query.search);
-   
     const { search, genre } = req.query;
     console.log("Raw Query:", req.query);
 
-    
     const page = parseInt(req.query.page) || 1;
-    const limit = 20; // Number of items per page
+    const limit = 20;
     const skip = (page - 1) * limit;
-    // const genre = req.query.genre || '';
-    // const search = req.query.search || '';
 
-    // Fetch all genres
     const genres = await Genre.find({});
     console.log(genres);
-    
 
-    // Create filter for searching by title
-    // const filter={};
-    // if (search) {
-    //   filter.title = { $regex: search, $options: 'i' };
-    // }
-    // if(genre)
-    // {
-    //   filter.genres = genre;
-    // }
     const filter = {};
     if (search) filter.title = { $regex: search, $options: "i" };
     if (genre) filter.genres = genre;
 
-    // Debug the filter
-    console.log("Final Filter:", filter)
+    console.log("Final Filter:", filter);
 
-    // If a genre is selected, add it to the filter
-   console.log('Filter Object',filter);
-   
-
-    // Fetch the books from the database
     const books = await Book.find(filter).skip(skip).limit(limit).populate('genres', 'name');
     const count = await Book.countDocuments(filter);
     const totalPages = Math.ceil(count / limit);
     let message = '';
 
-    // Pass the data to the EJS view
     res.render('books', {
       books,
-      searchQuery:search,
+      searchQuery: search,
       page,
       totalPages,
       genre,
@@ -230,16 +183,14 @@ const deleteSingleImage = async (req, res) => {
     const { imageNameToServer, bookIdToServer } = req.body;
     console.log('Received data:', req.body);
 
-    // Validate Book ID
     if (!mongoose.Types.ObjectId.isValid(bookIdToServer)) {
       console.error('Invalid Book ID:', bookIdToServer);
       return res.status(400).json({ status: false, error: 'Invalid Book ID' });
     }
 
-    // Update book document to remove the image reference
     const book = await Book.findByIdAndUpdate(
       bookIdToServer,
-      { $pull: { images: imageNameToServer } }, // Ensure you're updating the correct field (images instead of bookImage)
+      { $pull: { images: imageNameToServer } },
       { new: true },
     );
 
@@ -250,9 +201,9 @@ const deleteSingleImage = async (req, res) => {
 
     console.log('Updated book:', book);
 
-    // Delete the image file
     const imagePath = path.join(__dirname, '..', 'Public', 'uploads', imageNameToServer);
     console.log('Image Path:', imagePath);
+    
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
       console.log(`Image ${imageNameToServer} deleted successfully`);
@@ -263,28 +214,25 @@ const deleteSingleImage = async (req, res) => {
     }
   } catch (error) {
     console.error('Error in deleteSingleImage:', error);
-    return res
-      .status(500)
-      .json({ status: false, error: 'Error deleting image', message: error.message });
+    return res.status(500).json({ status: false, error: 'Error deleting image', message: error.message });
   }
 };
 
 const deleteProduct = async (req, res) => {
   try {
     const bookId = req.params.bookId;
-    const book = await Book.findById(bookId); // Find book by ID
+    const book = await Book.findById(bookId);
     console.log('Book ID:', bookId);
-    console.log('Images:', book.images); // Log the images field
+    console.log('Images:', book.images);
 
     if (!book) {
       return res.status(400).json({ message: 'Book not found' });
     }
 
-    // Soft delete the book by marking it as deleted
-    book.isDeleted = true; // Set the book as deleted
-    await book.save(); // Save the updated book
+    book.isDeleted = true;
+    await book.save();
 
-    res.redirect('/admin/books'); // Redirect after soft delete
+    res.redirect('/admin/books');
   } catch (error) {
     console.error('Error in deleteProduct:', error.message);
     res.status(500).json({ message: 'Internal server error' });
@@ -294,24 +242,24 @@ const deleteProduct = async (req, res) => {
 const undeleteProduct = async (req, res) => {
   try {
     const bookId = req.params.bookId;
-    const book = await Book.findById(bookId); // Find book by ID
+    const book = await Book.findById(bookId);
     console.log('Book ID:', bookId);
-    console.log('Images:', book.images); // Log the images field
+    console.log('Images:', book.images);
 
     if (!book) {
       return res.status(400).json({ message: 'Book not found' });
     }
 
-    // Soft delete the book by marking it as deleted
-    book.isDeleted = false; // Set the book as deleted
-    await book.save(); // Save the updated book
+    book.isDeleted = false;
+    await book.save();
 
-    res.redirect('/admin/books'); // Redirect after soft delete
+    res.redirect('/admin/books');
   } catch (error) {
-    console.error('Error in deleteProduct:', error.message);
+    console.error('Error in undeleteProduct:', error.message);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 module.exports = {
   addProducts,

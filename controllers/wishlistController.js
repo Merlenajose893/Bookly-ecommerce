@@ -15,9 +15,9 @@ const loadWishlist = async (req, res) => {
         const wishlistItems = wishlist ? wishlist.bookId : [];
         const wishlistCount = wishlistItems.length;
 
-        console.log('Wishlist:', wishlist); // Debugging
+        console.log('Wishlist:', wishlist); 
 
-        // Ensure `wishlist` is always defined
+        
         res.render('wishlist', { wishlist: wishlistItems ,wishlistCount});
 
     } catch (error) {
@@ -43,13 +43,7 @@ const addWishlist=async (req,res) => {
         {
             return res.status(400).json({message:'Book Id is not found'});
         }
-        // const bookExists=await Book.findOne({bookId});
-        // console.log(bookExists);
-        
-        // if(!bookExists)
-        // {
-        //    return res.status(400).json({message:'No book is found'})
-        // }
+       
         let wishlist=await Wishlist.findOne({userId});
         console.log(wishlist);
         
@@ -65,7 +59,7 @@ const addWishlist=async (req,res) => {
             wishlist.bookId.push(bookId);
         }
         await wishlist.save();
-// return res.render('wishlist');
+
 return res.json({success:true,redirect:'/wishlist'})
     } catch (error) {
         console.error('Error adding wishlist',error);
@@ -91,11 +85,11 @@ const addWishlistToCart = async (req, res) => {
             return res.status(400).json({ message: 'Book not found in wishlist' });
         }
 
-        // Remove book from wishlist
+        
         wishlist.bookId = wishlist.bookId.filter(id => id.toString() !== bookId);
         await wishlist.save();
 
-        // Find or create cart
+        
         let cart = await Cart.findOne({ userId });
         if (!cart) {
             cart = new Cart({
@@ -110,7 +104,7 @@ const addWishlistToCart = async (req, res) => {
             });
             await cart.save();
         } else {
-            // Check if the book is already in the cart
+           
             let existingItem = cart.items.find(item => item.productId.toString() === bookId);
             if (existingItem) {
                 existingItem.quantity += 1;
@@ -135,12 +129,12 @@ const addWishlistToCart = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 }
-//zxcvbnm,xcfvgbhnjmkl
+
 
 const removeBookFromWishlist = async (req, res) => {
     try {
         const userId = req.session.user;
-        const bookId = req.body.bookId; // Expecting ObjectId
+        const bookId = req.body.bookId;
 
         console.log("Removing book from wishlist:", bookId);
 
@@ -154,7 +148,6 @@ const removeBookFromWishlist = async (req, res) => {
             return res.status(400).json({ success: false, message: "Book not found in wishlist" });
         }
 
-        // ✅ Properly remove ObjectId from array
         wishlist.bookId = wishlist.bookId.filter(id => !id.equals(bookId));
         await wishlist.save();
 
@@ -164,5 +157,6 @@ const removeBookFromWishlist = async (req, res) => {
         res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
+
 
 module.exports={loadWishlist,addWishlist,addWishlistToCart,removeBookFromWishlist}

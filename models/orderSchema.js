@@ -22,7 +22,7 @@ const orderSchema = new mongoose.Schema(
         quantity: {
           type: Number,
           required: true,
-          min: 1, // Ensures at least 1 item is ordered
+          min: 1,
         },
       },
     ],
@@ -32,12 +32,11 @@ const orderSchema = new mongoose.Schema(
     },
     discountAmount: {
       type: Number,
-      required: false, // Added discount field
-      default: 0, // Default discount is 0 if not provided
+      default: 0,
     },
     paymentMethod: {
       type: String,
-      enum: ["Credit Card", "Debit Card", "PayPal", "Online Payment", "cod", "Razorpay"], // Added Razorpay
+      enum: ["Credit Card", "Debit Card", "PayPal", "Online Payment", "cod", "Razorpay"],
       required: true,
     },
     razorpay: {
@@ -55,12 +54,11 @@ const orderSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Paid", "Shipped", "Delivered", "Cancelled", "Returning", "Returned", "Return Approve","Payment Pending"],
+      enum: ["Pending", "Paid", "Shipped", "Delivered", "Cancelled", "Returning", "Returned", "Return Approve", "Payment Pending"],
       default: "Pending",
       required: true,
     },
     statusHistory: [
-      
       {
         status: { type: String, enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Returning", "Returned", "Return Approve"] },
         timestamp: { type: Date, default: Date.now },
@@ -75,7 +73,7 @@ const orderSchema = new mongoose.Schema(
       },
     ],
   },
-  { timestamps: true } // Automatically handles createdAt & updatedAt
+  { timestamps: true }
 );
 
 const Order = mongoose.model("Order", orderSchema);

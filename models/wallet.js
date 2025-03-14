@@ -4,17 +4,17 @@ const Schema = mongoose.Schema;
 const walletSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User',  // Reference to the User model
+    ref: 'User',
     required: true,
   },
   balance: {
     type: Number,
-    default: 0,  // Starting balance
+    default: 0,
     required: true,
   },
   transactions: [{
     type: Schema.Types.ObjectId,
-    ref: 'Transaction',  // Reference to the Transaction model
+    ref: 'Transaction',
   }],
   createdAt: {
     type: Date,

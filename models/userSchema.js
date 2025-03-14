@@ -13,27 +13,22 @@ const userSchema = new Schema(
     },
     cpassword: { type: String, required: false },
     address: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
-    phone: { type: String, required: false }, // Phone number
-    googleId: { type: String, unique: true, sparse: true }, // Optional, with sparse indexing
+    phone: { type: String, required: false },
+    googleId: { type: String, unique: true, sparse: true },
     isBlocked: { type: Boolean, default: false },
-    isAdmin: { type: Boolean, default: false }, // Default to 'user'
+    isAdmin: { type: Boolean, default: false },
     cart: [{ type: Schema.Types.ObjectId, ref: 'Cart' }],
     orderHistory: [{ type: Schema.Types.ObjectId, ref: 'Order' }],
-    
-    // Wallet Feature
     wallet: {
-      balance: { type: Number, default: 0 }, // Wallet balance
-      transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }], // Reference to transaction history
+      balance: { type: Number, default: 0 },
+      transactions: [{ type: Schema.Types.ObjectId, ref: 'Transaction' }],
     },
-
-    // Referral System
     referralCode: { type: String, unique: true },
     referredBy: { type: Schema.Types.ObjectId, ref: 'User' },
     referralDiscount: { type: Number, default: 0 },
-    referrals: [{ type: Schema.Types.ObjectId, ref: 'User' }], // Users referred by this user
-
+    referrals: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
-  { timestamps: true } // Keep timestamps inside the schema definition
+  { timestamps: true }
 );
 
 const User = mongoose.model('User', userSchema);

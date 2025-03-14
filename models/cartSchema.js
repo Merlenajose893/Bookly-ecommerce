@@ -35,17 +35,17 @@ const cartSchema = new Schema({
     type: Number,
     default: 0
   },
-  couponId: { // ✅ Add coupon reference
+  couponId: { 
     type: Schema.Types.ObjectId,
     ref: 'Coupon',
     default: null
   },
-  discountAmount: { // ✅ Store discount amount separately
+  discountAmount: { 
     type: Number,
     default: 0
   },
   appliedCoupon: { type: String, default: null },
-  total: { // ✅ Store the final total after discount
+  total: { 
     type: Number,
     default: 0
   }

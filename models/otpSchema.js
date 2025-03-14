@@ -12,11 +12,11 @@ const otpSchema = new mongoose.Schema({
     createdAt: { 
         type: Date,
         default: Date.now,
-        index: { expires: 60 }  // This will expire document after 60 seconds
+        index: { expires: 60 }  
     }
 });
 
-// Ensure index is created
+
 otpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 });
 
 const OTP = mongoose.model('OTP', otpSchema);

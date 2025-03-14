@@ -10,19 +10,19 @@ const bookSchema = new mongoose.Schema({
     salesPrice: { type: Number, required: true },
     quantity: { type: Number, required: true },
     stock: { type: Number, default: 0 },
-    genres: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Genre' }], // Reference to Genre
-    images: [{ type: String, required: true }], // Array of image paths
+    genres: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Genre' }],
+    images: [{ type: String, required: true }],
     formats: [{ type: String }],
-    bookImages: [{ type: String }], // Array of formats (e.g., ebook, hardcover, etc.)
-    offerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer', default: null }, // Reference to Offer
+    bookImages: [{ type: String }],
+    offerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Offer', default: null },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
     isDeleted: { type: Boolean, default: false },
     reviews: [
         {
-            user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, // Reference to User
-            rating: { type: Number, min: 1, max: 5 }, // Rating between 1 and 5
-            comment: { type: String }, // Review comment
+            user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+            rating: { type: Number, min: 1, max: 5 },
+            comment: { type: String },
             createdAt: { type: Date, default: Date.now },
         }
     ],
