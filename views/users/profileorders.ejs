@@ -381,10 +381,15 @@
                                             <select id="product<%= order._id %>" name="productId" class="form-select" required>
                                               <option value="" disabled selected>Select a product</option>
                                               <% order.books.forEach(item => { %>
-                                                <option value="<%= item.productId._id.toString()%>">
-                                                  <%= item.productId.title %> 
-                                                </option>
+                                                <% if (item.productId) { %>
+                                                  <option value="<%= item.productId._id.toString() %>">
+                                                    <%= item.productId.title %>
+                                                  </option>
+                                                <% } else { %>
+                                                  <option disabled>Product not available</option>
+                                                <% } %>
                                               <% }) %>
+                                              
                                             </select>
                                           </div>
                                           
