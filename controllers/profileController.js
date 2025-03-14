@@ -755,7 +755,7 @@ const cancelOrder = async (req, res) => {
   
    
     
-    const wallet = await Wallet.findOne({ user: userId });
+    let wallet = await Wallet.findOne({ user: userId });
 
     if (!wallet) {
       // Create a new wallet with the refund amount
