@@ -68,6 +68,7 @@ const updateStatus = async (req, res) => {
         }
 
         order.status = status;
+        
         await order.save();
 
         res.redirect('/admin/adminorders');

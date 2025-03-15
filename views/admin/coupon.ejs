@@ -192,20 +192,25 @@
                                     <div class="mb-3">
                                         <label for="couponName" class="form-label">Coupon Name</label>
                                         <input type="text" id="couponName" name="name" class="form-control" placeholder="Name" >
+                                        <div id="couponNameError" style="color: red;"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="offerPrice" class="form-label">Offer Price</label>
                                         <input type="number" id="offerPrice" name="offerPrice" class="form-control" placeholder="Offer Price">
+                                        <div id="offerPriceError" style="color: red;"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="minimumPrice" class="form-label">Minimum Price</label>
                                         <input type="number" id="minimumPrice" name="minimumPrice" class="form-control" placeholder="Minimum Price" >
+                                        <div id="minimumPriceError" style="color: red;"></div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="expiredOn" class="form-label">Expiry Date</label>
                                         <input type="date" id="expiredOn" name="expiredOn" class="form-control" >
+                                        <div id="expireError" style="color: red;"></div>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Create</button>
+                                    <div id="errorMessages" style="color: red;"></div>
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -296,103 +301,145 @@
         });
       </script> -->
       
+ 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         document.getElementById("couponForm").addEventListener("submit", async function(event) {
             event.preventDefault();
         
+            const name = document.getElementById("couponName").value.trim();
+            const offerPrice = document.getElementById("offerPrice").value.trim();
+            const minimumPrice = document.getElementById("minimumPrice").value.trim();
+            const expiredOn = document.getElementById("expiredOn").value.trim();
+        
+            document.getElementById("errorMessages").innerHTML = "";
+            document.getElementById("couponNameError").innerHTML = "";
+            document.getElementById("offerPriceError").innerHTML = "";
+            document.getElementById("minimumPriceError").innerHTML = "";
+            document.getElementById("expiredOnError").innerHTML = "";
+        
+            let hasError = false;
+        
+            if (!name) {
+                document.getElementById("couponNameError").innerHTML = "The coupon name is required.";
+                hasError = true;
+            }
+        
+            if (!offerPrice) {
+                document.getElementById("offerPriceError").innerHTML = "Offer Price is required.";
+                hasError = true;
+            } else if (isNaN(offerPrice)) {
+                document.getElementById("offerPriceError").innerHTML = "Offer Price must be a valid number.";
+                hasError = true;
+            } else if (offerPrice <= 0) {
+                document.getElementById("offerPriceError").innerHTML = "Offer Price must be a positive number greater than zero.";
+                hasError = true;
+            }
+        
+            if (!minimumPrice) {
+                document.getElementById("minimumPriceError").innerHTML = "Minimum Price is required.";
+                hasError = true;
+            } else if (isNaN(minimumPrice)) {
+                document.getElementById("minimumPriceError").innerHTML = "Minimum Price must be a valid number.";
+                hasError = true;
+            } else if (minimumPrice <= 0) {
+                document.getElementById("minimumPriceError").innerHTML = "Minimum Price must be a positive number greater than zero.";
+                hasError = true;
+            }
+        
+            if (!expiredOn) {
+                document.getElementById("expiredOnError").innerHTML = "Expiry Date is required.";
+                hasError = true;
+            } else {
+                const expiryDate = new Date(expiredOn);
+                if (isNaN(expiryDate)) {
+                    document.getElementById("expiredOnError").innerHTML = "Expiry Date must be a valid date.";
+                    hasError = true;
+                } else {
+                    const today = new Date();
+                    if (expiryDate <= today) {
+                        document.getElementById("expiredOnError").innerHTML = "Expiry Date must be in the future.";
+                        hasError = true;
+                    }
+                }
+            }
+        
+            if (hasError) {
+                return;
+            }
+        
             const formData = new FormData(this);
-            const formObject = Object.fromEntries(formData.entries()); // Convert FormData to JSON
-            console.log(formObject); // Debugging: Check if data is correct
-    
+            const formObject = Object.fromEntries(formData.entries());
+        
             try {
                 const response = await fetch("/admin/coupon", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json", // ✅ Set JSON header
-                    },
-                    body: JSON.stringify(formObject), // ✅ Convert to JSON string
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(formObject),
                 });
-    
-                const result = await response.json(); // Parse response as JSON
-    
+        
+                const result = await response.json();
+        
                 if (response.ok) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Coupon Created!",
-                        text: result.message || "The coupon has been successfully added.",
-                        showConfirmButton: false,
-                        timer: 2000 // Auto close after 2 seconds
-                    }).then(() => {
-                        location.reload(); // Reload to update the table
-                    });
+                    document.getElementById("errorMessages").innerHTML = "<p>Coupon created successfully!</p>";
+                    location.reload();
                 } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Failed to Create Coupon",
-                        text: result.message || "Something went wrong. Please try again.",
-                    });
+                    document.getElementById("errorMessages").innerHTML = "<p>" + result.message + "</p>";
                 }
             } catch (error) {
-                console.error("Error:", error);
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "An unexpected error occurred. Please try again.",
-                });
+                document.getElementById("errorMessages").innerHTML = "<p>Something went wrong!</p>";
             }
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-    document.getElementById("couponForm").addEventListener("submit", async function(event) {
-        event.preventDefault();
-    
-        // Get form values
-        const name = document.getElementById("couponName").value.trim();
-        const offerPrice = document.getElementById("offerPrice").value.trim();
-        const minimumPrice = document.getElementById("minimumPrice").value.trim();
-        const expiredOn = document.getElementById("expiredOn").value.trim();
-    
-        // Validation Checks
-        if (!name || !offerPrice || !minimumPrice || !expiredOn) {
-            return Swal.fire("Error!", "All fields are required!", "error");
-        }
-    
-        if (isNaN(offerPrice) || isNaN(minimumPrice) || offerPrice <= 0 || minimumPrice <= 0) {
-            return Swal.fire("Error!", "Offer Price and Minimum Price must be positive numbers!", "error");
-        }
-    
-        const expiryDate = new Date(expiredOn);
-        const today = new Date();
-        if (expiryDate <= today) {
-            return Swal.fire("Error!", "Expiry date must be in the future!", "error");
-        }
-    
-        // Prepare form data
-        const formData = new FormData(this);
-        const formObject = Object.fromEntries(formData.entries());
-    
-        // Send data to the server
-        try {
-            const response = await fetch("/admin/coupon", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formObject),
+        </script>
+        
+        <script>
+            document.getElementById("couponForm").addEventListener("submit", async function(event) {
+                event.preventDefault();
+            
+                const formData = new FormData(this);
+                const formObject = Object.fromEntries(formData.entries()); // Convert FormData to JSON
+                console.log(formObject); // Debugging: Check if data is correct
+        
+                try {
+                    const response = await fetch("/admin/coupon", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json", // ✅ Set JSON header
+                        },
+                        body: JSON.stringify(formObject), // ✅ Convert to JSON string
+                    });
+        
+                    const result = await response.json(); // Parse response as JSON
+        
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Coupon Created!",
+                            text: result.message || "The coupon has been successfully added.",
+                            showConfirmButton: false,
+                            timer: 2000 // Auto close after 2 seconds
+                        }).then(() => {
+                            location.reload(); // Reload to update the table
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Failed to Create Coupon",
+                            text: result.message || "Something went wrong. Please try again.",
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "An unexpected error occurred. Please try again.",
+                    });
+                }
             });
-    
-            const result = await response.json();
-    
-            if (response.ok) {
-                Swal.fire("Success!", result.message, "success").then(() => location.reload());
-            } else {
-                Swal.fire("Error!", result.message, "error");
-            }
-        } catch (error) {
-            Swal.fire("Error!", "Something went wrong!", "error");
-        }
-    });
-    </script>
+        </script>
+        
     <!-- Add this in the <head> or before </body> -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

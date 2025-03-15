@@ -702,6 +702,7 @@ const cancelOrder = async (req, res) => {
     for (const item of order.books) {
       const book = item.productId;
       const quantityToAdd = item.quantity;
+      
       console.log('ghjk', quantityToAdd);
 
       await Book.findByIdAndUpdate(book._id, { $inc: { quantity: quantityToAdd } });
@@ -806,7 +807,8 @@ const returnOrder = async (req, res) => {
       reason,
       returnDate: new Date(),
     });
-
+    
+   
     orderToUpdate.status = 'Returning';
     orderToUpdate.statusHistory.push({
       status: 'Returning',
