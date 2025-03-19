@@ -542,9 +542,9 @@
         const totalElement = document.querySelector('.card-body .fw-bold:last-child');
 
         if (subtotalElement && totalElement ) {
-            subtotalElement.textContent = `₹${cart.subtotal}`;
+            subtotalElement.textContent = `₹${cart.subtotal.toFixed(2)}`;
             // discountElement.textContent = `₹${cart.discountAmount.toFixed(2)}`;
-            totalElement.textContent = `₹${(cart.subtotal + 50)}`;
+            totalElement.textContent = `₹${(cart.subtotal + 50).toFixed(2)}`;
              // Assuming ₹50 shipping
         }
     }
