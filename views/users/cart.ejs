@@ -545,11 +545,11 @@
             console.log(cart,'Dtaa');
             
             
-            const subtotal=cart.subtotal??0
+            const subtotal=cart.subTotal??0
             console.log(subtotal,'jjjj');
-            subtotalElement.textContent = `₹${cart.subtotal.toFixed(2)}`;
+            subtotalElement.textContent = `₹${cart.subTotal.toFixed(2)}`;
             // discountElement.textContent = `₹${cart.discountAmount.toFixed(2)}`;
-            totalElement.textContent = `₹${(cart.subtotal + 50).toFixed(2)}`;
+            totalElement.textContent = `₹${(cart.subTotal + 50).toFixed(2)}`;
              // Assuming ₹50 shipping
         }
     }

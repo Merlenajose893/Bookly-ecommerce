@@ -226,7 +226,7 @@ const updateCart = async (req, res) => {
     return res.json({
       success: true,
       message: "Cart updated successfully",
-      cart: { subtotal: cart.subTotal, total: cart.total, items: cart.items },
+      cart: { subTotal: cart.subTotal, total: cart.total, items: cart.items },
     });
   } catch (error) {
     console.error("Error updating cart:", error);
