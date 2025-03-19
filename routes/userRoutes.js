@@ -40,11 +40,11 @@ router.get(
 router.get('/logout', userController.logout);
 router.get('/shop', checkBlockedUser,userController.loadShop);
 router.get('/book/:id', userController.loadBookDetails);
-router.get('/fiction', userController.loadFiction);
+// router.get('/fiction', userController.loadFiction);
 router.get('/', userController.getAllGenres);
-router.get('/fiction', userController.getAllGenresWithBooks);
+
 router.get('/genres/:id', userController.showGenre);
-router.get('/book/:id', userController.showBookDetails);
+// router.get('/book/:id', userController.showBookDetails);
 
 router.get('/profiledashboard', checkBlockedUser,userAuth, profileController.loaddashboard);
 // router.get('/profileorders', userAuth, profileController.loadorder);

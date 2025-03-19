@@ -509,7 +509,7 @@
 
             if (data.success) {
                 updateCartSummary();
-                window.location.reload('/cart');
+                // window.location.reload('/cart');
             } else {
                 throw new Error(data.message || 'Error updating cart');
             }
