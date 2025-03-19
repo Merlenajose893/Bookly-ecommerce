@@ -293,6 +293,7 @@
                             <span class="fw-medium">Shipping</span>
                             <span class="fw-medium">₹50</span>
                         </div>
+                        
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
                             <span class="fw-bold">Total</span>
@@ -508,7 +509,7 @@
             const data = await response.json();
 
             if (data.success) {
-                updateCartSummary();
+                updateCartSummary(data.cart);
                 // window.location.reload('/cart');
             } else {
                 throw new Error(data.message || 'Error updating cart');
@@ -537,11 +538,14 @@
         if (!cart) return;
 
         const subtotalElement = document.querySelector('.card-body span:nth-child(2)');
+        // const discountElement = document.querySelector('.discount');
         const totalElement = document.querySelector('.card-body .fw-bold:last-child');
 
-        if (subtotalElement && totalElement) {
+        if (subtotalElement && totalElement ) {
             subtotalElement.textContent = `₹${cart.subtotal.toFixed(2)}`;
-            totalElement.textContent = `₹${(cart.subtotal + 50).toFixed(2)}`; // Assuming ₹50 shipping
+            // discountElement.textContent = `₹${cart.discountAmount.toFixed(2)}`;
+            totalElement.textContent = `₹${(cart.subtotal + 50).toFixed(2)}`;
+             // Assuming ₹50 shipping
         }
     }
 

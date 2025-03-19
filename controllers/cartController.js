@@ -226,7 +226,7 @@ const updateCart = async (req, res) => {
     return res.json({
       success: true,
       message: "Cart updated successfully",
-      cart: { subTotal: cart.subTotal, total: cart.total, items: cart.items },
+      cart: { subtotal: cart.subTotal, total: cart.total, items: cart.items },
     });
   } catch (error) {
     console.error("Error updating cart:", error);
@@ -332,7 +332,7 @@ const applyCoupon = async (req, res) => {
   console.log("User:", userId);
 
   if (!userId) {
-    return res.status(401).json({ success: false, message: "User not logged in" });
+    return res.redirect('/login')
   }
 
   if (!couponCode || typeof couponCode !== "string") {
