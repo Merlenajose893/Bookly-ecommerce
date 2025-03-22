@@ -280,7 +280,7 @@
                         <hr>
 
 
-                                    <button type="submit" class="btn btn-primary" onsubmit="return validateBookForm()">Submit</button>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
                             </div>
                         </div>
@@ -1437,7 +1437,22 @@ function setError(element, message) {
         newErrorDiv.textContent = message;
         element.closest(".mb-3").appendChild(newErrorDiv);
     }
+    if(element.type==='file')
+    {
+      let imagesErrorContainer = document.getElementById("images-error");
+      if(imagesErrorContainer)
+    {
+      imagesErrorContainer.innerHTML="";
+      imagesErrorContainer.appendChild(errorDiv);
+
     }
+    else {
+            element.parentNode.appendChild(errorDiv);
+        }
+    }
+    
+    }
+    
 });
   
 
