@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offer Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="/css/style.css"> -->
+    <link rel="stylesheet" href="/css/bookss.css">
+    <style>
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3 class="mb-4">Bookly</h3>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/admin">Dashboard</a>
+                    <a class="nav-link" href="/admin/usermanage">User Management</a>
+                    <a class="nav-link" href="/admin/books">Book Management</a>
+                    <a class="nav-link" href="/admin/genres">Category Management</a>
+                    <a class="nav-link" href="/admin/adminorders">Order Management</a>
+                    <a class="nav-link" href="/admin/coupon">Coupon Management</a>
+                    <a class="nav-link active" href="/admin/offers">Offer Management</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 main-container">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <input 
+                      type="text" 
+                      id="offerSearchInput"
+                      class="form-control w-50" 
+                      placeholder="Search offers">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#offerModal">
+                      Create Offer
+                    </button>
+                  </div>
+                  
+
+                <!-- Create Offer Modal -->
+                <div class="modal fade" id="offerModal" tabindex="-1" aria-labelledby="offerModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Add Offer</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="/admin/offer" method="POST">
+                                    <div class="mb-3">
+                                        <label class="form-label">Offer Type</label>
+                                        <select class="form-control" name="offerType" >
+                                            <option value="">Select Offer Type</option>
+                                            <option value="Product">Product</option>
+                                            <option value="Category">Category</option>
+                                            <option value="Referral">Referral</option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="mb-3" id="productField" style="display: none;">
+                                        <label class="form-label">Select Product</label>
+                                        <select class="form-control" name="product" id="productDropdown">
+                                            <% books.forEach(book => { %>
+                                                <option value="<%= book._id %>"><%= book.title %></option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="mb-3" id="categoryField" style="display: none;">
+                                        <label class="form-label">Select Category</label>
+                                        <select class="form-control" name="category">
+                                            <option value="">-- Select a Category --</option>
+                                            <% genres.forEach(genre => { %>
+                                                <option value="<%= genre._id %>"><%= genre.name %></option>
+                                            <% }); %>
+                                        </select>
+                                    </div>
+                                    
+                            
+                                    <div class="mb-3" id="referralField" style="display: none;">
+                                        <label class="form-label">Referral Code</label>
+                                        <input type="text" class="form-control" name="referralCode">
+                                    </div>
+                            
+                                    <div class="mb-3">
+                                        <label class="form-label">Discount Type</label>
+                                        <select class="form-control" name="discountType" >
+                                            <option value="">Select Discount Type</option>
+                                            <option value="Percentage">Percentage</option>
+                                            <option value="Fixed">Fixed Amount</option>
+                                        </select>
+                                    </div>
+                            
+                                    <div class="mb-3">
+                                        <label class="form-label">Discount Value</label>
+                                        <input type="number" class="form-control" name="discountValue" min="1" >
+                                    </div>
+                            
+                                    <div class="mb-3">
+                                        <label class="form-label">Valid From</label>
+                                        <input type="date" class="form-control" name="startDate" >
+                                    </div>
+                            
+                                    <div class="mb-3">
+                                        <label class="form-label">Valid To</label>
+                                        <input type="date" class="form-control" name="endDate" >
+                                    </div>
+                            
+                                    <div class="mb-3">
+                                        <label class="form-label">Is Active?</label>
+                                        <select class="form-control" name="isActive">
+                                            <option value="true">Yes</option>
+                                            <option value="false">No</option>
+                                        </select>
+                                    </div>
+                            
+                                    <button type="submit" class="btn btn-success">Save Offer</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Offers Table -->
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Offer Name</th>
+                                <th>Discount (%)</th>
+                                <th>Valid From</th>
+                                <th>Valid To</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% offers.forEach(offer => { %>
+                                <tr>
+                                    <td><%= offer.offerType %></td>
+                                    <td><%= offer.discountValue %>%</td>
+                                    <td><%= new Date(offer.startDate).toLocaleDateString('en-GB') %></td>
+
+                                    <td><%= new Date(offer.endDate).toLocaleDateString('en-GB') %></td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editOfferModal<%= offer._id %>">Edit</button>
+                                        <button class="btn btn-danger btn-sm" onclick="toggleOfferStatus('<%= offer._id %>', this)">
+                                            <%= offer.isActive ? 'Deactivate' : 'Activate' %>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Edit Offer Modal -->
+                                <div class="modal fade" id="editOfferModal<%= offer._id %>" tabindex="-1" aria-labelledby="editOfferModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit Offer</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="/admin/offer/edit/<%= offer._id %>" method="POST">
+                                                    <div class="mb-3">
+                                                        <label>Offer Type:</label>
+                                                        <select name="offerType">
+                                                            <option value="Product" <%= offer.offerType === 'Product' ? 'selected' : '' %>>Product</option>
+                                                            <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
+                                                            <option value="Referral" <%= offer.offerType === 'Referral' ? 'selected' : '' %>>Referral</option>
+                                                        </select>
+                                                        <% if (offer.offerType === 'Product') { %>
+                                                            <label>Select Product:</label>
+                                                            <select name="product">
+                                                                <% books.forEach(book => { %>
+                                                                    <option value="<%= book._id %>" <%= book._id.equals(offer.book) ? 'selected' : '' %>><%= book.title%></option>
+                                                                <% }); %>
+                                                            </select>
+                                                        <% } %>
+                                                    
+                                                        <% if (offer.offerType === 'Category') { %>
+                                                            <label>Select Category:</label>
+                                                            <select name="category">
+                                                                <% genres.forEach(genre => { %>
+                                                                    <option value="<%= genre._id %>" <%= genre._id.equals(offer.genre) ? 'selected' : '' %>><%= genre.name %></option>
+                                                                <% }); %>
+                                                            </select>
+                                                        <% } %>
+                                                    
+                                                        <% if (offer.offerType === 'Referral') { %>
+                                                            <label>Referral Code:</label>
+                                                            <input type="text" name="referralCode" value="<%= offer.referralCode || '' %>">
+                                                        <% } %>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Discount Type:</label>
+                                                        <select name="discountType">
+                                                            <option value="Percentage" <%= offer.discountType === 'Percentage' ? 'selected' : '' %>>Percentage</option>
+                                                            <option value="Fixed" <%= offer.discountType === 'Fixed' ? 'selected' : '' %>>Fixed</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Discount Value:</label>
+                                                        <input type="number" name="discountValue" value="<%= offer.discountValue %>">
+                                                    
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label>Start Date:</label>
+                                                        <input type="date" name="startDate" value="<%= new Date(offer.startDate).toISOString().split('T')[0] %>">
+                                                    </div>
+                                                    <div class="mb-3">
+                                                       
+    <label>End Date:</label>
+    <input type="date" name="endDate" value="<%= new Date(offer.endDate).toISOString().split('T')[0] %>">
+
+                                                    </div>
+                                                    <div class="mb-3">
+                                                       
+                                                        <label>Is Active:</label>
+                                                        <input type="text" name="isActive" value="<%= offer.isActive ? 'Yes' : 'No' %>">
+                                                        
+                                                    
+                                                    
+                                                                                                        </div>
+                                                    <button type="submit" class="btn btn-success">Update Offer</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
+                            <a class="page-link" href="?page=<%= page - 1 %>">&laquo;</a>
+                        </li>
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <li class="page-item <%= page === i ? 'active' : '' %>">
+                                <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                            </li>
+                        <% } %>
+                        <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
+                            <a class="page-link" href="?page=<%= page + 1 %>">&raquo;</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.querySelector("form");
+            const offerTypeSelect = document.querySelector("[name='offerType']");
+            const productField = document.getElementById("productField");
+            const categoryField = document.getElementById("categoryField");
+            const referralField = document.getElementById("referralField");
+            const productDropdown = document.querySelector("[name='product']");
+            const categoryDropdown = document.querySelector("[name='category']");
+            const referralInput = document.querySelector("[name='referralCode']");
+            const discountType = document.querySelector("[name='discountType']");
+            const discountValue = document.querySelector("[name='discountValue']");
+            const startDateInput = document.querySelector("[name='startDate']");
+            const endDateInput = document.querySelector("[name='endDate']");
+    
+            function showError(input, message) {
+                let errorSpan = input.nextElementSibling;
+                if (!errorSpan || !errorSpan.classList.contains("error")) {
+                    errorSpan = document.createElement("span");
+                    errorSpan.classList.add("error");
+                    input.parentNode.appendChild(errorSpan);
+                }
+                errorSpan.textContent = message;
+            }
+    
+            function clearError(input) {
+                let errorSpan = input.nextElementSibling;
+                if (errorSpan && errorSpan.classList.contains("error")) {
+                    errorSpan.textContent = "";
+                }
+            }
+    
+            offerTypeSelect.addEventListener("change", function () {
+                productField.style.display = this.value === "Product" ? "block" : "none";
+                categoryField.style.display = this.value === "Category" ? "block" : "none";
+                referralField.style.display = this.value === "Referral" ? "block" : "none";
+                clearError(offerTypeSelect);
+            });
+    
+            form.addEventListener("submit", function (event) {
+                let isValid = true;
+                document.querySelectorAll(".error").forEach(error => error.textContent = "");
+    
+                const offerType = offerTypeSelect.value;
+                if (offerType === "") {
+                    showError(offerTypeSelect, "Please select an Offer Type.");
+                    isValid = false;
+                } else if (offerType === "Product" && !productDropdown.value) {
+                    showError(productDropdown, "Please select a Product.");
+                    isValid = false;
+                } else if (offerType === "Category" && !categoryDropdown.value) {
+                    showError(categoryDropdown, "Please select a Category.");
+                    isValid = false;
+                } else if (offerType === "Referral" && referralInput.value.trim() === "") {
+                    showError(referralInput, "Please enter a Referral Code.");
+                    isValid = false;
+                }
+    
+                if (discountType.value === "") {
+                    showError(discountType, "Please select a Discount Type.");
+                    isValid = false;
+                } else {
+                    clearError(discountType);
+                }
+    
+                if (discountValue.value <= 0 || isNaN(discountValue.value)) {
+                    showError(discountValue, "Please enter a valid Discount Value greater than 0.");
+                    isValid = false;
+                } else {
+                    clearError(discountValue);
+                }
+    
+                const today = new Date().toISOString().split("T")[0];
+                if (startDateInput.value < today) {
+                    showError(startDateInput, "Start Date cannot be in the past.");
+                    isValid = false;
+                } else {
+                    clearError(startDateInput);
+                }
+                if (endDateInput.value <= startDateInput.value) {
+                    showError(endDateInput, "End Date must be after the Start Date.");
+                    isValid = false;
+                } else {
+                    clearError(endDateInput);
+                }
+    
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        async function updateOffer(offerId, formData) {
+            try {
+                const response = await fetch(`/admin/offer/edit/${offerId}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                });
+    
+                const result = await response.json();
+    
+                if (response.ok) {
+                    alert("Offer updated successfully!");
+                    window.location.href = "/admin/offer";
+                } else {
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (error) {
+                console.error("Error updating offer:", error);
+                alert("An error occurred while updating the offer.");
+            }
+        }
+    
+        document.getElementById("editOfferForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+    
+            const offerId = document.getElementById("offerId").value;
+            const formData = {
+                offerType: document.getElementById("offerType").value,
+                product: document.getElementById("product").value,
+                category: document.getElementById("category").value,
+                referralCode: document.getElementById("referralCode").value,
+                discountType: document.getElementById("discountType").value,
+                discountValue: document.getElementById("discountValue").value,
+                startDate: document.getElementById("startDate").value,
+                endDate: document.getElementById("endDate").value,
+            };
+    
+            updateOffer(offerId, formData);
+        });
+    </script>
+    
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <script>
+    function toggleOfferStatus(offerId, button) {
+      fetch(`/admin/offer/toggle/${offerId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      })
+      .then(response => {
+        if (response.headers.get("Content-Type").includes("text/html")) {
+          return response.text();
+        } else {
+          return response.json();
+        }
+      })
+      .then(data => {
+        if (typeof data === 'string') {
+          document.open();
+          document.write(data);
+          document.close();
+        } else {
+          if (data.success) {
+            Swal.fire({
+              title: "Success!",
+              text: data.isActive ? "Offer Activated" : "Offer Deactivated",
+              icon: "success",
+              timer: 1500,
+              showConfirmButton: false
+            }).then(() => {
+              window.location.reload();
+            });
+          } else {
+            Swal.fire({
+              title: "Error!",
+              text: data.message,
+              icon: "error"
+            });
+          }
+        }
+      })
+      .catch(() => {
+        Swal.fire({
+          title: "Error!",
+          text: "Something went wrong. Please try again.",
+          icon: "error"
+        });
+      });
+    }
+    </script>
+    
+ 
+ <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.2/sweetalert2.all.min.js"></script>
+ <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const offerSearchInput = document.getElementById('offerSearchInput');
+      
+      offerSearchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const query = offerSearchInput.value.trim();
+          const targetUrl = '/admin/offer?search=' + encodeURIComponent(query) + '&page=1';
+          window.location.href = targetUrl;
+        }
+      });
+    });
+    </script>
+    </body>
+</html>

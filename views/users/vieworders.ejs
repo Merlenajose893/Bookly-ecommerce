@@ -232,7 +232,7 @@
                             </div>
                             <div class="col-md-2 text-end">
                                 <div class="info-label">Price</div>
-                                <p class="mb-0 fw-bold">₹<%= (book.productId.salesPrice * book.quantity).toFixed(2) %></p>
+                                <p class="mb-0 fw-bold">₹<%= (book.productId.salesPrice * book.quantity+50).toFixed(2) %></p>
                             </div>
                             
                             
@@ -264,13 +264,13 @@
                                 <span>Discount</span>
                                 <span>- ₹<%= order.discountAmount %></span>
                             </div>
-                            <!-- <div class="price-row">
+                            <div class="price-row">
                                 <span>Shipping</span>
                                 <span>₹50</span>
-                            </div> -->
+                            </div>
                             <div class="price-row total">
                                 <span>Total</span>
-                                <span>₹<%= (order.totalAmount - order.discountAmount ).toFixed(2) %></span>
+                                <span>₹<%= (order.totalAmount - order.discountAmount +50).toFixed(2) %></span>
                             </div>
                         </div>
                     </div>
