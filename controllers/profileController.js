@@ -353,9 +353,9 @@ const loadOrder = async (req, res) => {
       .limit(limit)
       .lean();
 
-    console.log('Fetched Orders:', order);
+    
     const allBooks = order.flatMap((o) => o.books);
-    console.log(allBooks, 'fghjkvbnm');
+   
 
     res.render('profileorders', {
       order,
@@ -702,7 +702,7 @@ const cancelOrder = async (req, res) => {
     for (const item of order.books) {
       const book = item.productId;
       const quantityToAdd = item.quantity;
-      
+
       console.log('ghjk', quantityToAdd);
 
       await Book.findByIdAndUpdate(book._id, { $inc: { quantity: quantityToAdd } });
@@ -807,8 +807,7 @@ const returnOrder = async (req, res) => {
       reason,
       returnDate: new Date(),
     });
-    
-   
+
     orderToUpdate.status = 'Returning';
     orderToUpdate.statusHistory.push({
       status: 'Returning',

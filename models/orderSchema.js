@@ -34,6 +34,11 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    couponId:{
+      type:mongoose.Types.ObjectId,
+      ref:'Coupon',
+      
+    },
     paymentMethod: {
       type: String,
       enum: ["Credit Card", "Debit Card", "PayPal", "Online Payment", "cod", "Razorpay"],

@@ -363,9 +363,6 @@
     </div>
 </div>
 
-        <!-- <div class="image-container">
-            <img src="/img/manager.png" alt="Manager Icon" width="50px" height="50px">
-        </div> -->
     </div>
 </div>
 
@@ -521,66 +518,64 @@
         function handleFilterChange() {
             const filterSelect = document.getElementById('dateFilter');
             const customDateRange = document.getElementById('customDateRange');
-            
+    
             if (filterSelect.value === 'custom') {
                 customDateRange.style.display = 'block';
             } else {
                 customDateRange.style.display = 'none';
             }
         }
-        
+    
         function validateForm() {
-  const filter = document.getElementById('dateFilter').value;
-  if (filter === 'custom') {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    if (!startDate || !endDate) {
-      alert('Please select both start and end dates for custom range.');
-      return false; // Prevent form submission
-    }
-  }
-  return true; // Allow form submission
-}
-        
-        function exportReport(format) {
             const filter = document.getElementById('dateFilter').value;
-            let url = `/admin/sales-report?filter=${filter}&format=${format}`;
-            
             if (filter === 'custom') {
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
-                
+                if (!startDate || !endDate) {
+                    alert('Please select both start and end dates for custom range.');
+                    return false;
+                }
+            }
+            return true;
+        }
+    
+        function exportReport(format) {
+            const filter = document.getElementById('dateFilter').value;
+            let url = `/admin/sales-report?filter=${filter}&format=${format}`;
+    
+            if (filter === 'custom') {
+                const startDate = document.getElementById('startDate').value;
+                const endDate = document.getElementById('endDate').value;
+    
                 if (!startDate || !endDate) {
                     alert('Please select both start and end dates for custom range');
                     return;
                 }
-                
+    
                 url += `&startDate=${startDate}&endDate=${endDate}`;
             }
-            
+    
             window.location.href = url;
         }
-        
-        // Initialize DataTable if you want to add sorting and pagination
+    
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof $.fn.DataTable !== 'undefined') {
                 $('#salesTable').DataTable({
-                    order: [[5, 'desc']], // Sort by date by default
+                    order: [[5, 'desc']],
                     pageLength: 10,
                     responsive: true
                 });
             }
         });
-        
-        // Set initial filter value if it exists in URL params
+    
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const filter = urlParams.get('filter');
-            
+    
             if (filter) {
                 document.getElementById('dateFilter').value = filter;
                 handleFilterChange();
-                
+    
                 if (filter === 'custom') {
                     const startDate = urlParams.get('startDate');
                     const endDate = urlParams.get('endDate');
@@ -589,29 +584,16 @@
                 }
             }
         });
-        </script>
-        <script>
-            document.getElementById("clearFilters").addEventListener("click", function () {
-                // Reset the dropdown to default
-                document.getElementById("dateFilter").value = "daily";
-        
-                // Hide the custom date range fields
-                document.getElementById("customDateRange").style.display = "none";
-        
-                // Clear the custom date inputs
-                document.getElementById("startDate").value = "";
-                document.getElementById("endDate").value = "";
-        
-                // Redirect to remove query parameters (if using server-side filtering)
-                window.location.href = "/admin/sales-report";
-            });
-        </script>
-        
-          
-
-
-    
-    
+    </script>
+    <script>
+        document.getElementById("clearFilters").addEventListener("click", function () {
+            document.getElementById("dateFilter").value = "daily";
+            document.getElementById("customDateRange").style.display = "none";
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            window.location.href = "/admin/sales-report";
+        });
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 

@@ -1,454 +1,435 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Category Management - UrbanWorn</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --dark-bg: #1e1e2d;
-            --sidebar-bg: #1a1a27;
-            --content-bg: #151521;
-            --text-color: #92929f;
-            --text-muted: #6d6d80;
-            --border-color: #2b2b40;
-            --input-bg: #1b1b29;
-        }
+      :root {
+        --dark-bg: #1e1e2d;
+        --sidebar-bg: #1a1a27;
+        --content-bg: #151521;
+        --text-color: #92929f;
+        --text-muted: #6d6d80;
+        --border-color: #2b2b40;
+        --input-bg: #1b1b29;
+      }
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-color);
-        }
+      body {
+        background-color: var(--dark-bg);
+        color: var(--text-color);
+      }
 
-        .sidebar {
-            background-color: var(--sidebar-bg);
-            height: 100vh;
-            padding: 20px;
-            border-right: 1px solid var(--border-color);
-        }
+      .sidebar {
+        background-color: var(--sidebar-bg);
+        height: 100vh;
+        padding: 20px;
+        border-right: 1px solid var(--border-color);
+      }
 
-        .sidebar h3 {
-            color: #ffffff;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
+      .sidebar h3 {
+        color: #ffffff;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
 
-        .main-container {
-            background-color: var(--content-bg);
-            min-height: 100vh;
-            padding: 20px;
-        }
+      .main-container {
+        background-color: var(--content-bg);
+        min-height: 100vh;
+        padding: 20px;
+      }
 
-        .nav-link {
-            color: var(--text-color) !important;
-            padding: 10px 15px;
-            margin-bottom: 5px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
+      .nav-link {
+        color: var(--text-color) !important;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+      }
 
-        .nav-link:hover {
-            background-color: var(--dark-bg);
-            color: #ffffff !important;
-        }
+      .nav-link:hover {
+        background-color: var(--dark-bg);
+        color: #ffffff !important;
+      }
 
-        .nav-link.active {
-            background-color: var(--dark-bg);
-            color: #ffffff !important;
-        }
+      .nav-link.active {
+        background-color: var(--dark-bg);
+        color: #ffffff !important;
+      }
 
-        .search-box {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
+      .search-box {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
 
-        .search-box:focus {
-            background-color: var(--input-bg);
-            border-color: #0d6efd;
-            color: var(--text-color);
-            box-shadow: none;
-        }
+      .search-box:focus {
+        background-color: var(--input-bg);
+        border-color: #0d6efd;
+        color: var(--text-color);
+        box-shadow: none;
+      }
 
-        .table {
-            color: var(--text-color);
-            border-color: var(--border-color);
-        }
+      .table {
+        color: var(--text-color);
+        border-color: var(--border-color);
+      }
 
-        .table th {
-            border-bottom: 2px solid var(--border-color);
-            color: #992323;
-        }
+      .table th {
+        border-bottom: 2px solid var(--border-color);
+        color: #992323;
+      }
 
-        .table td {
-            border-bottom: 1px solid var(--border-color);
-            vertical-align: middle;
-        }
+      .table td {
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+      }
 
-        .product-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
+      .product-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: cover;
+      }
 
-        .btn-update {
-            background-color: #0c8;
-            color: white;
-            border: none;
-        }
+      .btn-update {
+        background-color: #0c8;
+        color: white;
+        border: none;
+      }
 
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-        }
+      .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+      }
 
-        .form-control, .form-select {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
+      .form-control,
+      .form-select {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+      }
 
-        .form-control:focus, .form-select:focus {
-            background-color: var(--input-bg);
-            border-color: #0d6efd;
-            color: var(--text-color);
-            box-shadow: none;
-        }
+      .form-control:focus,
+      .form-select:focus {
+        background-color: var(--input-bg);
+        border-color: #0d6efd;
+        color: var(--text-color);
+        box-shadow: none;
+      }
 
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-left: 5px;
-        }
+      .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: 5px;
+      }
 
-        .status-online {
-            background-color: #0c8;
-        }
+      .status-online {
+        background-color: #0c8;
+      }
 
-        .status-offline {
-            background-color: #dc3545;
-        }
+      .status-offline {
+        background-color: #dc3545;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-md-2 sidebar">
-                <h3>Bookly</h3>
-                <nav class="nav flex-column">
-                    <a class="nav-link" href="/admin">Dashboard</a>
-                    <a class="nav-link" href="/admin/usermanage">User Management</a>
-                    <a class="nav-link" href="/admin/books">Books Management</a>
-                    <a class="nav-link active" href="/admin/genres">Category Management</a>
-                    <a class="nav-link" href="/admin/adminorders">Order Management</a>
-                    <a class="nav-link" href="/admin/coupon">Coupen Management</a>
-                    <a class="nav-link" href="/admin/offer">Offer Management</a>
-                </nav>
-            </div>
-
-            <!-- Main Content -->
-            <div class="col-md-10 p-4">
-                <!-- Status Dots -->
-                <div class="status-dots">
-                    <span class="dot dot-green"></span>
-                    <span class="dot dot-red"></span>
-                </div>
-
-                <!-- Search Bar -->
-                <div class="search-container">
-                   <!-- Corrected search form -->
-<form method="GET" action="/admin/genres" class="search-container">
-    <div class="input-group">
-      <input 
-        type="text" 
-        class="form-control search-box" 
-        name="search"  
-        placeholder="Search genres..."
-        value="<%= searchQuery || '' %>"  
-      >
-      <input type="hidden" name="page" value="1">
-      <div class="input-group-append">
-        <button type="submit" class="btn btn-primary">Search</button> <!-- Changed to submit type -->
-      </div>
-    </div>
-  </form>
-                </div>
-                <div class="d-flex mb-3">
-                    
-                    <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-primary ms-2" data-bs-toggle="modal" data-bs-target="#createGenreModal">Create</button>
-                </div>
-                   <!-- Modal -->
-                   <div class="modal fade" id="createGenreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="createGenreModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="createGenreModalLabel">Add Genre</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="genreForm" method="POST" action="/admin/genres">
-                                    <div class="form-group">
-                                      <label for="genreName">Genre Name</label>
-                                      <input type="text" class="form-control" id="genreName" name="genreName" placeholder="Enter genre name">
-                                      <div id="genreNameError" class="error-message"></div>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                      <label for="genreDescription">Genre Description</label>
-                                      <input type="text" class="form-control" id="genreDescription" name="genreDescription" placeholder="Enter genre description">
-                                      <div id="genreDescriptionError" class="error-message"></div>
-                                    </div>
-                                    
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                  </form>
-                                
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="container-fluid">
-                    <div class="row">
-                        <!-- Categories Table -->
-                        <div class="col-12"> <!-- Change col-md-8 to col-12 for full width -->
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <!-- <th>Products Count</th> -->
-                                        <th>SNo</th>
-                                        <th>Name</th>
-                                        <th>Created Date</th>
-                                        <th>Updated Date</th>
-                                        <th>Update</th>
-                                        <th>Delete</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% genres.forEach((genre, index) => { %>
-                                        <tr>
-                                            <th scope="row" class="white"><%= (currentPage - 1) * itemsPerPage + index + 1 %></th>
-                                            <td class="white"><%= genre.name %></td>
-                                            <td class="white"><%= genre.productCount %></td>
-                                            <td class="white"><%= genre.updatedDate || "N/A" %></td>
-                                            <td>
-                                                <a href="/admin/updateGenre/?id=<%= genre.id %>" class="btn btn-success">Update</a>
-                                            </td>
-                                            
-                                            <td>
-                                                <form action="/admin/toggleCategoryDeletion/<%= genre.id %>" method="POST" style="display:inline;">
-                                                    <button type="submit" class="btn <%= genre.isDeleted ? 'btn-success' : 'btn-dark' %>">
-                                                        <%= genre.isDeleted ? 'Restore' : 'Delete' %>
-                                                    </button>
-                                                </form>
-                                            </td>
-                                            <td class="white">
-                                                <% if (genre.isDeleted) { %>
-                                                    <span class="badge bg-danger">Unlisted</span>
-                                                <% } else { %>
-                                                    <span class="badge bg-success">Listed</span>
-                                                <% } %>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                
-                    <!-- Pagination -->
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <% if (hasPrevPage) { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= itemsPerPage %>">&laquo;</a>
-                                </li>
-                            <% } %>
-                
-                            <% pageNumbers.forEach(i => { %>
-                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                                    <a class="page-link" href="?page=<%= i %>&limit=<%= itemsPerPage %>"><%= i %></a>
-                                </li>
-                            <% }) %>
-                
-                            <% if (hasNextPage) { %>
-                                <li class="page-item">
-                                    <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= itemsPerPage %>">&raquo;</a>
-                                </li>
-                            <% } %>
-                        </ul>
-                    </nav>
-                </div>
-                
-            </div>
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+          <h3>Bookly</h3>
+          <nav class="nav flex-column">
+            <a class="nav-link" href="/admin">Dashboard</a>
+            <a class="nav-link" href="/admin/usermanage">User Management</a>
+            <a class="nav-link" href="/admin/books">Books Management</a>
+            <a class="nav-link active" href="/admin/genres">Category Management</a>
+            <a class="nav-link" href="/admin/adminorders">Order Management</a>
+            <a class="nav-link" href="/admin/coupon">Coupen Management</a>
+            <a class="nav-link" href="/admin/offer">Offer Management</a>
+          </nav>
         </div>
+
+        <!-- Main Content -->
+        <div class="col-md-10 p-4">
+          <!-- Status Dots -->
+          <div class="status-dots">
+            <span class="dot dot-green"></span>
+            <span class="dot dot-red"></span>
+          </div>
+
+          <!-- Search Bar -->
+          <div class="search-container">
+            <!-- Corrected search form -->
+            <form method="GET" action="/admin/genres" class="search-container">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control search-box"
+                  name="search"
+                  placeholder="Search genres..."
+                  value="<%= searchQuery || '' %>"
+                />
+                <input type="hidden" name="page" value="1" />
+                <div class="input-group-append">
+                  <button type="submit" class="btn btn-primary">Search</button>
+                  <!-- Changed to submit type -->
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="d-flex mb-3">
+            <!-- Button trigger modal -->
+            <button
+              type="button"
+              class="btn btn-primary ms-2"
+              data-bs-toggle="modal"
+              data-bs-target="#createGenreModal"
+            >
+              Create
+            </button>
+          </div>
+          <!-- Modal -->
+          <div
+            class="modal fade"
+            id="createGenreModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="createGenreModalLabel"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="createGenreModalLabel">Add Genre</h1>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <form id="genreForm" method="POST" action="/admin/genres">
+                    <div class="form-group">
+                      <label for="genreName">Genre Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="genreName"
+                        name="genreName"
+                        placeholder="Enter genre name"
+                      />
+                      <div id="genreNameError" class="error-message"></div>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="genreDescription">Genre Description</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="genreDescription"
+                        name="genreDescription"
+                        placeholder="Enter genre description"
+                      />
+                      <div id="genreDescriptionError" class="error-message"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="container-fluid">
+            <div class="row">
+              <!-- Categories Table -->
+              <div class="col-12">
+                <!-- Change col-md-8 to col-12 for full width -->
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <!-- <th>Products Count</th> -->
+                      <th>SNo</th>
+                      <th>Name</th>
+                      <th>Created Date</th>
+                      <th>Updated Date</th>
+                      <th>Update</th>
+                      <th>Delete</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% genres.forEach((genre, index) => { %>
+                    <tr>
+                      <th scope="row" class="white">
+                        <%= (currentPage - 1) * itemsPerPage + index + 1 %>
+                      </th>
+                      <td class="white"><%= genre.name %></td>
+                      <td class="white"><%= genre.productCount %></td>
+                      <td class="white"><%= genre.updatedDate || "N/A" %></td>
+                      <td>
+                        <a href="/admin/updateGenre/?id=<%= genre.id %>" class="btn btn-success"
+                          >Update</a
+                        >
+                      </td>
+
+                      <td>
+                        <form
+                          action="/admin/toggleCategoryDeletion/<%= genre.id %>"
+                          method="POST"
+                          style="display: inline"
+                        >
+                          <button
+                            type="submit"
+                            class="btn <%= genre.isDeleted ? 'btn-success' : 'btn-dark' %>"
+                          >
+                            <%= genre.isDeleted ? 'Restore' : 'Delete' %>
+                          </button>
+                        </form>
+                      </td>
+                      <td class="white">
+                        <% if (genre.isDeleted) { %>
+                        <span class="badge bg-danger">Unlisted</span>
+                        <% } else { %>
+                        <span class="badge bg-success">Listed</span>
+                        <% } %>
+                      </td>
+                    </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <% if (hasPrevPage) { %>
+                <li class="page-item">
+                  <a class="page-link" href="?page=<%= currentPage - 1 %>&limit=<%= itemsPerPage %>"
+                    >&laquo;</a
+                  >
+                </li>
+                <% } %> <% pageNumbers.forEach(i => { %>
+                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                  <a class="page-link" href="?page=<%= i %>&limit=<%= itemsPerPage %>"><%= i %></a>
+                </li>
+                <% }) %> <% if (hasNextPage) { %>
+                <li class="page-item">
+                  <a class="page-link" href="?page=<%= currentPage + 1 %>&limit=<%= itemsPerPage %>"
+                    >&raquo;</a
+                  >
+                </li>
+                <% } %>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
-        // Helper functions for inline errors
-        function showInlineError(element, message) {
+      function showInlineError(element, message) {
           element.textContent = message;
           element.style.color = 'red';
-        }
-      
-        function clearInlineError(element) {
-          element.textContent = "";
-        }
-      
-        async function handleSubmit(event) {
-          event.preventDefault(); // Prevent the default form submission
-      
-          // Retrieve input values and trim whitespace
+      }
+  
+      function clearInlineError(element) {
+          element.textContent = '';
+      }
+  
+      async function handleSubmit(event) {
+          event.preventDefault();
+  
           const genreName = document.getElementById('genreName').value.trim();
           const description = document.getElementById('genreDescription').value.trim();
-      
-          // Retrieve error message elements
+  
           const genreNameErrorEl = document.getElementById('genreNameError');
           const descriptionErrorEl = document.getElementById('genreDescriptionError');
-      
-          // Clear previous inline errors
+  
           clearInlineError(genreNameErrorEl);
           clearInlineError(descriptionErrorEl);
-      
-          // Regular expression: allow only letters and spaces
+  
           const alphabetRegex = /^[a-zA-Z\s]+$/;
           let isValid = true;
-      
-          // Validate Genre Name
-          if (!genreName) {
-            showInlineError(genreNameErrorEl, 'Please enter a valid genre name.');
-            isValid = false;
-          } else if (!alphabetRegex.test(genreName)) {
-            showInlineError(genreNameErrorEl, 'Genre name must only contain letters and spaces.');
-            isValid = false;
-          }
-      
-          // Validate Description
-          if (!description) {
-            showInlineError(descriptionErrorEl, 'Please enter a valid description.');
-            isValid = false;
-          } else if (!alphabetRegex.test(description)) {
-            showInlineError(descriptionErrorEl, 'Description must only contain letters and spaces.');
-            isValid = false;
-          }
-      
-          // Stop if any inline validations failed
-          if (!isValid) {
-            return;
-          }
-      
-          try {
-            // Send data to the backend
-            const response = await fetch('/admin/genres', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                name: genreName,
-                description: description,
-              }),
-            });
-      
-            // Use Swal for messaging based on response
-            if (response.status === 400) {
-              const data = await response.json();
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.error || 'An error occurred while adding the genre.',
-              });
-            } else if (response.ok) {
-              Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Genre added successfully!',
-              }).then(() => {
-                window.location.href = '/admin/genres'; // Redirect on success
-              });
-            } else {
-              throw new Error('Unexpected response');
-            }
-          } catch (error) {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error',
-              text: 'An unexpected error occurred. Please try again later.',
-            });
-          }
-        }
-      
-        // Attach the handler to the form submission event
-        document.getElementById('genreForm').addEventListener('submit', handleSubmit);
-      </script>
-      
-
-<script>
-    // Function to show the SweetAlert confirmation
-    function confirmDeletion(genreId, action) {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: `You are about to ${action.toLowerCase()} this category.`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: action,
-        cancelButtonText: 'Cancel',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // If confirmed, submit the form
-          document.getElementById('toggleCategoryForm-' + genreId).submit();
-        }
-      });
-    }
-  </script>
-  <!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchForm = document.querySelector('.search-container');
-      
-      searchForm.addEventListener('submit', async (event) => {
-        event.preventDefault(); // Prevent the default full-page submission
-        
-        // Build the query string from the form data
-        const formData = new FormData(searchForm);
-        const params = new URLSearchParams(formData);
-        
-        try {
-          // Send a GET request to the search endpoint with query parameters
-          const response = await fetch(searchForm.action + '?' + params.toString(), {
-            method: 'GET',
-            headers: {
-              'Accept': 'text/html'
-            }
-          });
-          
-          if (response.ok) {
-            // Assume the server responds with HTML that you can insert into the page
-            const html = await response.text();
-            // Display the search results inside the results container
-            document.getElementById('resultsContainer').innerHTML = html;
-          } else {
-            console.error('Search request failed with status:', response.status);
-          }
-        } catch (error) {
-          console.error('Error while fetching search results:', error);
-        }
-      });
-    });
-  </script> -->
   
+          if (!genreName) {
+              showInlineError(genreNameErrorEl, 'Please enter a valid genre name.');
+              isValid = false;
+          } else if (!alphabetRegex.test(genreName)) {
+              showInlineError(genreNameErrorEl, 'Genre name must only contain letters and spaces.');
+              isValid = false;
+          }
+  
+          if (!description) {
+              showInlineError(descriptionErrorEl, 'Please enter a valid description.');
+              isValid = false;
+          } else if (!alphabetRegex.test(description)) {
+              showInlineError(descriptionErrorEl, 'Description must only contain letters and spaces.');
+              isValid = false;
+          }
+  
+          if (!isValid) {
+              return;
+          }
+  
+          try {
+              const response = await fetch('/admin/genres', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ name: genreName, description }),
+              });
+  
+              if (response.status === 400) {
+                  const data = await response.json();
+                  Swal.fire({ icon: 'error', title: 'Error', text: data.error || 'An error occurred while adding the genre.' });
+              } else if (response.ok) {
+                  Swal.fire({ icon: 'success', title: 'Success', text: 'Genre added successfully!' }).then(() => {
+                      window.location.href = '/admin/genres';
+                  });
+              } else {
+                  throw new Error('Unexpected response');
+              }
+          } catch (error) {
+              Swal.fire({ icon: 'error', title: 'Error', text: 'An unexpected error occurred. Please try again later.' });
+          }
+      }
+  
+      document.getElementById('genreForm').addEventListener('submit', handleSubmit);
+  </script>
+  <script>
+    function confirmDeletion(genreId, action) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to ${action.toLowerCase()} this category.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: action,
+            cancelButtonText: 'Cancel',
+            reverseButtons: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('toggleCategoryForm-' + genreId).submit();
+            }
+        });
+    }
+</script>
 
-</body>
+  </body>
 </html>

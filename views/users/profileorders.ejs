@@ -253,6 +253,10 @@
                                             <span>Total Amount:</span>
                                             <span class="text-success fw-bold">₹<%= order.totalAmount.toFixed(2)%></span>
                                           </div>
+                                          <div class="d-flex justify-content-between">
+                                            <span>Discount Amount:</span>
+                                            <span class="text-success fw-bold">₹<%= order.discountAmount%></span>
+                                          </div>
                                           
                                           <h6 class="text-muted mb-3 mt-4 border-bottom pb-2 d-flex align-items-center">
                                             <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
@@ -316,6 +320,7 @@
                                                 </div>
                                               <% } %>
                                             <% }) %>
+
                                           </div>
                                           
                                           

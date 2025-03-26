@@ -293,13 +293,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- <script></script> -->
-    <!-- <script>
-        document.querySelector("form").addEventListener("submit", function (event) {
-            const searchInput = document.querySelector("input[name='search']");
-            searchInput.value = searchInput.value.trim(); // Remove extra spaces and tabs
-        });
-      </script> -->
+    
       
  
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -398,29 +392,29 @@
                 event.preventDefault();
             
                 const formData = new FormData(this);
-                const formObject = Object.fromEntries(formData.entries()); // Convert FormData to JSON
-                console.log(formObject); // Debugging: Check if data is correct
-        
+                const formObject = Object.fromEntries(formData.entries());
+                console.log(formObject);
+            
                 try {
                     const response = await fetch("/admin/coupon", {
                         method: "POST",
                         headers: {
-                            "Content-Type": "application/json", // ✅ Set JSON header
+                            "Content-Type": "application/json",
                         },
-                        body: JSON.stringify(formObject), // ✅ Convert to JSON string
+                        body: JSON.stringify(formObject),
                     });
-        
-                    const result = await response.json(); // Parse response as JSON
-        
+            
+                    const result = await response.json();
+            
                     if (response.ok) {
                         Swal.fire({
                             icon: "success",
                             title: "Coupon Created!",
                             text: result.message || "The coupon has been successfully added.",
                             showConfirmButton: false,
-                            timer: 2000 // Auto close after 2 seconds
+                            timer: 2000
                         }).then(() => {
-                            location.reload(); // Reload to update the table
+                            location.reload();
                         });
                     } else {
                         Swal.fire({
@@ -439,37 +433,34 @@
                 }
             });
         </script>
-        
-    <!-- Add this in the <head> or before </body> -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script>
-        async function toggleCouponStatus(couponId, button) {
-    try {
-        const response = await fetch(`/admin/toggleCouponStatus/${couponId}`, {
-            method: "POST", // Use PATCH for updates
-            headers: { "Content-Type": "application/json" },
-        });
+<script>
+    async function toggleCouponStatus(couponId, button) {
+        try {
+            const response = await fetch(`/admin/toggleCouponStatus/${couponId}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
 
-        const result = await response.json();
+            const result = await response.json();
 
-        if (response.ok) {
-            // Update button text and styling dynamically
-            button.textContent = result.isList ? "Deactive" : "Active";
-            button.classList.toggle("btn-success", !result.isList);
-            button.classList.toggle("btn-danger", result.isList);
-            Swal.fire("Success!", result.message, "success");
-        } else {
-            Swal.fire("Error!", result.message, "error");
+            if (response.ok) {
+                button.textContent = result.isList ? "Deactive" : "Active";
+                button.classList.toggle("btn-success", !result.isList);
+                button.classList.toggle("btn-danger", result.isList);
+                Swal.fire("Success!", result.message, "success");
+            } else {
+                Swal.fire("Error!", result.message, "error");
+            }
+        } catch (error) {
+            Swal.fire("Error!", "Something went wrong!", "error");
+            console.error("Error toggling coupon status:", error);
         }
-    } catch (error) {
-        Swal.fire("Error!", "Something went wrong!", "error");
-        console.error("Error toggling coupon status:", error);
     }
-}
+</script>
 
-    </script>
-    
   
 
 </body>
