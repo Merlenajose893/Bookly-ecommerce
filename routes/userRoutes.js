@@ -44,7 +44,7 @@ router.get('/book/:id', userController.loadBookDetails);
 router.get('/', userController.getAllGenres);
 
 router.get('/genres/:id', userController.showGenre);
-// router.get('/book/:id', userController.showBookDetails);
+
 
 router.get('/profiledashboard', checkBlockedUser,userAuth, profileController.loaddashboard);
 // router.get('/profileorders', userAuth, profileController.loadorder);

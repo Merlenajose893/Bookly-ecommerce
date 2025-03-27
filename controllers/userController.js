@@ -578,36 +578,36 @@ const loadShop = async (req, res) => {
     const currentDate = new Date();
     let filter = { isDeleted: false };
 
-    // Handle search query
+    
     if (req.query.search) {
       const searchQuery = req.query.search.trim();
       filter.$or = [
         { title: { $regex: searchQuery, $options: 'i' } },
         { author: { $regex: searchQuery, $options: 'i' } },
       ];
-      // console.log("Search filter applied:", filter.$or);
+      
     }
 
-    // Handle genres filter
+    
     let selectedGenres = [];
     if (req.query.genres) {
       selectedGenres = Array.isArray(req.query.genres)
         ? req.query.genres
         : req.query.genres.split(',');
-      // console.log("Selected genres:", selectedGenres);
+      
     }
 
     if (selectedGenres.length > 0) {
       const genreDocs = await Genre.find({ name: { $in: selectedGenres } }).select('_id');
       const genreIds = genreDocs.map((genre) => genre._id);
-      // console.log("Genre IDs found:", genreIds);
+      
 
       if (genreIds.length > 0) {
         filter.genres = { $in: genreIds };
       }
     }
 
-    // Sort options
+    
     const sortOptions = {
       popularity: { salesCount: -1 },
       'price-low': { salesPrice: 1 },
@@ -619,12 +619,10 @@ const loadShop = async (req, res) => {
     };
 
     const sortOption = sortOptions[req.query.sort] || { createdAt: -1 };
-    // console.log("Sorting option selected:", sortOption);
-
-    // Get paginated books
+    
     const totalItems = await Book.countDocuments(filter);
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-    // console.log(`Total books found: ${totalItems}, Total pages: ${totalPages}`);
+   
 
     let books = await Book.find(filter)
       .populate('genres')
@@ -632,22 +630,18 @@ const loadShop = async (req, res) => {
       .sort(sortOption)
       .skip((page - 1) * itemsPerPage)
       .limit(itemsPerPage);
-    // console.log("Books fetched from DB:", books.length);
-
-    // Process offers for each book
+    
     books = await Promise.all(
       books.map(async (book) => {
         let finalPrice = book.salesPrice || book.regularPrice;
         let appliedOffer = null;
 
-        // console.log(`Processing book: ${book.title}, Regular price: ${book.regularPrice}, Sales price: ${book.salesPrice}`);
-
-        // Check product-specific offer
+        
         if (book.offerId && book.offerId.isActive && book.offerId.endDate >= currentDate) {
           appliedOffer = book.offerId;
-          // console.log(`Applied product offer: ${appliedOffer.discountType} - ${appliedOffer.discountValue}`);
+          
         } else {
-          // Check category offers
+          
           const categoryOffer = await Offer.findOne({
             category: { $in: book.genres },
             isActive: true,
@@ -703,6 +697,7 @@ const loadShop = async (req, res) => {
       totalPages,
       searchQuery: req.query.search || '',
       selectedGenres,
+      sort:req.query.sort||'new',
       message: 'Shop rendered successfully',
     });
   } catch (error) {

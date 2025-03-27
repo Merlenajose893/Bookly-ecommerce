@@ -303,17 +303,21 @@
             event.preventDefault();
         
             const name = document.getElementById("couponName").value.trim();
-            const offerPrice = document.getElementById("offerPrice").value.trim();
-            const minimumPrice = document.getElementById("minimumPrice").value.trim();
+            const offerPrice = parseFloat(document.getElementById("offerPrice")).value.trim();
+            
+            const minimumPrice = parseFloat(document.getElementById("minimumPrice")).value.trim();
+            
+            let hasError = false;
+            
             const expiredOn = document.getElementById("expiredOn").value.trim();
-        
+            
             document.getElementById("errorMessages").innerHTML = "";
             document.getElementById("couponNameError").innerHTML = "";
             document.getElementById("offerPriceError").innerHTML = "";
             document.getElementById("minimumPriceError").innerHTML = "";
             document.getElementById("expiredOnError").innerHTML = "";
         
-            let hasError = false;
+            
         
             if (!name) {
                 document.getElementById("couponNameError").innerHTML = "The coupon name is required.";
@@ -341,6 +345,15 @@
                 document.getElementById("minimumPriceError").innerHTML = "Minimum Price must be a positive number greater than zero.";
                 hasError = true;
             }
+            else if(
+                offerPrice < minimumPrice
+            )
+            {
+                document.getElementById("minimumPriceError").innerHTML = "Offer Price must be greater than or equal to"
+                hasError=true
+            }
+           
+
         
             if (!expiredOn) {
                 document.getElementById("expiredOnError").innerHTML = "Expiry Date is required.";
@@ -358,7 +371,7 @@
                     }
                 }
             }
-        
+            console.log("Validation Errors?", hasError); 
             if (hasError) {
                 return;
             }

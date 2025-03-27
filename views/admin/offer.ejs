@@ -69,6 +69,7 @@
                                     <div class="mb-3" id="productField" style="display: none;">
                                         <label class="form-label">Select Product</label>
                                         <select class="form-control" name="product" id="productDropdown">
+                                            <option value="" disabled selected>Select a product</option>
                                             <% books.forEach(book => { %>
                                                 <option value="<%= book._id %>"><%= book.title %></option>
                                             <% }); %>
@@ -177,7 +178,9 @@
                                                         </select>
                                                         <% if (offer.offerType === 'Product') { %>
                                                             <label>Select Product:</label>
+                                                            
                                                             <select name="product">
+                                                                <option value="" disabled selected>Select a product</option>
                                                                 <% books.forEach(book => { %>
                                                                     <option value="<%= book._id %>" <%= book._id.equals(offer.book) ? 'selected' : '' %>><%= book.title%></option>
                                                                 <% }); %>
@@ -187,6 +190,8 @@
                                                         <% if (offer.offerType === 'Category') { %>
                                                             <label>Select Category:</label>
                                                             <select name="category">
+                                                                
+                                                                <option value="" disabled selected>Select a category</option>
                                                                 <% genres.forEach(genre => { %>
                                                                     <option value="<%= genre._id %>" <%= genre._id.equals(offer.genre) ? 'selected' : '' %>><%= genre.name %></option>
                                                                 <% }); %>
@@ -325,8 +330,8 @@
                     clearError(discountType);
                 }
     
-                if (discountValue.value <= 0 || isNaN(discountValue.value)) {
-                    showError(discountValue, "Please enter a valid Discount Value greater than 0.");
+                if (discountValue.value <= 0 || isNaN(discountValue.value)||discountValue.value>100) {
+                    showError(discountValue, "Please enter a valid Discount Value between 1 and 100.");
                     isValid = false;
                 } else {
                     clearError(discountValue);
@@ -446,7 +451,17 @@
       });
     }
     </script>
+    <script>
+        function toggleFields() {
+            let offerType = document.getElementById('offerType').value;
+            
+            document.getElementById('productField').style.display = (offerType === 'Product') ? 'block' : 'none';
+            document.getElementById('categoryField').style.display = (offerType === 'Category') ? 'block' : 'none';
+            document.getElementById('referralField').style.display = (offerType === 'Referral') ? 'block' : 'none';
+        }
     
+        window.onload = toggleFields;
+    </script>
  
  <!-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.10.2/sweetalert2.all.min.js"></script>

@@ -663,8 +663,7 @@ const cancelOrder = async (req, res) => {
     }
 
     const refundAmount = order.totalAmount;
-    console.log(refundAmount);
-    console.log(order.paymentId);
+    
 
     let wallet = await Wallet.findOne({ user: userId });
 
@@ -703,7 +702,7 @@ const cancelOrder = async (req, res) => {
       const book = item.productId;
       const quantityToAdd = item.quantity;
 
-      console.log('ghjk', quantityToAdd);
+    
 
       await Book.findByIdAndUpdate(book._id, { $inc: { quantity: quantityToAdd } });
     }
@@ -813,7 +812,7 @@ const returnOrder = async (req, res) => {
       status: 'Returning',
       timestamp: new Date(),
     });
-
+    
     await orderToUpdate.save();
     res.redirect('/profileorder');
   } catch (error) {
