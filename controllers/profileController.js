@@ -107,14 +107,14 @@ const loadWallet = async (req, res) => {
   try {
     let  wallet = await Wallet.findOne({ user: req.session.user }).populate('user', 'name').exec();
 
-    // if (!wallet) {
-    //   wallet= new Wallet({
-    //     user: req.session.user,
-    //     balance:0,
-    //     transactions:[]
-    //   });
-    //   await wallet.save();
-    // }
+    if (!wallet) {
+      wallet= new Wallet({
+        user: req.session.user,
+        balance:0,
+        transactions:[]
+      });
+      await wallet.save();
+    }
 
     const currentPage = parseInt(req.query.page) || 1;
     const itemsPerPage = 5;
