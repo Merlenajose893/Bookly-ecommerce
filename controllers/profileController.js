@@ -127,10 +127,11 @@ const addMoney = async (req, res) => {
     const options={
       amount:amountInPaise,
       currency: 'INR',
-      reciept:`wallet_${userId}_${Date.now()}`,
-      paymemt_capture:1,
+      
+
     };
     const order=await razorpay.orders.create(options)
+    console.log(order)
     res.json({
       success:true,
       orderId:order.id,
@@ -143,7 +144,7 @@ const addMoney = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-////
+
 
 const loadChangePassword = async (req, res) => {
   try {
