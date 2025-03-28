@@ -123,23 +123,27 @@ const addMoney = async (req, res) => {
     if (!wallet) {
       return res.status(400).json({ message: 'NO wallet is found' });
     }
-    wallet.balance += amount;
-    const transaction = new Transaction({
-      user: userId,
-      amount,
-      transactionType: 'deposit',
-      wallet: wallet._id,
-      description: `Added $${amount} to the wallet`,
-    });
-    await transaction.save();
-    wallet.transactions.push(transaction._id);
-    await wallet.save();
-    res.json({ message: 'Successfully' });
+    const amountInPaise=amount*100;
+    const options={
+      amount:amountInPaise,
+      currency: 'INR',
+      reciept:`wallet_${userId}_${Date.now()}`,
+      paymemt_capture:1,
+    };
+    const order=await razorpay.orders.create(options)
+    res.json({
+      success:true,
+      orderId:order.id,
+      amount:amountInPaise,
+      currency:'INR',
+      key_id:'rzp_test_pxX6lfY1EAcvNw'
+    })
   } catch (error) {
     console.error('Error adding the money', error);
     res.status(500).send('Internal Server Error');
   }
 };
+////
 
 const loadChangePassword = async (req, res) => {
   try {
@@ -189,7 +193,7 @@ const loadAddress = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-/////
+
 
 const addAddress = async (req, res) => {
   try {
