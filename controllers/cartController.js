@@ -195,7 +195,11 @@ const updateCart = async (req, res) => {
     }
 
     if (quantity > availableStock) {
-      quantity = availableStock;
+      // quantity = availableStock;
+      return res.status(400).json({ 
+        success: false, 
+        message: `Only ${availableStock} items are in stock. You cannot add more.` 
+      });
     }
 
     const prevQuantity = cart.items[itemIndex].quantity;

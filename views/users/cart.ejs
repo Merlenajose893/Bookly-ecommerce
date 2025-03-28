@@ -298,10 +298,11 @@
                             <span class="fw-medium">₹50</span>
                         </div>
                         
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="fw-medium text-success">Discount</span>
-                                <span class="fw-medium text-success"> ₹<%= cart.discountAmount%></span>
-                            </div>
+                        <div class="d-flex justify-content-between mb-3" id="discountRow" 
+                        style="display: <%= cart.discountAmount > 0 ? 'flex' : 'none' %>">
+                       <span class="fw-medium text-success">Discount</span>
+                       <span class="fw-medium text-success" id="discountAmount"><%= cart.discountAmount > 0 ? `-₹${cart.discountAmount.toFixed(2)}` : '₹0.00' %></span>
+                   </div>
                         
                         
                         <hr>
@@ -452,6 +453,7 @@
         const number = parseFloat(text);
         return isNaN(number) ? defaultValue : number;
     }
+console.log(quantityInputs);
 
     function handleQuantityChange(input) {
         if (!input) return;
@@ -468,7 +470,7 @@
                 confirmButtonText: 'OK'
             });
         }
-
+// if(quantity>quantityInputs)
         quantity = Math.max(1, quantity); // Ensure minimum 1
         input.value = quantity;
 
@@ -511,18 +513,28 @@
                 },
                 body: JSON.stringify({ productId, quantity })
             });
+console.log('Response',response);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
+            console.log(data);
+            
 
             if (data.success) {
                 updateCartSummary(data.cart);
                 // window.location.reload('/cart');
             } else {
-                throw new Error(data.message || 'Error updating cart');
+                Swal.fire({
+                icon: 'warning',
+                title: 'Stock Limit Reached',
+                text: data.message, // "Only X items are in stock. You cannot add more."
+                confirmButtonText: 'OK'
+            });
+            input.value=availableStock;
+            return
             }
         } catch (error) {
             console.error("Error updating cart:", error);
@@ -598,81 +610,90 @@
 
   </script>
 <script>
+   
     const applyCoupon = async (event) => {
-    event.preventDefault();
+        event.preventDefault();
 
-    const couponSelect = document.getElementById('couponSelect');
-    const selectedCoupon = couponSelect.value;
+        const couponSelect = document.getElementById('couponSelect');
+        const selectedCoupon = couponSelect.value;
 
-    if (!selectedCoupon) {
-        Swal.fire("Warning", "Please select a coupon.", "warning");
-        return;
-    }
-
-    try {
-        const response = await fetch('/cart/apply-coupon', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ couponCode: selectedCoupon })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-            Swal.fire("Error", result.message, "error");
+        if (!selectedCoupon) {
+            Swal.fire("Warning", "Please select a coupon.", "warning");
             return;
         }
 
-        console.log(result.subtotal);
-        console.log(result.total);
+        try {
+            const response = await fetch('/cart/apply-coupon', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ couponCode: selectedCoupon })
+            });
 
-        // Update UI dynamically
-        document.getElementById("subt").innerText = `₹${result.subtotal}`;
-        document.getElementById("cartTotal").innerText = `₹${result.total}`;
-        
+            const result = await response.json();
 
-        // Show success message with Swal
-        Swal.fire({
-            title: "Success",
-            text: "Coupon applied successfully!",
-            icon: "success",
-            confirmButtonText: "OK"
-        });
+            if (!response.ok) {
+                Swal.fire("Error", result.message, "error");
+                return;
+            }
 
-    } catch (error) {
-        console.error("Error applying coupon:", error);
-        Swal.fire("Error", "An error occurred while applying the coupon.", "error");
-    }
-};
-
-
-async function removeCoupon() {
-    try {
-        const response = await fetch("/cart/remove-coupon", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Update both subtotal and total displays
-            document.getElementById("subt").innerText = `₹${data.subtotal.toFixed(2)}`;
-            document.getElementById("cartTotal").innerText = `₹${data.total.toFixed(2)}`;
+            // Update all cart values dynamically
+            document.getElementById("subt").innerText = `₹${result.subtotal.toFixed(2)}`;
+            document.getElementById("cartTotal").innerText = `₹${result.total.toFixed(2)}`;
             
-            // Clear coupon UI elements
-            document.getElementById("appliedCouponMessage").innerText = "";
-            document.getElementById("couponSelect").value = "";
+            // Update discount display
+            const discountRow = document.getElementById("discountRow");
+            const discountAmount = document.getElementById("discountAmount");
             
-            Swal.fire("Success", "Coupon removed successfully!", "success");
-        } else {
-            Swal.fire("Error", data.message, "error");
+            if (result.discountAmount > 0) {
+                discountAmount.innerText = `-₹${result.discountAmount.toFixed(2)}`;
+                discountRow.style.display = "flex";
+            } else {
+                discountRow.style.display = "none";
+            }
+
+            // Show success message
+            Swal.fire({
+                title: "Success",
+                text: "Coupon applied successfully!",
+                icon: "success",
+                confirmButtonText: "OK"
+            });
+
+        } catch (error) {
+            console.error("Error applying coupon:", error);
+            Swal.fire("Error", "An error occurred while applying the coupon.", "error");
         }
-    } catch (error) {
-        console.error("Error:", error);
-        Swal.fire("Error", "Failed to remove coupon.", "error");
+    };
+    async function removeCoupon() {
+        try {
+            const response = await fetch("/cart/remove-coupon", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Update all cart values
+                document.getElementById("subt").innerText = `₹${data.subtotal.toFixed(2)}`;
+                document.getElementById("cartTotal").innerText = `₹${data.total.toFixed(2)}`;
+                
+                // Hide discount row
+                document.getElementById("discountRow").style.display = "none";
+                
+                // Clear coupon UI elements
+                document.getElementById("appliedCouponMessage").innerText = "";
+                document.getElementById("couponSelect").value = "";
+                
+                Swal.fire("Success", "Coupon removed successfully!", "success");
+            } else {
+                Swal.fire("Error", data.message, "error");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            Swal.fire("Error", "Failed to remove coupon.", "error");
+        }
     }
-}
 
 </script>
 <!-- <script></script> -->
