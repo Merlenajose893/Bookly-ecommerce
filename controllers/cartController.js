@@ -349,6 +349,9 @@ const applyCoupon = async (req, res) => {
     if (!cart || !cart.items.length) {
       return res.status(400).json({ success: false, message: "Cart is empty or not found" });
     }
+cart.discountAmount
+// const discountAmount = coupon.discountAmount;
+console.log(cart.discountAmount);
 
     const subtotal = cart.items.reduce((acc, item) => {
       if (!item.totalPrice || typeof item.totalPrice !== "number") {
@@ -387,6 +390,7 @@ const applyCoupon = async (req, res) => {
       discountAmount: coupon.offerPrice,
       subtotal: cart.subTotal,
       total: cart.total,
+      coupon:cart.discountAmount
     });
   } catch (error) {
     console.error("Error applying coupon:", error);

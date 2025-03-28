@@ -298,6 +298,12 @@
                             <span class="fw-medium">₹50</span>
                         </div>
                         
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="fw-medium text-success">Discount</span>
+                                <span class="fw-medium text-success"> ₹<%= cart.discountAmount%></span>
+                            </div>
+                        
+                        
                         <hr>
                         <div class="d-flex justify-content-between mb-3">
                             <span class="fw-bold">Total</span>
@@ -623,6 +629,7 @@
         // Update UI dynamically
         document.getElementById("subt").innerText = `₹${result.subtotal}`;
         document.getElementById("cartTotal").innerText = `₹${result.total}`;
+        
 
         // Show success message with Swal
         Swal.fire({
