@@ -6,6 +6,8 @@
     <title>Bookly - Wallet</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <style>
         body {
             background-color: #f5f5f5;
@@ -73,7 +75,7 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#" class="text-decoration-none text-secondary">Home</a></li>
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Account</li>
             </ol>
         </nav>
@@ -233,6 +235,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!--  -->
     <script>
 document.getElementById('rzp-btn').addEventListener('click',async function () {
     const amount=document.getElementById('amount').value;
@@ -251,7 +254,7 @@ const response=await fetch('/add-money',{
     body:JSON.stringify({amount:amount})
 })
 const data=await response.json();
-
+console.log(data)
 
 if(!data)
 {
@@ -269,12 +272,16 @@ const options={
     name:data.name,
     order_id:data.orderId,
     handler:async function (response) {
+        console.log(response);
+        
         const verifyResponse=await fetch('/verify-payment',{
             method:'POST',
             headers:{"Content-type":"application/json"},
             body:JSON.stringify(response)
         });
         const verifyData=await verifyResponse.json();
+        console.log(verifyData);
+        
         if(verifyData){
             Swal.fire({
                 title: 'Payment Successful',
@@ -299,6 +306,9 @@ const options={
 
 }
 const rzp = new Razorpay(options);
+console.log(typeof Razorpay);
+
+alert(rzp)
 
     rzp.open();
 
