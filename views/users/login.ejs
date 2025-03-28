@@ -114,8 +114,9 @@
         }
 
         // Check for password validity (at least 6 characters and contains both letters and numbers)
+    
         const passwordPattern =
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
         if (!passwordPattern.test(password)) {
           Swal.fire({
             icon: 'error',
