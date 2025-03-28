@@ -269,7 +269,8 @@ function passValidateChecking() {
     const confirmPassword = confirmpasswordid.value;
 
     // Strong password regex: at least 8 characters, with at least one uppercase, one lowercase, one digit, and one special character
-    const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
+
 
     if (password === '') {
         error3.style.display = 'block';
