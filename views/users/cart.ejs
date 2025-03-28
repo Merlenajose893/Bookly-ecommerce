@@ -42,9 +42,7 @@
         <div class="row bg-secondary py-2 px-xl-5">
            
             <div class="col-lg-6 d-none d-lg-block">
-                <%if(message){%>
-                    <h6 class="text-danger"><%=message%></h6>
-                          <%  }%>
+               
                 <div class="d-inline-flex align-items-center">
                     <a class="text-dark" href="">FAQs</a>
                     <span class="text-muted px-2">|</span>
@@ -204,41 +202,42 @@
                             </thead>
                             <tbody class="align-middle">
                                 <% cart.items.forEach(item => { %>
-                                    <tr>
-                                        <td class="align-middle py-4">
-                                            <div class="d-flex align-items-center">
-                                                <img src="/uploads/<%= item.productId.images[0] %>" alt="images" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
-
-                                                <span class="ms-3 fw-medium"><%= item.productId.title %></span>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">₹<%= item.productId.salesPrice %></td>
-                                        <td class="align-middle">
-                                            <div class="input-group quantity mx-auto" style="width: 130px;">
-                                                <button class="btn btn-outline-primary btn-sm btn-minus">
-                                                    <i class="fa fa-minus"></i>
-                                                </button>
-                                                <input type="text" class="form-control form-control-sm text-center border-primary" 
-                                                    value="<%= item.quantity %>">
-                                                <button class="btn btn-outline-primary btn-sm btn-plus" >
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td class="align-middle">₹<%= item.totalPrice %></td>
-                                        <td class="align-middle">
-                                            <button class="btn btn-outline-danger btn-sm rounded-circle remove-item" 
-                                                data-id="<%= item.productId._id %>">
-                                                <i class="fa fa-times"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                     else { %>
+                                    <% if (item.productId) { %>
                                         <tr>
-                                            <td colspan="5" class="text-center text-danger"> Product Removed</td>
+                                            <td class="align-middle py-4">
+                                                <div class="d-flex align-items-center">
+                                                    <img src="/uploads/<%= item.productId.images[0] %>" alt="images" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    <span class="ms-3 fw-medium"><%= item.productId.title %></span>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">₹<%= item.productId.salesPrice %></td>
+                                            <td class="align-middle">
+                                                <div class="input-group quantity mx-auto" style="width: 130px;">
+                                                    <button class="btn btn-outline-primary btn-sm btn-minus">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                    <input type="text" class="form-control form-control-sm text-center border-primary" 
+                                                        value="<%= item.quantity %>">
+                                                    <button class="btn btn-outline-primary btn-sm btn-plus">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="align-middle">₹<%= item.totalPrice %></td>
+                                            <td class="align-middle">
+                                                <button class="btn btn-outline-danger btn-sm rounded-circle remove-item" 
+                                                    data-id="<%= item.productId._id %>">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="5" class="text-center text-danger">Product Removed</td>
                                         </tr>
                                     <% } %>
                                 <% }); %>
+                                
                             </tbody>
                             
                         </table>
