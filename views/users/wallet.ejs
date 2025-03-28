@@ -1,14 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bookly - Wallet</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <style>
+<%- include('../../views/partials/profileHeader.ejs') -%>
+<style>
         body {
             background-color: #f5f5f5;
         }
@@ -71,51 +62,7 @@
     </style>
 </head>
 <body>
-    <div class="container py-4">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-secondary">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Account</li>
-            </ol>
-        </nav>
-<h1>Bookly</h1>
-        <div class="row g-4">
-            <!-- Sidebar -->
-            <div class="col-12 col-md-3">
-                <div class="card">
-                    <div class="card-body">
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-th-large me-2"></i>
-                            Dashboard
-                        </a>
-                        <a href="#" class="sidebar-link active">
-                            <i class="fas fa-shopping-bag me-2"></i>
-                            Orders
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-user me-2"></i>
-                            Update Profile
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-wallet me-2"></i>
-                            Wallet
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-map-marker-alt me-2"></i>
-                            My Address
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-key me-2"></i>
-                            Change Password
-                        </a>
-                        <a href="#" class="sidebar-link">
-                            <i class="fas fa-sign-out-alt me-2"></i>
-                            Logout
-                        </a>
-                    </div>
-                </div>
-            </div>
+   
 
             <!-- Main Content -->
             <div class="col-md-9">

@@ -10,6 +10,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 const { razorpay } = require('../utils/razorpay');
+const crypto=require('crypto')
 const loaddashboard = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -35,7 +36,40 @@ const loaddashboard = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
+const verifyPayment=async(req,res)=>{
+  try {
+    const{razorpay_order_id,razorpay_signature,razorpay_payment_id}=req.body;
+    const secret='DCEw5akaKfgceyWx4RONlTKu'
+    let hmac=crypto.createHash('sha256',secret)
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const calculatedSignature=hmac.digest("hex")
+    if (calculatedSignature !== razorpay_signature) {
+      return res.status(400).json({ success: false, message: "Invalid Payment Signature" });
+    }
+    const wallet=await Wallet.findOne({user:req.session.user});
+    if(!wallet)
+    {
+      return res.status(400).json({ success: false, message: "Wallet not found"})
+    }
+    const transaction=new Transaction({
+      user:req.session.user,
+      amount:amount/100,
+      paymentId:razorpay_payment_id,
+      order_id:razorpay_order_id,
+      transactionType:"deposit",
+      wallet:wallet._id,
+      
+    })
+    await transaction.save();
+   wallet.transactions.push(transaction._id);
+   wallet.balance+=amount/100;
+   await wallet.save();
+   return res.status(200).json({ success: true, message: "Payment successful" });
+  } catch (error) {
+    console.error("Payment Verification Error:", error);
+    return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+}
 const editProfile = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -71,10 +105,15 @@ const editProfile = async (req, res) => {
 
 const loadWallet = async (req, res) => {
   try {
-    const wallet = await Wallet.findOne({ user: req.session.user }).populate('user', 'name').exec();
+    let  wallet = await Wallet.findOne({ user: req.session.user }).populate('user', 'name').exec();
 
     if (!wallet) {
-      return res.status(404).send('Wallet not found');
+      wallet= new Wallet({
+        user: req.session.user,
+        balance:0,
+        transactions:[]
+      });
+      await wallet.save();
     }
 
     const currentPage = parseInt(req.query.page) || 1;
@@ -876,4 +915,5 @@ module.exports = {
   addMoney,
   returnOrder,
   getOrderDetails,
+  verifyPayment
 };

@@ -51,7 +51,7 @@ router.get('/profiledashboard', checkBlockedUser,userAuth, profileController.loa
 router.get('/wallet', userAuth, profileController.loadWallet);
 router.get('/wallet/:walletId/transaction', profileController.getTransactions);
 router.post('/add-money',profileController.addMoney);
-
+router.post('/verify-payment',profileController.verifyPayment)
 router.get('/changepassword', userAuth, profileController.loadChangePassword);
 router.post('/change-password',userAuth,profileController.changePassword);
 router.get('/updateprofile', userAuth, profileController.loadUpdateProfile);
@@ -108,9 +108,9 @@ router.post('/profileorder/return/:orderId',profileController.returnOrder)
 // router.post('/profileorder/return/:orderId', profileController.returnOrder);
 
 router.get('/profileorder/invoice/:orderId',profileController.generateInvoice);
-// router.post('/profileorder/retry-payment/:orderId',profileController.retryPayment);
+
 router.post('/resend-otp',userController.resendotp)
-// router.post('/verify-payment',profileController.verifyRazorPay);
+
 
 router.get('/wishlist',checkBlockedUser,wishlistController.loadWishlist);
 router.post('/wishlist/add',wishlistController.addWishlist);
