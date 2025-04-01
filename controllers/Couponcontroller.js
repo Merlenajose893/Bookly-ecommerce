@@ -46,6 +46,20 @@ const addCoupon = async (req, res) => {
         if (!offerPrice || !minimumPrice || !expiredOn) {
             return res.status(400).json({ message: "Please fill all fields" });
         }
+        offerPrice=Number(offerPrice);
+        minimumPrice=Number(minimumPrice);
+        if(offerPrice<=0 || minimumPrice<=0)
+        {
+            return res.status(400).json({message:'Offerprice and minimumprice should be greater than 0'});
+        }
+        if(offerPrice>=minimumPrice)
+        {
+            return res.status(400).json({message:'Offer Price must be less than minimum Price'})
+        }
+        if(minimumPrice>5000)
+        {
+            return res.status(400).json({message:'Minimum Price should be less than 5000'})
+        }
 
         if (!name) {
             const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
