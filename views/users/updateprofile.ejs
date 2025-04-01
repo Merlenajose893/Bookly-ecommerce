@@ -1,4 +1,34 @@
 <%- include('../../views/partials/profileHeader.ejs') -%>
-
+<div class="col-md-9 content-section">
+    <div class="content-header">
+        <h5 class="mb-0">Update Profile</h5>
+    </div>
+    
+    <form id="profileForm" class="needs-validation" novalidate>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+            <div class="invalid-feedback">
+                Please enter a username
+            </div>
+        </div>
+        
+        
+        
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="phone" name="phone" required
+                   pattern="^[0-9]{10}$">
+            <div class="invalid-feedback">
+                Please enter a valid 10-digit phone number
+            </div>
+        </div>
+        
+        
+        
+        <button type="submit" class="btn save-btn text-white">Save</button>
+    </form>
+</div>
+</div>
 
 <%- include('../../views/partials/profileFooter.ejs') -%>
