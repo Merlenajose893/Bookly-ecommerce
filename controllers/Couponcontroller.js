@@ -60,6 +60,10 @@ const addCoupon = async (req, res) => {
         {
             return res.status(400).json({message:'Minimum Price should be less than 5000'})
         }
+        if(offerPrice>=100)
+        {
+            return res.status(400).json({message:'Offer Price must be less than 100'});
+        }
 
         if (!name) {
             const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
