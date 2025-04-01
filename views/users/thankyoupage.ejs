@@ -176,6 +176,7 @@
           <th>Price</th>
           <th>Total</th>
           <th>DiscountAmount</th>
+          <th>Shipping Cost</th>
         </tr>
       </thead>
       <tbody>
@@ -186,6 +187,7 @@
             <td>₹<%= item.productId.salesPrice %></td>
             <td>₹<%= item.productId.salesPrice * item.quantity %></td>
             <td>₹<%=order.discountAmount%></td>
+            <td>₹50</td>
           </tr>
         <% }); %>
       </tbody>
