@@ -78,7 +78,7 @@ const addCategoryOffer = async (req, res) => {
 
     for (const book of books) {
       book.bookOffer = 0;
-      book.salePrice = book.regularPrice;
+      book.salesPrice = book.regularPrice;
       await book.save();
     }
 

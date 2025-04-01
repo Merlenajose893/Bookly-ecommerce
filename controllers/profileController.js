@@ -767,6 +767,8 @@ const cancelOrder = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const userId = req.session.user;
+    console.log(userId);
+    
     const { currentPassword, newPassword, confirmPassword } = req.body;
     console.log('currentPassword', currentPassword);
     console.log('newPassword', newPassword);
@@ -783,12 +785,13 @@ const changePassword = async (req, res) => {
     }
     console.log('User', user);
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex =           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
+
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
         success: false,
         message:
-          'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character',
+          'Password must be at least 12 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character',
       });
     }
     const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
