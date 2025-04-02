@@ -96,7 +96,8 @@ const editProfile = async (req, res) => {
     console.log(user.phone);
 
     await user.save();
-    return res.redirect('/profiledashboard');
+    // return res.redirect('/profiledashboard');
+    return res.status(200).json({ message: 'Profile updated successfully' });
   } catch (error) {
     console.error('Error updating user', error);
     return res.status(500).json({ message: 'Server error' });
@@ -150,40 +151,49 @@ const getTransactions = async (req, res) => {
     res.status(500).send('Error loading transactions');
   }
 };
+
+
 const addMoney = async (req, res) => {
   try {
     const userId = req.session.user;
     const amount = req.body.amount;
-    console.log('fghj', amount);
+    
+    console.log("Received amount:", amount);
+    if (!amount || isNaN(amount) || amount <= 0) {
+      return res.status(400).json({ message: "Invalid amount" });
+    }
 
     let wallet = await Wallet.findOne({ user: userId });
-    console.log('Wall', wallet);
-
+    console.log("User Wallet:", wallet);
     if (!wallet) {
-      return res.status(400).json({ message: 'NO wallet is found' });
+      return res.status(400).json({ message: "No wallet found" });
     }
-    const amountInPaise=amount*100;
-    const options={
-      amount:amountInPaise,
-      currency: 'INR',
-      
 
+    const amountInPaise = amount * 100;
+    console.log("Final Amount in Paise:", amountInPaise);
+
+    const options = {
+      amount: amountInPaise,
+      currency: "INR",
     };
-    const order=await razorpay.orders.create(options)
-    console.log(order)
+
+    const order = await razorpay.orders.create(options);
+    console.log("Razorpay Order Response:", order);
+
     res.json({
-      success:true,
-      orderId:order.id,
-      amount:amountInPaise,
-      currency:'INR',
-      key_id:'rzp_test_pxX6lfY1EAcvNw'
-    })
+      success: true,
+      orderId: order.id,
+      amount: amountInPaise,
+      currency: "INR",
+      key_id: "rzp_test_pxX6lfY1EAcvNw",
+    });
   } catch (error) {
-    console.error('Error adding the money', error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error adding money:", error);
+    res.status(500).json({ message: error.message });
   }
 };
-//////////\\\\\\\\
+
+
 
 const loadChangePassword = async (req, res) => {
   try {
@@ -764,8 +774,12 @@ const cancelOrder = async (req, res) => {
   }
 };
 
+
+
 const changePassword = async (req, res) => {
   try {
+    console.log('Hello');
+    
     const userId = req.session.user;
     console.log(userId);
     
@@ -815,12 +829,16 @@ const changePassword = async (req, res) => {
 const returnOrder = async (req, res) => {
   try {
     const { orderId, reason, productId } = req.body;
+    console.log(req.body);
+    
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).send('Invalid product ID format');
     }
 
     const orderToUpdate = await Order.findOne({ orderId }).populate('books.productId');
+    console.log(orderToUpdate);
+    
     
 
     if (!orderToUpdate) {
@@ -828,10 +846,14 @@ const returnOrder = async (req, res) => {
     }
 
     const productObjectId = new mongoose.Types.ObjectId(productId);
+    console.log(productObjectId);
+    
 
     const productInOrder = orderToUpdate.books.find((item) =>
       item.productId._id.equals(productObjectId),
     );
+    console.log(productInOrder);
+    
 
     if (!productInOrder) {
       return res.status(400).send('Product not found in order.');

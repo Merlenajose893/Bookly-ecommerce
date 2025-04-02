@@ -334,6 +334,8 @@
                                               </form>
                                             <% } %>
                                             
+                                            
+                                            
                                             <% if (order.status === 'Pending' || order.status === 'Paid') { %>
                                               <form action="/profileorder/cancel/<%= order._id %>" method="POST">
                                                 <button type="submit" class="btn btn-outline-danger btn-sm">
@@ -713,6 +715,50 @@ document.getElementById("returnButton").addEventListener("click", function () {
   
   
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- <script>
+  function cancelItem(orderId, productId) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "Do you want to cancel this item from your order?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, cancel it!'
+    }).then((result) => {
+
+      if (result.isConfirmed) {
+        console.log(orderId);
+        console.log(productId.toString());
+        
+        
+        fetch('/profileorder/cancelorder', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          
+          body: JSON.stringify({orderId,productId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire('Cancelled!', 'The item has been cancelled.', 'success')
+              .then(() => location.reload());
+          } else {
+            Swal.fire('Error!', data.message, 'error');
+          }
+        })
+        .catch(error => {
+          Swal.fire('Error!', 'Something went wrong.', 'error');
+        });
+      }
+    });
+  }
+</script> -->
+
 
 </body>
 </html>

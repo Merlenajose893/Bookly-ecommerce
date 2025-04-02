@@ -1,3 +1,4 @@
+
 <%- include('../../views/partials/profileHeader.ejs') -%>
 <div class="col-md-9 content-section">
     <div class="content-header">
@@ -7,7 +8,7 @@
     <form id="profileForm" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required>
+            <input type="text" class="form-control" id="username" name="username" value="<%=user.name%>">
             <div class="invalid-feedback">
                 Please enter a username
             </div>
@@ -17,8 +18,8 @@
         
         <div class="mb-3">
             <label for="phone" class="form-label">Phone Number</label>
-            <input type="tel" class="form-control" id="phone" name="phone" required
-                   pattern="^[0-9]{10}$">
+            <input type="tel" class="form-control" id="phone" name="phone" 
+                   pattern="^[0-9]{10}$" value="<%=user.phone%>">
             <div class="invalid-feedback">
                 Please enter a valid 10-digit phone number
             </div>
@@ -32,62 +33,86 @@
 </div>
 
 
-<%- include('../../views/partials/profileFooter.ejs') -%>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 <!-- SweetAlert2 JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.8/sweetalert2.min.js"></script>
 
-<!-- Validation Script -->
+<%- include('../../views/partials/profileFooter.ejs') -%>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.4.8/sweetalert2.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('profileForm');
-        
-        // Form validation
-        form.addEventListener('submit', function(event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Show error with SweetAlert2
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error',
-                    text: 'Please check the form and correct all errors.',
-                    confirmButtonColor: '#00847e'
-                });
-            } else {
-                event.preventDefault();
-                // Here you would normally submit the form data via AJAX
-                
-                // Show success with SweetAlert2
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Your profile has been updated successfully.',
-                    confirmButtonColor: '#00847e'
-                });
-            }
-            
-            form.classList.add('was-validated');
-        });
-        
-        // Real-time validation for phone number
-        const phoneInput = document.getElementById('phone');
-        phoneInput.addEventListener('input', function() {
-            // Remove any non-numeric characters
-            this.value = this.value.replace(/[^0-9]/g, '');
-            
-            // Limit to 10 digits
-            if (this.value.length > 10) {
-                this.value = this.value.slice(0, 10);
-            }
-        });
-        
-        // Real-time validation for name
-        const nameInput = document.getElementById('fullName');
-        nameInput.addEventListener('input', function() {
-            // Remove any characters that aren't letters or spaces
-            this.value = this.value.replace(/[^A-Za-z ]/g, '');
-        });
+  const form = document.getElementById('profileForm');
+  const usernameInput = document.getElementById('username');
+  const phoneInput = document.getElementById('phone');
+
+  // Handle form submission
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Simple validation
+    if (!usernameInput.value || !phoneInput.value) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Please fill in all fields!',
+        confirmButtonColor: '#00847e'
+      });
+      return;
+    }
+
+    // Show loading
+    Swal.fire({
+      title: 'Saving...',
+      allowOutsideClick: false,
+      didOpen: () => Swal.showLoading()
     });
+
+    try {
+      // Send data to server
+      const response = await fetch('/profiledashboard', {  // Change the endpoint to '/updateprofile' to match the backend route
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: usernameInput.value.trim(),
+          phone: phoneInput.value.trim()
+        }),
+        credentials: 'include'
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.message || 'Update failed');
+
+      // Show success
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Profile updated successfully',
+        confirmButtonColor: '#00847e',
+        timer: 2000
+      }).then(() => {
+        // Redirect to profile dashboard after success
+        window.location.href = '/profiledashboard';  // Redirects to profile dashboard
+      });
+
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'Something went wrong',
+        confirmButtonColor: '#00847e'
+      });
+    }
+  });
+
+  // Simple input formatting
+  phoneInput.addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').slice(0, 10);
+  });
+
+  usernameInput.addEventListener('input', function() {
+    this.value = this.value.replace(/[^a-zA-Z ]/g, '');
+  });
+});
+
 </script>

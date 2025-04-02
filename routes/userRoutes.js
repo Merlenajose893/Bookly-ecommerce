@@ -102,8 +102,9 @@ router.get('/profileorder/:orderId',profileController.loadOrder);
 router.post('/getOrderDetails',profileController.getOrderDetails);
 // router.post('/viewOrder/:orderId',userController.viewOrder);
 router.get('/profileorder/viewOrder/:orderId',userController.viewOrder)
-router.post('/profileorder/cancel/:orderId',profileController.cancelOrder);
+
 router.get('/profileorder/cancel/:orderId',profileController.cancelOrder);
+router.post('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.post('/profileorder/return/:orderId',profileController.returnOrder)
 // router.post('/profileorder/return/:orderId', profileController.returnOrder);
 
