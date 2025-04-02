@@ -71,7 +71,7 @@
 
     try {
       // Send data to server
-      const response = await fetch('/profiledashboard', {  // Change the endpoint to '/updateprofile' to match the backend route
+      const response = await fetch('/updateProfile', {  // Change the endpoint to '/updateprofile' to match the backend route
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
