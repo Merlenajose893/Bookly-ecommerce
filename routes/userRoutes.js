@@ -55,7 +55,7 @@ router.post('/verify-payment',profileController.verifyPayment)
 router.get('/changepassword', userAuth, profileController.loadChangePassword);
 router.post('/change-password',userAuth,profileController.changePassword);
 router.get('/updateprofile', userAuth, profileController.loadUpdateProfile);
-router.post('/profiledashboard', profileController.editProfile);
+router.post('/updateProfile', profileController.editProfile);
 
 
 router.get('/forgetpassword',userController.loadForgetPassword)
