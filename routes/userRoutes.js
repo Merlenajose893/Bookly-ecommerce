@@ -95,20 +95,20 @@ router.post('/verify-razorpay-payment', userController.verifyRazorPay);
 router.get('/verify-razorpay-payment', userController.verifyRazorPay);
 
 router.get('/order-success/:orderId',checkBlockedUser,userController.loadOrder);
-router.get('/order-failed',userController.loadOrderFailed)
-router.get('/profileorder',profileController.loadOrder);
+router.get('/order-failed',checkBlockedUser,userController.loadOrderFailed)
+router.get('/profileorder',checkBlockedUser,profileController.loadOrder);
 router.post('/profileorder',profileController.loadOrder)
 router.get('/profileorder/:orderId',profileController.loadOrder);
 router.post('/getOrderDetails',profileController.getOrderDetails);
 // router.post('/viewOrder/:orderId',userController.viewOrder);
-router.get('/profileorder/viewOrder/:orderId',userController.viewOrder)
+router.get('/profileorder/viewOrder/:orderId',checkBlockedUser,userController.viewOrder)
 
 router.get('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.post('/profileorder/cancel/:orderId',profileController.cancelOrder);
 router.post('/profileorder/return/:orderId',profileController.returnOrder)
 // router.post('/profileorder/return/:orderId', profileController.returnOrder);
 
-router.get('/profileorder/invoice/:orderId',profileController.generateInvoice);
+router.get('/profileorder/invoice/:orderId',checkBlockedUser,profileController.generateInvoice);
 
 router.post('/resend-otp',userController.resendotp)
 
