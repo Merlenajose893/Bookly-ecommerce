@@ -38,9 +38,9 @@ const loaddashboard = async (req, res) => {
 };
 const verifyPayment=async(req,res)=>{
   try {
-    const{razorpay_order_id,razorpay_signature,razorpay_payment_id}=req.body;
+    const{razorpay_order_id,razorpay_signature,razorpay_payment_id,amount}=req.body;
     const secret='DCEw5akaKfgceyWx4RONlTKu'
-    let hmac=crypto.createHash('sha256',secret)
+    let hmac=crypto.createHmac('sha256',secret)
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
     const calculatedSignature=hmac.digest("hex")
     if (calculatedSignature !== razorpay_signature) {
@@ -52,12 +52,16 @@ const verifyPayment=async(req,res)=>{
       return res.status(400).json({ success: false, message: "Wallet not found"})
     }
     const transaction=new Transaction({
+      
       user:req.session.user,
       amount:amount/100,
       paymentId:razorpay_payment_id,
       order_id:razorpay_order_id,
       transactionType:"deposit",
-      wallet:wallet._id,
+      description:`Payment received via Razorpay (Order ID: ${razorpay_order_id})`,
+      wallet:wallet._id
+
+      
       
     })
     await transaction.save();
@@ -176,6 +180,7 @@ const addMoney = async (req, res) => {
     const options = {
       amount: amountInPaise,
       currency: "INR",
+      receipt: `receipt_${Date.now()}`
     };
 
     const order = await razorpay.orders.create(options);
