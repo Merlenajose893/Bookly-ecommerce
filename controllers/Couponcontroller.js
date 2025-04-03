@@ -15,9 +15,9 @@ const loadCoupon = async (req, res) => {
 
         const totalCoupons = await Coupon.countDocuments(filter);
 
-        const coupons = await Coupon.find(filter)
+        const coupons = await Coupon.find(filter).sort({createdOn:-1})
             .skip((page - 1) * itemsPerPage)
-            .limit(itemsPerPage);
+            .limit(itemsPerPage)
 
         const totalPages = Math.ceil(totalCoupons / itemsPerPage);
         const hasPrevPage = page > 1;

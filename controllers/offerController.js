@@ -23,7 +23,7 @@ const loadOfferPage = async (req, res) => {
         const totalOffers = await Offer.countDocuments(filter);
         const totalPages = Math.ceil(totalOffers / limit);
 
-        const offers = await Offer.find(filter)
+        const offers = await Offer.find(filter).sort({createdAt:-1})
             .populate('product category')
             .skip(skip)
             .limit(limit);

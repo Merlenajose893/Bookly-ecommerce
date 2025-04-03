@@ -244,7 +244,8 @@
                                             <td class="white"><%= coupon.name %></td>
                                             <td class="white"><%= coupon.offerPrice %></td>
                                             <td class="white">₹<%= coupon.minimumPrice %></td>
-                                            <td class="white"><%= coupon.expiredOn.toLocaleDateString()%></td>
+                                            <td class="white"><%= new Date(coupon.expiredOn).toLocaleDateString('en-IN') %></td>
+
                                             <td>
                                                 <a href="/admin/updateCoupon/<%= coupon.id %>" class="btn btn-success">Update</a>
                                             </td>
