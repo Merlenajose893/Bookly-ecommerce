@@ -782,7 +782,7 @@ const changePassword = async (req, res) => {
     console.log('Hello');
     
     const userId = req.session.user;
-    console.log(userId);
+    console.log(userId,'User');
     
     const { currentPassword, newPassword, confirmPassword } = req.body;
     console.log('currentPassword', currentPassword);
@@ -821,7 +821,8 @@ const changePassword = async (req, res) => {
     console.log('hjk', user.password);
 
     await user.save();
-    res.redirect('/login');
+    return res.json({ message: 'Password changed successfully. Redirecting...', redirect: '/login' });
+
   } catch (error) {
     console.error('Error changing password', error);
     res.status(500).send('Internal Server Error');
