@@ -226,13 +226,13 @@
                                       <%= order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A" %>
                                     </span>
                                   </div>
-                                  <span class="badge 
+                                  <span id="order-status-<%= order._id %>" class="badge 
                                     <%= order.status === 'Delivered' ? 'bg-success' : 
                                         order.status === 'Processing' ? 'bg-warning text-dark' : 
                                         order.status === 'Shipped' ? 'bg-info text-dark' : 
                                         order.status === 'Payment Pending' ? 'bg-danger' : 'bg-secondary' %>">
                                     <%= order.status %>
-                                  </span>
+                                </span>
                                 </div>
                                 
                                 <!-- Order Content -->
@@ -336,12 +336,18 @@
                                             
                                             
                                             
-                                            <% if (order.status === 'Pending' || order.status === 'Paid') { %>
+                                            <!-- <% if (order.status === 'Pending' || order.status === 'Paid') { %>
                                               <form action="/profileorder/cancel/<%= order._id %>" method="POST">
                                                 <button type="submit" class="btn btn-outline-danger btn-sm">
                                                   <i class="fas fa-times me-1"></i>Cancel
                                                 </button>
                                               </form>
+                                            <% } %>
+                                             -->
+                                             <% if (order.status === 'Pending' || order.status === 'Paid') { %>
+                                              <button onclick="confirmCancel('<%= order._id %>', this)" class="btn btn-outline-danger btn-sm">
+                                                <i class="fas fa-times me-1"></i>Cancel
+                                              </button>
                                             <% } %>
                                             
                                             <form action="/profileorder/viewOrder/<%= order._id %>">
@@ -758,6 +764,48 @@ document.getElementById("returnButton").addEventListener("click", function () {
     });
   }
 </script> -->
+<script>
+  async function confirmCancel(orderId, button) {
+      Swal.fire({
+          title: "Are you sure?",
+          text: "Do you really want to cancel this order?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Yes, cancel it!",
+      }).then(async (result) => {
+          if (result.isConfirmed) {
+              try {
+                  const response = await fetch(`/profileorder/cancel/${orderId}`, {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                  });
+
+                  const result = await response.json();
+
+                  if (response.ok) {
+                      Swal.fire("Canceled!", result.message, "success");
+
+                      // Update UI dynamically
+                      const statusBadge = document.getElementById(`order-status-${orderId}`);
+                    statusBadge.textContent = "Canceled";
+                    statusBadge.className = "badge bg-secondary"; 
+                      button.textContent = "Order Canceled";
+                      button.classList.remove("btn-outline-danger");
+                      button.classList.add("btn-secondary");
+                      button.disabled = true; // Disable button after cancellation
+                  } else {
+                      Swal.fire("Error!", result.message, "error");
+                  }
+              } catch (error) {
+                  Swal.fire("Error!", "Something went wrong!", "error");
+                  console.error("Error canceling order:", error);
+              }
+          }
+      });
+  }
+</script>
 
 
 </body>

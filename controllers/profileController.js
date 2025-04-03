@@ -771,7 +771,8 @@ const cancelOrder = async (req, res) => {
     order.status = 'Cancelled';
     await order.save();
 
-    res.redirect('/profileorder');
+    // res.redirect('/profileorder');
+    return res.json({ success: true, message: "Your order has been canceled." });
   } catch (error) {
     console.error('Error cancelling the order:', error);
     res
