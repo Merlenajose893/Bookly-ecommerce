@@ -32,20 +32,20 @@ const loadWishlist = async (req, res) => {
 const addWishlist=async (req,res) => {
     try {
         const userId=req.session.user;
-        console.log(userId);
+        
         
         if(!userId){
           return  res.redirect('/login')
         }
         const bookId=req.body.bookId;
-        console.log('Book',bookId);
+   
         if(!bookId)
         {
             return res.status(400).json({message:'Book Id is not found'});
         }
        
         let wishlist=await Wishlist.findOne({userId});
-        console.log(wishlist);
+    
         
         if(!wishlist)
         {

@@ -789,15 +789,13 @@ const cancelOrder = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    console.log('Hello');
+  
     
     const userId = req.session.user;
-    console.log(userId,'User');
+  
     
     const { currentPassword, newPassword, confirmPassword } = req.body;
-    console.log('currentPassword', currentPassword);
-    console.log('newPassword', newPassword);
-    console.log('confirmPassword', confirmPassword);
+  
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -808,7 +806,7 @@ const changePassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
-    console.log('User', user);
+  
 
     const passwordRegex =           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
 
@@ -823,7 +821,7 @@ const changePassword = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Invalid current password' });
     }
-    console.log('op', isPasswordValid);
+   
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
@@ -841,7 +839,7 @@ const changePassword = async (req, res) => {
 const returnOrder = async (req, res) => {
   try {
     const { orderId, reason, productId } = req.body;
-    console.log(req.body);
+   
     
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
@@ -849,7 +847,7 @@ const returnOrder = async (req, res) => {
     }
 
     const orderToUpdate = await Order.findOne({ orderId }).populate('books.productId');
-    console.log(orderToUpdate);
+
     
     
 
@@ -858,13 +856,13 @@ const returnOrder = async (req, res) => {
     }
 
     const productObjectId = new mongoose.Types.ObjectId(productId);
-    console.log(productObjectId);
+    
     
 
     const productInOrder = orderToUpdate.books.find((item) =>
       item.productId._id.equals(productObjectId),
     );
-    console.log(productInOrder);
+ 
     
 
     if (!productInOrder) {
@@ -882,6 +880,7 @@ const returnOrder = async (req, res) => {
     if (alreadyReturned) {
       return res.status(400).send('Product already returned.');
     }
+
 
     orderToUpdate.returnedProducts.push({
       productId: productObjectId,

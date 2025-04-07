@@ -57,65 +57,6 @@ const addGenre = async (req, res) => {
   }
 };
 
-const addCategoryOffer = async (req, res) => {
-  try {
-    const percentage = parseInt(req.body.percentage);
-    const categoryId = req.body.categoryId;
-    const category = await Genre.findById(categoryId);
-
-    if (!category) {
-      return res.status(404).json({ status: false, message: 'Genre not found' });
-    }
-
-    const books = await Book.find({ category: category._id });
-
-    const hasBookOffer = books.some((book) => book.bookOffer > percentage);
-    if (hasBookOffer) {
-      return res.json({ status: false, message: 'Books in this genre already have offers' });
-    }
-
-    await Genre.updateOne({ _id: categoryId }, { $set: { categoryOffer: percentage } });
-
-    for (const book of books) {
-      book.bookOffer = 0;
-      book.salesPrice = book.regularPrice;
-      await book.save();
-    }
-
-    res.json({ status: true });
-  } catch (error) {
-    res.status(500).json({ status: false, message: 'Internal Server Error' });
-  }
-};
-
-const removeCategoryInfo = async (req, res) => {
-  try {
-    const categoryId = req.body.categoryId;
-    const category = await Genre.findById(categoryId);
-
-    if (!category) {
-      return res.status(404).json({ status: false, message: 'Genre not found' });
-    }
-
-    const percentage = category.categoryOffer;
-    const books = await Book.find({ category: category._id });
-
-    if (books.length > 0) {
-      for (const book of books) {
-        book.salePrice += Math.floor(book.regularPrice * (percentage / 100));
-        book.bookOffer = 0;
-        await book.save();
-      }
-    }
-
-    category.categoryOffer = 0;
-    await category.save();
-
-    res.json({ status: true });
-  } catch (error) {
-    res.status(500).json({ status: false, message: 'Internal Server Error' });
-  }
-};
 
 const listCategory = async (req, res) => {
   try {
@@ -220,8 +161,7 @@ const toggleCategoryDeletion = async (req, res) => {
 module.exports = {
   genreInfo,
   addGenre,
-  addCategoryOffer,
-  removeCategoryInfo,
+ 
   listCategory,
   unlistCategory,
   pageerror,

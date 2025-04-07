@@ -13,7 +13,7 @@ const customerInfo = async (req, res) => {
     const users = await User.find({
       isAdmin: false,
       $or: [{ name: { $regex: search, $options: 'i' } }],
-    })
+    }).sort({createdAt:-1})
       .limit(limit)
       .skip(skip)
       .exec();
