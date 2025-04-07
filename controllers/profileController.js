@@ -36,44 +36,44 @@ const loaddashboard = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-const verifyPayment=async(req,res)=>{
-  try {
-    const{razorpay_order_id,razorpay_signature,razorpay_payment_id,amount}=req.body;
-    const secret='DCEw5akaKfgceyWx4RONlTKu'
-    let hmac=crypto.createHmac('sha256',secret)
-    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-    const calculatedSignature=hmac.digest("hex")
-    if (calculatedSignature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid Payment Signature" });
-    }
-    const wallet=await Wallet.findOne({user:req.session.user});
-    if(!wallet)
-    {
-      return res.status(400).json({ success: false, message: "Wallet not found"})
-    }
-    const transaction=new Transaction({
+// const verifyPayment=async(req,res)=>{
+//   try {
+//     const{razorpay_order_id,razorpay_signature,razorpay_payment_id,amount}=req.body;
+//     const secret='DCEw5akaKfgceyWx4RONlTKu'
+//     let hmac=crypto.createHmac('sha256',secret)
+//     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+//     const calculatedSignature=hmac.digest("hex")
+//     if (calculatedSignature !== razorpay_signature) {
+//       return res.status(400).json({ success: false, message: "Invalid Payment Signature" });
+//     }
+//     const wallet=await Wallet.findOne({user:req.session.user});
+//     if(!wallet)
+//     {
+//       return res.status(400).json({ success: false, message: "Wallet not found"})
+//     }
+//     const transaction=new Transaction({
       
-      user:req.session.user,
-      amount:amount/100,
-      paymentId:razorpay_payment_id,
-      order_id:razorpay_order_id,
-      transactionType:"deposit",
-      description:`Payment received via Razorpay (Order ID: ${razorpay_order_id})`,
-      wallet:wallet._id
+//       user:req.session.user,
+//       amount:amount/100,
+//       paymentId:razorpay_payment_id,
+//       order_id:razorpay_order_id,
+//       transactionType:"deposit",
+//       description:`Payment received via Razorpay (Order ID: ${razorpay_order_id})`,
+//       wallet:wallet._id
 
       
       
-    })
-    await transaction.save();
-   wallet.transactions.push(transaction._id);
-   wallet.balance+=amount/100;
-   await wallet.save();
-   return res.status(200).json({ success: true, message: "Payment successful" });
-  } catch (error) {
-    console.error("Payment Verification Error:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
-  }
-}
+//     })
+//     await transaction.save();
+//    wallet.transactions.push(transaction._id);
+//    wallet.balance+=amount/100;
+//    await wallet.save();
+//    return res.status(200).json({ success: true, message: "Payment successful" });
+//   } catch (error) {
+//     console.error("Payment Verification Error:", error);
+//     return res.status(500).json({ success: false, message: "Internal Server Error" });
+//   }
+// }
 const editProfile = async (req, res) => {
   try {
     const userId = req.session.user;
