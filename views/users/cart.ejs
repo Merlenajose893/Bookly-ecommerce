@@ -533,7 +533,12 @@ console.log('Response',response);
                 text: data.message, // "Only X items are in stock. You cannot add more."
                 confirmButtonText: 'OK'
             });
-            input.value=availableStock;
+            if(data.availableStock){
+
+                input.value=data.availableStock;
+                // console.log(input.value);
+                
+            }
             return
             }
         } catch (error) {

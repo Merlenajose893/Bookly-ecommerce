@@ -164,13 +164,13 @@ const updateCart = async (req, res) => {
 
     const userId = req.session?.user;
     if (!userId) {
-      return res.status(401).json({ success: false, message: "User not logged in." });
+      return res.redirect('/login')
     }
 
     let { productId, quantity } = req.body;
     quantity = parseInt(quantity, 10);
 
-    if (!productId || isNaN(quantity) || quantity <= 0) {
+    if (!productId || isNaN(quantity) ) {
       return res.status(400).json({ success: false, message: "Invalid product ID or quantity." });
     }
 
@@ -193,12 +193,13 @@ const updateCart = async (req, res) => {
     if (availableStock === 0) {
       return res.status(400).json({ success: false, message: "Product is out of stock." });
     }
+console.log(availableStock,'kkk');
 
     if (quantity > availableStock) {
       // quantity = availableStock;
       return res.status(400).json({ 
         success: false, 
-        message: `Only ${availableStock} items are in stock. You cannot add more.` 
+        message: `Only ${availableStock} items are in stock. You cannot add more.`,availableStock
       });
     }
 
