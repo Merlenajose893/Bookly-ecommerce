@@ -411,10 +411,10 @@ const removeCoupon = async (req, res) => {
 
     const cart = await Cart.findOne({ userId });
     if (!cart) return res.status(400).json({ success: false, message: "Cart not found" });
-// if(!cart.couponId)
-// {
-//   return res.status(400).json({success:false,message:'You havent applied the coupon'})
-// }
+if(!cart.couponId)
+{
+  return res.status(400).json({success:false,message:'You havent applied the coupon'})
+}
     const originalSubtotal = cart.items.reduce((acc, item) => acc + item.totalPrice, 0);
     const shipping = 50;
 
