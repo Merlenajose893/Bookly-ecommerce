@@ -43,6 +43,10 @@ const loaddashboard = async (req, res) => {
 //     let hmac=crypto.createHmac('sha256',secret)
 //     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
 //     const calculatedSignature=hmac.digest("hex")
+//     console.log(calculatedSignature);
+//     console.log(razorpay_signature);
+    
+    
 //     if (calculatedSignature !== razorpay_signature) {
 //       return res.status(400).json({ success: false, message: "Invalid Payment Signature" });
 //     }
