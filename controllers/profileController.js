@@ -10,7 +10,7 @@ const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const path = require('path');
 const { razorpay } = require('../utils/razorpay');
-const crypto=require('crypto')
+const crypto = require('crypto');
 const loaddashboard = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -36,48 +36,42 @@ const loaddashboard = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-const verifyPayment=async(req,res)=>{
+const verifyPayment = async (req, res) => {
   try {
-    const{razorpay_order_id,razorpay_signature,razorpay_payment_id,amount}=req.body;
-    const secret='DCEw5akaKfgceyWx4RONlTKu'
-    let hmac=crypto.createHmac('sha256',secret)
+    const { razorpay_order_id, razorpay_signature, razorpay_payment_id, amount } = req.body;
+    const secret = 'DCEw5akaKfgceyWx4RONlTKu';
+    let hmac = crypto.createHmac('sha256', secret);
     hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
-    const calculatedSignature=hmac.digest("hex")
+    const calculatedSignature = hmac.digest('hex');
     console.log(calculatedSignature);
     console.log(razorpay_signature);
-    
-    
-    if (calculatedSignature !== razorpay_signature) {
-      return res.status(400).json({ success: false, message: "Invalid Payment Signature" });
-    }
-    const wallet=await Wallet.findOne({user:req.session.user});
-    if(!wallet)
-    {
-      return res.status(400).json({ success: false, message: "Wallet not found"})
-    }
-    const transaction=new Transaction({
-      
-      user:req.session.user,
-      amount:amount/100,
-      paymentId:razorpay_payment_id,
-      order_id:razorpay_order_id,
-      transactionType:"deposit",
-      description:`Payment received via Razorpay (Order ID: ${razorpay_order_id})`,
-      wallet:wallet._id
 
-      
-      
-    })
+    if (calculatedSignature !== razorpay_signature) {
+      return res.status(400).json({ success: false, message: 'Invalid Payment Signature' });
+    }
+    const wallet = await Wallet.findOne({ user: req.session.user });
+    if (!wallet) {
+      return res.status(400).json({ success: false, message: 'Wallet not found' });
+    }
+    const transaction = new Transaction({
+      user: req.session.user,
+      amount: amount / 100,
+      paymentId: razorpay_payment_id,
+      order_id: razorpay_order_id,
+      transactionType: 'deposit',
+      description: `Payment received via Razorpay (Order ID: ${razorpay_order_id})`,
+      wallet: wallet._id,
+    });
     await transaction.save();
-   wallet.transactions.push(transaction._id);
-   wallet.balance+=amount/100;
-   await wallet.save();
-   return res.status(200).json({ success: true, message: "Payment successful" });
+    wallet.transactions.push(transaction._id);
+    wallet.balance += amount / 100;
+    await wallet.save();
+    return res.status(200).json({ success: true, message: 'Payment successful' });
   } catch (error) {
-    console.error("Payment Verification Error:", error);
-    return res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error('Payment Verification Error:', error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
-}
+};
 const editProfile = async (req, res) => {
   try {
     const userId = req.session.user;
@@ -94,10 +88,9 @@ const editProfile = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-if(!name)
-{
-  return res.status(404).json({message:'Name needed'})
-}
+    if (!name) {
+      return res.status(404).json({ message: 'Name needed' });
+    }
     console.log(user);
 
     user.name = name;
@@ -109,7 +102,6 @@ if(!name)
     await user.save();
     // return res.redirect('/profiledashboard');
     return res.status(200).json({ message: 'Profile updated successfully' });
-
   } catch (error) {
     console.error('Error updating user', error);
     return res.status(500).json({ message: 'Server error' });
@@ -118,13 +110,13 @@ if(!name)
 
 const loadWallet = async (req, res) => {
   try {
-    let  wallet = await Wallet.findOne({ user: req.session.user }).populate('user', 'name').exec();
+    let wallet = await Wallet.findOne({ user: req.session.user }).populate('user', 'name').exec();
 
     if (!wallet) {
-      wallet= new Wallet({
+      wallet = new Wallet({
         user: req.session.user,
-        balance:0,
-        transactions:[]
+        balance: 0,
+        transactions: [],
       });
       await wallet.save();
     }
@@ -164,49 +156,46 @@ const getTransactions = async (req, res) => {
   }
 };
 
-
 const addMoney = async (req, res) => {
   try {
     const userId = req.session.user;
     const amount = req.body.amount;
-    
-    console.log("Received amount:", amount);
+
+    console.log('Received amount:', amount);
     if (!amount || isNaN(amount) || amount <= 0) {
-      return res.status(400).json({ message: "Invalid amount" });
+      return res.status(400).json({ message: 'Invalid amount' });
     }
 
     let wallet = await Wallet.findOne({ user: userId });
-    console.log("User Wallet:", wallet);
+    console.log('User Wallet:', wallet);
     if (!wallet) {
-      return res.status(400).json({ message: "No wallet found" });
+      return res.status(400).json({ message: 'No wallet found' });
     }
 
     const amountInPaise = amount * 100;
-    console.log("Final Amount in Paise:", amountInPaise);
+    console.log('Final Amount in Paise:', amountInPaise);
 
     const options = {
       amount: amountInPaise,
-      currency: "INR",
-      receipt: `receipt_${Date.now()}`
+      currency: 'INR',
+      receipt: `receipt_${Date.now()}`,
     };
 
     const order = await razorpay.orders.create(options);
-    console.log("Razorpay Order Response:", order);
+    console.log('Razorpay Order Response:', order);
 
     res.json({
       success: true,
       orderId: order.id,
       amount: amountInPaise,
-      currency: "INR",
-      key_id: "rzp_test_pxX6lfY1EAcvNw",
+      currency: 'INR',
+      key_id: 'rzp_test_pxX6lfY1EAcvNw',
     });
   } catch (error) {
-    console.error("Error adding money:", error);
+    console.error('Error adding money:', error);
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 const loadChangePassword = async (req, res) => {
   try {
@@ -256,7 +245,6 @@ const loadAddress = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 const addAddress = async (req, res) => {
   try {
@@ -421,9 +409,7 @@ const loadOrder = async (req, res) => {
       .limit(limit)
       .lean();
 
-    
     const allBooks = order.flatMap((o) => o.books);
-   
 
     res.render('profileorders', {
       order,
@@ -731,7 +717,6 @@ const cancelOrder = async (req, res) => {
     }
 
     const refundAmount = order.totalAmount;
-    
 
     let wallet = await Wallet.findOne({ user: userId });
 
@@ -770,8 +755,6 @@ const cancelOrder = async (req, res) => {
       const book = item.productId;
       const quantityToAdd = item.quantity;
 
-    
-
       await Book.findByIdAndUpdate(book._id, { $inc: { quantity: quantityToAdd } });
     }
 
@@ -779,7 +762,7 @@ const cancelOrder = async (req, res) => {
     await order.save();
 
     // res.redirect('/profileorder');
-    return res.json({ success: true, message: "Your order has been canceled." });
+    return res.json({ success: true, message: 'Your order has been canceled.' });
   } catch (error) {
     console.error('Error cancelling the order:', error);
     res
@@ -788,17 +771,12 @@ const cancelOrder = async (req, res) => {
   }
 };
 
-
-
 const changePassword = async (req, res) => {
   try {
-  
-    
     const userId = req.session.user;
-  
-    
+
     const { currentPassword, newPassword, confirmPassword } = req.body;
-  
+
     if (!currentPassword || !newPassword || !confirmPassword) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -809,9 +787,9 @@ const changePassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
     }
-  
 
-    const passwordRegex =           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
 
     if (!passwordRegex.test(newPassword)) {
       return res.status(400).json({
@@ -824,16 +802,16 @@ const changePassword = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({ message: 'Invalid current password' });
     }
-   
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
     user.password = hashedPassword;
-    console.log('hjk', user.password);
 
     await user.save();
-    return res.json({ message: 'Password changed successfully. Redirecting...', redirect: '/login' });
-
+    return res.json({
+      message: 'Password changed successfully. Redirecting...',
+      redirect: '/login',
+    });
   } catch (error) {
     console.error('Error changing password', error);
     res.status(500).send('Internal Server Error');
@@ -842,8 +820,6 @@ const changePassword = async (req, res) => {
 const returnOrder = async (req, res) => {
   try {
     const { orderId, reason, productId } = req.body;
-   
-    
 
     if (!mongoose.Types.ObjectId.isValid(productId)) {
       return res.status(400).send('Invalid product ID format');
@@ -851,22 +827,15 @@ const returnOrder = async (req, res) => {
 
     const orderToUpdate = await Order.findOne({ orderId }).populate('books.productId');
 
-    
-    
-
     if (!orderToUpdate) {
       return res.status(404).send('Order not found.');
     }
 
     const productObjectId = new mongoose.Types.ObjectId(productId);
-    
-    
 
     const productInOrder = orderToUpdate.books.find((item) =>
       item.productId._id.equals(productObjectId),
     );
- 
-    
 
     if (!productInOrder) {
       return res.status(400).send('Product not found in order.');
@@ -884,7 +853,6 @@ const returnOrder = async (req, res) => {
       return res.status(400).send('Product already returned.');
     }
 
-
     orderToUpdate.returnedProducts.push({
       productId: productObjectId,
       quantity: productInOrder.quantity,
@@ -897,7 +865,7 @@ const returnOrder = async (req, res) => {
       status: 'Returning',
       timestamp: new Date(),
     });
-    
+
     await orderToUpdate.save();
     res.redirect('/profileorder');
   } catch (error) {
@@ -954,5 +922,5 @@ module.exports = {
   addMoney,
   returnOrder,
   getOrderDetails,
-  verifyPayment
+  verifyPayment,
 };

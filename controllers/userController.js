@@ -578,36 +578,30 @@ const loadShop = async (req, res) => {
     const currentDate = new Date();
     let filter = { isDeleted: false };
 
-    
     if (req.query.search) {
       const searchQuery = req.query.search.trim();
       filter.$or = [
         { title: { $regex: searchQuery, $options: 'i' } },
         { author: { $regex: searchQuery, $options: 'i' } },
       ];
-      
     }
 
-    
     let selectedGenres = [];
     if (req.query.genres) {
       selectedGenres = Array.isArray(req.query.genres)
         ? req.query.genres
         : req.query.genres.split(',');
-      
     }
 
     if (selectedGenres.length > 0) {
       const genreDocs = await Genre.find({ name: { $in: selectedGenres } }).select('_id');
       const genreIds = genreDocs.map((genre) => genre._id);
-      
 
       if (genreIds.length > 0) {
         filter.genres = { $in: genreIds };
       }
     }
 
-    
     const sortOptions = {
       popularity: { salesCount: -1 },
       'price-low': { salesPrice: 1 },
@@ -619,10 +613,9 @@ const loadShop = async (req, res) => {
     };
 
     const sortOption = sortOptions[req.query.sort] || { createdAt: -1 };
-    
+
     const totalItems = await Book.countDocuments(filter);
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-   
 
     let books = await Book.find(filter)
       .populate('genres')
@@ -630,18 +623,15 @@ const loadShop = async (req, res) => {
       .sort(sortOption)
       .skip((page - 1) * itemsPerPage)
       .limit(itemsPerPage);
-    
+
     books = await Promise.all(
       books.map(async (book) => {
         let finalPrice = book.salesPrice || book.regularPrice;
         let appliedOffer = null;
 
-        
         if (book.offerId && book.offerId.isActive && book.offerId.endDate >= currentDate) {
           appliedOffer = book.offerId;
-          
         } else {
-          
           const categoryOffer = await Offer.findOne({
             category: { $in: book.genres },
             isActive: true,
@@ -697,7 +687,7 @@ const loadShop = async (req, res) => {
       totalPages,
       searchQuery: req.query.search || '',
       selectedGenres,
-      sort:req.query.sort||'new',
+      sort: req.query.sort || 'new',
       message: 'Shop rendered successfully',
     });
   } catch (error) {

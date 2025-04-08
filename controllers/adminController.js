@@ -233,8 +233,7 @@ const salesReport = async (req, res) => {
     const totalItems = await Order.countDocuments();
     const totalPages = Math.ceil(totalItems / limit);
 
-    console.log('Fetching Sales Report...');
-    console.log('Request Query Params:', req.query);
+   
 
     const { filter, startDate, endDate, format } = req.query;
     let start, end;
@@ -286,19 +285,15 @@ const salesReport = async (req, res) => {
         break;
     }
 
-    console.log('Received Filter:', filter);
-    console.log('Final Start Date:', start);
-    console.log('Final End Date:', end);
-    console.log('Checking Start Date:', start.toISOString());
-    console.log('Checking End Date:', end.toISOString());
+
 
     const statuses = await Order.distinct('status');
     console.log('Available Order Statuses:', statuses);
-
+const skip=(page-1)*limit
     const orders = await Order.find({
       createdAt: { $gte: start, $lte: end },
       status: { $in: ['Paid', 'Delivered'] },
-    }).populate('user');
+    }).populate('user').sort({createdAt:-1}).skip(skip).limit(limit);
 
     console.log('Filtered Orders:', orders);
 
