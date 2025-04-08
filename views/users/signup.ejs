@@ -268,7 +268,7 @@ function passValidateChecking() {
     const password = passwordid.value;
     const confirmPassword = confirmpasswordid.value;
 
-    // Strong password regex: at least 8 characters, with at least one uppercase, one lowercase, one digit, and one special character
+    
     const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&^#])[A-Za-z\d@$!%*?&^#]{12,}$/;
 
 
@@ -277,7 +277,7 @@ function passValidateChecking() {
         error3.textContent = 'Password cannot be empty';
     } else if (!strongPasswordPattern.test(password)) {
         error3.style.display = 'block';
-        error3.textContent = 'Password must include at least 8 characters, one uppercase letter, one lowercase letter, one digit, and one special character';
+        error3.textContent = 'Password must include at least 12 characters, one uppercase letter, one lowercase letter, one digit, and one special character';
     } else {
         error3.style.display = 'none';
     }
