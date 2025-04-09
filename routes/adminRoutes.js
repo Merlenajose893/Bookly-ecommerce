@@ -19,12 +19,12 @@ router.get('/', adminAuth, adminController.loadDashboard);
 router.get('/sales-report', adminController.salesReport);
 
 router.get('/usermanage', adminAuth, AdminUserController.customerInfo);
-router.get('/updateuser/:id', AdminUserController.updateUser);
-router.get('/blockCustomer', AdminUserController.blockUser);
-router.get('/unblockCustomer', AdminUserController.unblockUser);
+router.get('/updateuser/:id',adminAuth, AdminUserController.updateUser);
+router.get('/blockCustomer',adminAuth, AdminUserController.blockUser);
+router.get('/unblockCustomer',adminAuth,AdminUserController.unblockUser);
 
 router.get('/genres', adminAuth, GenreController.genreInfo);
-router.post('/genres', GenreController.addGenre);
+router.post('/genres', adminAuth,GenreController.addGenre);
 router.get('/listCategory', adminAuth, GenreController.listCategory);
 router.get('/unlistCategory', adminAuth, GenreController.unlistCategory);
 router.get('/pageerror', GenreController.pageerror);
@@ -59,9 +59,9 @@ router.get('/adminorders/updateStatus', adminOrderController.updateStatus);
 router.get('/adminorders/viewOrder/:orderId', adminOrderController.viewOrders);
 
 router.get('/coupon', adminAuth, CouponController.loadCoupon);
-router.post('/coupon', CouponController.addCoupon);
-router.get('/updateCoupon/:couponId', CouponController.loadUpdateCoupon);
-router.post('/updateCoupon/:couponId', CouponController.updatedCoupon);
+router.post('/coupon', adminAuth,CouponController.addCoupon);
+router.get('/updateCoupon/:couponId', adminAuth,CouponController.loadUpdateCoupon);
+router.post('/updateCoupon/:couponId', adminAuth,CouponController.updatedCoupon);
 router.post('/toggleCouponStatus/:couponId', CouponController.toggleCouponStatus);
 
 router.get('/offer', adminAuth, OfferController.loadOfferPage);

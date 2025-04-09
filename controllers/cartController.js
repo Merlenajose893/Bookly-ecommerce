@@ -345,7 +345,8 @@ const applyCoupon = async (req, res) => {
   }
 
   try {
-    const coupon = await Coupon.findOne({ name: couponCode, isList: true });
+    const today=new Date();
+    const coupon = await Coupon.findOne({ name: couponCode, isList: true ,expiredOn:{$gte:today}});
     if (!coupon) {
       return res.status(404).json({ success: false, message: "Coupon not found" });
     }
