@@ -150,7 +150,10 @@ const toggleCategoryDeletion = async (req, res) => {
     category.deletedAt = category.isDeleted ? new Date() : null;
     await category.save();
 
-    res.redirect('/admin/genres');
+    return res.status(200).json({
+      success: true,
+      message: category.isDeleted ? "Category unlisted successfully" : "Category listed successfully",
+    });
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }

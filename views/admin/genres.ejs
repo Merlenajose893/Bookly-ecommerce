@@ -289,26 +289,23 @@
                       </td>
 
                       <td>
-                        <form
-                          action="/admin/toggleCategoryDeletion/<%= genre.id %>"
-                          method="POST"
-                          style="display: inline"
+                        <button
+                          class="btn <%= genre.isDeleted ? 'btn-success' : 'btn-dark' %>"
+                          onclick="confirmDeletion('<%= genre._id %>', '<%= genre.isDeleted ? 'Restore' : 'Delete' %>')"
+                          id="toggleBtn-<%= genre._id %>"
                         >
-                          <button
-                            type="submit"
-                            class="btn <%= genre.isDeleted ? 'btn-success' : 'btn-dark' %>"
-                          >
-                            <%= genre.isDeleted ? 'Restore' : 'Delete' %>
-                          </button>
-                        </form>
+                          <%= genre.isDeleted ? 'Restore' : 'Delete' %>
+                        </button>
                       </td>
-                      <td class="white">
+                      
+                      <td class="white" id="statusBadge-<%= genre._id %>">
                         <% if (genre.isDeleted) { %>
-                        <span class="badge bg-danger">Unlisted</span>
+                          <span class="badge bg-danger">Unlisted</span>
                         <% } else { %>
-                        <span class="badge bg-success">Listed</span>
+                          <span class="badge bg-success">Listed</span>
                         <% } %>
                       </td>
+                      
                     </tr>
                     <% }); %>
                   </tbody>
@@ -414,23 +411,60 @@
   
       document.getElementById('genreForm').addEventListener('submit', handleSubmit);
   </script>
-  <script>
-    function confirmDeletion(genreId, action) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: `You are about to ${action.toLowerCase()} this category.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: action,
-            cancelButtonText: 'Cancel',
-            reverseButtons: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('toggleCategoryForm-' + genreId).submit();
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDeletion(genreId, action) {
+    Swal.fire({
+      title: `Are you sure?`,
+      text: `You are about to ${action.toLowerCase()} this category.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: `Yes, ${action}`,
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch(`/admin/toggleCategoryDeletion/${genreId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire('Success', data.message, 'success');
+
+            // Update UI
+            const btn = document.getElementById(`toggleBtn-${genreId}`);
+            const badge = document.getElementById(`statusBadge-${genreId}`);
+
+            if (action.toLowerCase() === 'delete') {
+              btn.textContent = 'Restore';
+              btn.classList.remove('btn-dark');
+              btn.classList.add('btn-success');
+              btn.setAttribute("onclick", `confirmDeletion('${genreId}', 'Restore')`);
+              badge.innerHTML = `<span class="badge bg-danger">Unlisted</span>`;
+            } else {
+              btn.textContent = 'Delete';
+              btn.classList.remove('btn-success');
+              btn.classList.add('btn-dark');
+              btn.setAttribute("onclick", `confirmDeletion('${genreId}', 'Delete')`);
+              badge.innerHTML = `<span class="badge bg-success">Listed</span>`;
             }
+          } else {
+            Swal.fire('Error', data.message, 'error');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          Swal.fire('Error', 'Something went wrong.', 'error');
         });
-    }
+      }
+    });
+  }
 </script>
+
 
   </body>
 </html>
