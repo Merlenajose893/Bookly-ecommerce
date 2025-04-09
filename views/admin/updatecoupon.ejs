@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management - UrbanWorn</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<style>
+    :root {
+        --dark-bg: #1e1e2d;
+        --sidebar-bg: #1a1a27;
+        --content-bg: #151521;
+        --text-color: #92929f;
+        --text-muted: #6d6d80;
+        --border-color: #2b2b40;
+        --input-bg: #1b1b29;
+    }
+
+    body {
+        background-color: var(--dark-bg);
+        color: var(--text-color);
+    }
+
+    .sidebar {
+        background-color: var(--sidebar-bg);
+        height: 100vh;
+        padding: 20px;
+        border-right: 1px solid var(--border-color);
+    }
+
+    .sidebar h3 {
+        color: #ffffff;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .main-container {
+        background-color: var(--content-bg);
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .nav-link {
+        color: var(--text-color) !important;
+        padding: 10px 15px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+        background-color: var(--dark-bg);
+        color: #ffffff !important;
+    }
+
+    .nav-link.active {
+        background-color: var(--dark-bg);
+        color: #ffffff !important;
+    }
+
+    .search-box {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+    }
+
+    .search-box:focus {
+        background-color: var(--input-bg);
+        border-color: #0d6efd;
+        color: var(--text-color);
+        box-shadow: none;
+    }
+
+    .table {
+        color: var(--text-color);
+        border-color: var(--border-color);
+    }
+
+    .table th {
+        border-bottom: 2px solid var(--border-color);
+        color: #992323;
+    }
+
+    .table td {
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    .product-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    .btn-update {
+        background-color: #0c8;
+        color: white;
+        border: none;
+    }
+
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+    }
+
+    .form-control, .form-select {
+        background-color: var(--input-bg);
+        border: 1px solid var(--border-color);
+        color: var(--text-color);
+    }
+
+    .form-control:focus, .form-select:focus {
+        background-color: var(--input-bg);
+        border-color: #0d6efd;
+        color: var(--text-color);
+        box-shadow: none;
+    }
+
+    .status-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: 5px;
+    }
+
+    .status-online {
+        background-color: #0c8;
+    }
+
+    .status-offline {
+        background-color: #dc3545;
+    }
+</style>
+<div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-2 sidebar">
+                <h3>Bookly</h3>
+                <nav class="nav flex-column">
+                    <a class="nav-link" href="/admin">Dashboard</a>
+                    <a class="nav-link" href="/admin/usermanage">User Management</a>
+                    <a class="nav-link" href="/admin/books">Books Management</a>
+                    <a class="nav-link active" href="/admin/genres">Category Management</a>
+                    <a class="nav-link" href="/admin/adminorders">Order Management</a>
+                    <a class="nav-link" href="/admin/coupon">Coupen Management</a>
+                    <a class="nav-link" href="/admin/offer">Offer Management</a>
+                </nav>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-10 content-wrapper">
+                <div class="container-fluid">
+                    <!-- Breadcrumb -->
+                    <nav aria-label="breadcrumb" class="mt-3">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="/admin/coupon">Coupons</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Update Coupon</li>
+                        </ol>
+                    </nav>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="text-white mb-0">Update Coupon</h2>
+                        <a href="/admin/coupon" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Coupons
+                        </a>
+                    </div>
+
+                    <!-- Alerts -->
+                    <div class="alert alert-success alert-dismissible fade show" id="alertSuccess" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i> Coupon updated successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="alert alert-danger alert-dismissible fade show" id="alertError" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> <span id="errorMessage">Error updating coupon. Please try again.</span>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Form Card -->
+                    <div class="card shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-pencil-square me-2"></i> Update Coupon Details</span>
+                        </div>
+                        <div class="card-body">
+                            <form id="updateCouponForm" class="needs-validation" novalidate>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="couponName" class="form-label">Coupon Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                            <input type="text" id="couponName" name="name" class="form-control" value="<%= coupon.name %>" required>
+                                        </div>
+                                        <div class="invalid-feedback" id="couponNameError">
+                                            Please provide a coupon name.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label for="status" class="form-label">Status</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                                            <select id="status" name="isActive" class="form-select">
+                                                <option value="true" <%= coupon.isActive ? 'selected' : '' %>>Active</option>
+                                                <option value="false" <%= !coupon.isActive ? 'selected' : '' %>>Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="offerPrice" class="form-label">Offer Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-currency-rupee"></i></span>
+                                            <input type="number" id="offerPrice" name="offerPrice" class="form-control" value="<%= coupon.offerPrice %>" required>
+                                        </div>
+                                        <div class="invalid-feedback" id="offerPriceError">
+                                            Please provide a valid offer price greater than 0.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <label for="minimumPrice" class="form-label">Minimum Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-currency-rupee"></i></span>
+                                            <input type="number" id="minimumPrice" name="minimumPrice" class="form-control" value="<%= coupon.minimumPrice %>" required>
+                                        </div>
+                                        <div class="invalid-feedback" id="minimumPriceError">
+                                            Please provide a valid minimum price greater than 0.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="expiredOn" class="form-label">Expiry Date</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                        <input type="date" id="expiredOn" name="expiredOn" class="form-control" required>
+                                    </div>
+                                    <div class="invalid-feedback" id="expireError">
+                                        Please provide a valid expiry date.
+                                    </div>
+                                    <small class="text-muted">Coupon will automatically expire after this date</small>
+                                </div>
+                                
+                                <div class="d-flex justify-content-end gap-2 mt-4">
+                                    <a href="/admin/coupon" class="btn btn-secondary">
+                                        <i class="bi bi-x-circle me-1"></i> Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-1"></i> Update Coupon
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+ 
+
+            
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get coupon ID from URL
+            const urlParts = window.location.pathname.split('/');
+            const couponId = urlParts[urlParts.length - 1];
+            
+            // Format date for input
+            const formatDateForInput = (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString().split('T')[0];
+            };
+            
+            // Set expiry date value
+            document.getElementById('expiredOn').value = formatDateForInput('<%= coupon.expiredOn %>');
+            
+            // Form elements
+            const form = document.getElementById('updateCouponForm');
+            const nameInput = document.getElementById('couponName');
+            const offerPriceInput = document.getElementById('offerPrice');
+            const minimumPriceInput = document.getElementById('minimumPrice');
+            const expiryDateInput = document.getElementById('expiredOn');
+            const statusSelect = document.getElementById('status');
+            
+            // Error elements
+            const nameError = document.getElementById('couponNameError');
+            const offerPriceError = document.getElementById('offerPriceError');
+            const minimumPriceError = document.getElementById('minimumPriceError');
+            const expiryDateError = document.getElementById('expireError');
+            
+            // Alert elements
+               const errorMessage = document.getElementById('errorMessage');
+            
+            // Validation functions
+            const validateName = (name) => {
+                if (!name || name.trim() === '') {
+                    nameInput.classList.add('is-invalid');
+                    nameError.textContent = 'Coupon name is required';
+                    return false;
+                }
+                nameInput.classList.remove('is-invalid');
+                nameInput.classList.add('is-valid');
+                return true;
+            };
+            
+            const validateOfferPrice = (price) => {
+                if (!price || isNaN(price) || price <= 0) {
+                    offerPriceInput.classList.add('is-invalid');
+                    offerPriceError.textContent = 'Offer price must be greater than 0';
+                    return false;
+                }
+                offerPriceInput.classList.remove('is-invalid');
+                offerPriceInput.classList.add('is-valid');
+                return true;
+            };
+            
+            const validateMinimumPrice = (price) => {
+                if (!price || isNaN(price) || price <= 0) {
+                    minimumPriceInput.classList.add('is-invalid');
+                    minimumPriceError.textContent = 'Minimum price must be greater than 0';
+                    return false;
+                }
+                minimumPriceInput.classList.remove('is-invalid');
+                minimumPriceInput.classList.add('is-valid');
+                return true;
+            };
+            
+            const validateExpiryDate = (date) => {
+                if (!date) {
+                    expiryDateInput.classList.add('is-invalid');
+                    expiryDateError.textContent = 'Expiry date is required';
+                    return false;
+                }
+                
+                const expiryDate = new Date(date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (expiryDate < today) {
+                    expiryDateInput.classList.add('is-invalid');
+                    expiryDateError.textContent = 'Expiry date cannot be in the past';
+                    return false;
+                }
+                
+                expiryDateInput.classList.remove('is-invalid');
+                expiryDateInput.classList.add('is-valid');
+                return true;
+            };
+            
+            // Add input validation listeners
+            nameInput.addEventListener('input', () => validateName(nameInput.value));
+            offerPriceInput.addEventListener('input', () => validateOfferPrice(offerPriceInput.value));
+            minimumPriceInput.addEventListener('input', () => validateMinimumPrice(minimumPriceInput.value));
+            expiryDateInput.addEventListener('change', () => validateExpiryDate(expiryDateInput.value));
+            
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Reset previous validation state
+                form.classList.remove('was-validated');
+                
+                // Get form values
+                const name = nameInput.value;
+                const offerPrice = offerPriceInput.value;
+                const minimumPrice = minimumPriceInput.value;
+                const expiredOn = expiryDateInput.value;
+                const isActive = statusSelect.value === 'true';
+                
+                // Validate all fields
+                const isNameValid = validateName(name);
+                const isOfferPriceValid = validateOfferPrice(offerPrice);
+                const isMinimumPriceValid = validateMinimumPrice(minimumPrice);
+                const isExpiryDateValid = validateExpiryDate(expiredOn);
+                
+                if (!isNameValid || !isOfferPriceValid || !isMinimumPriceValid || !isExpiryDateValid) {
+                    // Mark form as validated to show validation feedback
+                    form.classList.add('was-validated');
+                    return;
+                }
+                
+                try {
+                    const response = await fetch(`/admin/updateCoupon/${couponId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name,
+                            offerPrice,
+                            minimumPrice,
+                            expiredOn,
+                            isActive
+                        })
+                    });
+                    
+                    if (response.ok) {
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                        title: 'Coupon Updated',
+                        text: 'The coupon was updated successfully!',
+                        timer: 1500,
+                        showConfirmButton: false
+                        })
+                        
+                        // Hide error message if it was displayed
+                        errorAlert.style.display = 'none';
+                        
+                        // Redirect after delay
+                        setTimeout(() => {
+                            window.location.href = '/admin/coupon';
+                        }, 1500);
+                    } else {
+                        // Get error details from response
+                        const errorData = await response.json();
+                        
+                        // Show error message
+                        Swal.fire({
+                        icon: 'error',
+                        title: 'Update Failed',
+                        text: errorData.message || 'An error occurred while updating the coupon.'
+                    });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Could not connect to server. Please try again later.'
+                });
+                }
+            });
+            
+            // Initialize Bootstrap validation and tooltips
+            
+        });
+    </script>
+</body>
+</html>

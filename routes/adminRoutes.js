@@ -62,10 +62,10 @@ router.get('/coupon', adminAuth, CouponController.loadCoupon);
 router.post('/coupon', adminAuth,CouponController.addCoupon);
 router.get('/updateCoupon/:couponId', adminAuth,CouponController.loadUpdateCoupon);
 router.post('/updateCoupon/:couponId', adminAuth,CouponController.updatedCoupon);
-router.post('/toggleCouponStatus/:couponId', CouponController.toggleCouponStatus);
+router.post('/toggleCouponStatus/:couponId', adminAuth,CouponController.toggleCouponStatus);
 
 router.get('/offer', adminAuth, OfferController.loadOfferPage);
-router.post('/offer', OfferController.createOffer);
+router.post('/offer', adminAuth,OfferController.createOffer);
 router.post('/offer/edit/:offerId', OfferController.editOffer);
 router.post('/offer/toggle/:offerId', OfferController.toggleOfferStatus);
 

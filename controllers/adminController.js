@@ -53,10 +53,7 @@ const adminLogout = (req, res) => {
       return res.redirect('/admin');
     }
 
-    // Clear session cookie
-    res.clearCookie('connect.sid', { path: '/' });
-
-    // Respond with success or redirect
+   
     res.redirect('/admin/login');
   });
 };

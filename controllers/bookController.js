@@ -12,7 +12,9 @@ const addProducts = async (req, res) => {
     const books = req.body;
     if (!books) return res.redirect("/admin/books", { message: "No books provided" });
 
-    const genreId = books.books.genre
+    const genreId = books.genre
+    console.log(genreId);
+    
     const genre = await Genre.findById(genreId);
     if (!genre) return res.status(400).json({ error: "Invalid Genre ID" });
 
