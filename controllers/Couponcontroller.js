@@ -10,7 +10,7 @@ const loadCoupon = async (req, res) => {
 
         const filter = {};
         if (search) {
-            filter.couponCode = { $regex: search, $options: "i" };
+            filter.name = { $regex: search, $options: "i" };
         }
 
         const totalCoupons = await Coupon.countDocuments(filter);
@@ -84,6 +84,7 @@ const addCoupon = async (req, res) => {
         console.error("Error Adding Coupon:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
+
 };
 
 const loadUpdateCoupon = async (req, res) => {
