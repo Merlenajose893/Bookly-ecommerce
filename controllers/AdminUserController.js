@@ -73,7 +73,8 @@ const blockUser = async (req, res) => {
     user.isBlocked = true;
     await user.save();
 
-    res.redirect('/admin/usermanage');
+    return res.status(200).json({ success: true, message: 'User blocked successfully' });
+
   } catch (error) {
     console.error('Error blocking user:', error);
     return res.status(500).json({ success: false, message: 'Error blocking user' });
@@ -97,8 +98,7 @@ const unblockUser = async (req, res) => {
 
     user.isBlocked = false;
     await user.save();
-
-    res.redirect('/admin/usermanage');
+    return res.status(200).json({ success: true, message: 'User unblocked successfully' });
   } catch (error) {
     console.error('Error unblocking user:', error);
 
