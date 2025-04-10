@@ -46,12 +46,22 @@
                     <a class="nav-link" href="/admin/logout">Logout</a>
                 </nav>
             </div>
+            <!----->
 
             <!-- Main Content -->
             <div class="col-md-10 main-container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                       <input type="button" value="<%=searchQuery%>"><!-- Add form wrapper with GET method -->
+                        <!-- <form action="/books" method="GET" class="d-flex align-items-center mb-3">
+                             
+                             <input 
+                              type="text" 
+                              name="search" 
+                              class="form-control me-2"  
+                              placeholder="Search Books" 
+                              value="<%= searchQuery %>">
+                              <button type="submit" class="btn btn-primary">Search</button>
+</form>  -->
 
                     </div>
                     <div>
@@ -1083,7 +1093,13 @@
       });
 
       function setError(element, message) {
-          const errorDiv = element.closest(".mb-3")?.querySelector(".error-message");
+        const container=element.closest('.mb-3')
+        if(!container)
+      {
+        console.error("No container with class 'mb-3' found");
+        return;
+      }
+          let errorDiv = container.querySelector(".error-message");
           if (errorDiv) {
               errorDiv.textContent = message;
           } else {
