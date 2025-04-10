@@ -202,7 +202,7 @@ const viewOrder = async (req, res) => {
       .populate('books.productId');
 
     if (!order) {
-      return res.status(400).json({ message: 'No order is found' });
+      return redirect('/login')
     }
     res.render('vieworders', { order });
   } catch (error) {

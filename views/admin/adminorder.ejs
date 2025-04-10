@@ -370,20 +370,23 @@
                   </td>
                   <td>
                     <% if (order.status === 'Pending' || order.status === 'Processing' || order.status === 'Delivered' || order.status === 'Returning' || order.status === 'Payment Pending' || order.status === 'Paid') { %>
-                    <form id="statusForm-<%= order._id %>" action="/admin/adminorders/updateStatus/<%=order._id%>" method="POST" class="d-inline" onsubmit="return confirmAction(this, 'update status');">
-                      <input type="hidden" name="orderId" value="<%= order._id %>" />
-                      <select name="status">
-                        <option value="Shipped">Shipped</option>
-                        <option value="Pending">Pending</option>
-                        <option value="Delivered">Delivered</option>
-                        <option value="Cancelled">Cancelled</option>
-                        <option value="Returned">Returned</option>
-                        <option value="Return Approve">Return Approve</option>
-                      </select>
-                      <button type="submit" class="btn btn-outline-warning btn-sm">Update Status</button>
-                    </form>
+                      <form id="statusForm-<%= order._id %>" class="d-inline" onsubmit="event.preventDefault(); confirmStatusUpdate('<%= order._id %>');">
+                        <input type="hidden" name="orderId" value="<%= order._id %>" />
+                        <select id="status-<%= order._id %>" name="status">
+                          <option value="Shipped">Shipped</option>
+                          <option value="Pending">Pending</option>
+                          <option value="Delivered">Delivered</option>
+                          <option value="Cancelled">Cancelled</option>
+                          <option value="Returned">Returned</option>
+                          <option value="Return Approve">Return Approve</option>
+                        </select>
+                        <button type="submit" class="btn btn-outline-warning btn-sm">Update Status</button>
+                      </form>
+                      
                     <% } %>
                   </td>
+                  
+                  
                 </tr>
                 <% }) %>
               </tbody>
@@ -423,31 +426,66 @@
   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
     <script>
-      function confirmAction(form, action) {
-        return Swal.fire({
-          title: `Are you sure you want to ${action} this order?`,
+      async function confirmStatusUpdate(orderId) {
+        const result = await Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to update the status of this order.',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: `Yes, ${action}!`,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            Swal.fire({
-              title: `Order ${action}ed successfully!`,
-              icon: 'success',
-              timer: 6500,
-              showConfirmButton: false,
-            });
-            form.submit();
-            return true;
-          }
-          return false;
+          confirmButtonText: 'Yes, update it!',
+          cancelButtonText: 'Cancel'
         });
+    
+        if (result.isConfirmed) {
+          const form = document.getElementById(`statusForm-${orderId}`);
+          const statusElement = document.getElementById(`status-${orderId}`);
+          const newStatus = statusElement.value;
+    
+          const formData = new URLSearchParams();
+          formData.append('orderId', orderId);
+          formData.append('status', newStatus);
+    
+          try {
+            const response = await fetch(`/admin/adminorders/updateStatus/${orderId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: formData.toString()
+            });
+    
+            const data = await response.json();
+    
+            if (data.success) {
+              Swal.fire({
+                title: 'Success!',
+                text: data.message || 'Order status updated successfully!',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false
+              });
+    
+              const statusDisplay = document.getElementById(`statusDisplay-${orderId}`);
+              if (statusDisplay) {
+                statusDisplay.textContent = newStatus;
+              }
+            } else {
+              throw new Error(data.message || 'Something went wrong');
+            }
+          } catch (error) {
+            Swal.fire({
+              title: 'Error!',
+              text: error.message,
+              icon: 'error',
+              confirmButtonText: 'OK'
+            });
+          }
+        }
       }
     </script>
+    
+    
   </body>
   
 </html>

@@ -71,7 +71,7 @@ const updateStatus = async (req, res) => {
         
         await order.save();
 
-        res.redirect('/admin/adminorders');
+        res.status(200).json({success:true,message:'Order updated successfully'})
     } catch (error) {
         console.error('Error updating order status:', error);
         res.status(500).send('Internal Server Error');

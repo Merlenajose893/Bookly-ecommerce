@@ -97,8 +97,9 @@ const editOffer = async (req, res) => {
         res.status(200).json({
             success: true,
             message: "Offer updated successfully",
-            updatedOffer,
+            updatedData,
             redirectUrl: "/admin/offer"
+          
         });
     } catch (error) {
         res.status(500).send('Internal Server Error');
