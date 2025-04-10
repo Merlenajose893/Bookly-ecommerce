@@ -143,7 +143,11 @@ const toggleCouponStatus = async (req, res) => {
 
         coupon.isList = !coupon.isList;
         await coupon.save();
-        res.redirect('/admin/coupon');
+        res.status(200).json({
+            message: 'Coupon status updated successfully',
+            isList: coupon.isList // or true/false depending on new state
+          });
+          
     } catch (error) {
         console.error('Error updating the coupon', error);
         res.status(500).send('Internal Server Error');

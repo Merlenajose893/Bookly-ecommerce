@@ -250,13 +250,15 @@
                                                 <a href="/admin/updateCoupon/<%= coupon.id %>" class="btn btn-success">Update</a>
                                             </td>
                                             <td>
-                                                <form action="/admin/toggleCouponStatus/<%= coupon.id %>" method="POST" style="display:inline;">
-                                                    <button type="submit" class="btn <%= coupon.isActive ? 'btn-danger' : 'btn-success' %>">
-                                                        <%= coupon.isList ? 'Deactive' : 'Active' %>
-                                                    </button>
-                                                </form>
-                                                
-                                            </td>
+                                                <button 
+                                                class="btn <%= coupon.isList ? 'btn-danger' : 'btn-success' %>" 
+                                                onclick="toggleCouponStatus('<%= coupon._id %>', this)"
+                                              >
+                                                <%= coupon.isList ? 'Deactive' : 'Active' %>
+                                              </button>
+                                              
+                                              </td>
+                                              
                                             
                                         </tr>
                                     <% }); %>
@@ -474,6 +476,7 @@
         }
     }
 </script>
+
 
   
 
