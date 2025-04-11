@@ -111,49 +111,49 @@ const loadUpdateCoupon = async (req, res) => {
     }
 };
 
-const updatedCoupon = async (req, res) => {
-    try {
-        const couponId = req.params.couponId;
-        console.log('ID', couponId);
+// const updatedCoupon = async (req, res) => {
+//     try {
+//         const couponId = req.params.couponId;
+//         console.log('ID', couponId);
         
-        let { name, offerPrice, minimumPrice, expiredOn } = req.body;
-        console.log(req.body);
-        offerPrice=Number(offerPrice)
-        minimumPrice=Number(minimumPrice)
+//         let { name, offerPrice, minimumPrice, expiredOn } = req.body;
+//         console.log(req.body);
+//         offerPrice=Number(offerPrice)
+//         minimumPrice=Number(minimumPrice)
         
-        if (!name || !offerPrice || !minimumPrice || !expiredOn) {
-           return res.status(400).json({ message: 'All Fields are required' });
-        }
-    if(offerPrice>=minimumPrice)
-    {
-        return res.status(400).json({message:'OfferPrice must be less than minimumPrice'});
-    }
-    if(offerPrice<0 || offerPrice>=100)
-    {
-        return res.status(400).json({message:'Offer Price is invalid'});
-    }
-    if(minimumPrice>5000)
-    {
-        return res.status(400).json({message:'Minimum price cannot be greater than 5000'});
-    }
+//         if (!name || !offerPrice || !minimumPrice || !expiredOn) {
+//            return res.status(400).json({ message: 'All Fields are required' });
+//         }
+//     if(offerPrice>=minimumPrice)
+//     {
+//         return res.status(400).json({message:'OfferPrice must be less than minimumPrice'});
+//     }
+//     if(offerPrice<0 || offerPrice>=100)
+//     {
+//         return res.status(400).json({message:'Offer Price is invalid'});
+//     }
+//     if(minimumPrice>5000)
+//     {
+//         return res.status(400).json({message:'Minimum price cannot be greater than 5000'});
+//     }
     
-        const updatedCoupon = await Coupon.findByIdAndUpdate(
-            couponId, 
-            { name, offerPrice, minimumPrice, expiredOn }, 
-            { new: true }
-        );
+//         const updatedCoupon = await Coupon.findByIdAndUpdate(
+//             couponId, 
+//             { name, offerPrice, minimumPrice, expiredOn }, 
+//             { new: true }
+//         );
     
-        if (!updatedCoupon) {
-           return res.status(400).json({ message: 'Coupon is not updated' });
-        }
+//         if (!updatedCoupon) {
+//            return res.status(400).json({ message: 'Coupon is not updated' });
+//         }
     
-        res.json({ success: true, message: "Coupon updated successfully", redirectUrl: "/admin/coupon" });
+//         res.json({ success: true, message: "Coupon updated successfully", redirectUrl: "/admin/coupon" });
   
-    } catch (error) {
-     console.log(error)
-     res.status(500).json({message:'Error Message'});   
-    }
-}
+//     } catch (error) {
+//      console.log(error)
+//      res.status(500).json({message:'Error Message'});   
+//     }
+// }
     
 
 const toggleCouponStatus = async (req, res) => {
