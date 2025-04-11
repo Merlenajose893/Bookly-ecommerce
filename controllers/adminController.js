@@ -233,6 +233,8 @@ const salesReport = async (req, res) => {
    
 
     const { filter, startDate, endDate, format } = req.query;
+    console.log('Filter:', req.query.filter, 'StartDate:', startDate, 'EndDate:', endDate);
+
     let start, end;
     const today = new Date();
     today.setHours(0, 0, 0);
