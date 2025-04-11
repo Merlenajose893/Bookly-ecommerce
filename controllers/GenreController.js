@@ -58,6 +58,7 @@ const addGenre = async (req, res) => {
 };
 
 
+
 const listCategory = async (req, res) => {
   try {
     const id = req.query.id;
@@ -124,6 +125,7 @@ const editCategory = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 const pageerror = async (req, res) => {
   try {
