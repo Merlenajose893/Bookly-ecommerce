@@ -133,7 +133,6 @@ const toggleProductStatus = async (req, res) => {
     book.isDeleted = !book.isDeleted;
     await book.save();
 
-    res.redirect('/admin/books');
   } catch (error) {
     console.error('Error in toggleProductStatus:', error.message);
     res.status(500).json({ message: 'Internal server error' });
@@ -231,11 +230,10 @@ const deleteProduct = async (req, res) => {
 
     book.isDeleted = true;
     await book.save();
-
-    res.redirect('/admin/books');
+    res.json({ success: true, bookId });
   } catch (error) {
     console.error('Error in deleteProduct:', error.message);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ success:true,message: 'Internal server error' });
   }
 };
 
@@ -252,8 +250,7 @@ const undeleteProduct = async (req, res) => {
 
     book.isDeleted = false;
     await book.save();
-
-    res.redirect('/admin/books');
+    res.json({ success: true, bookId }); 
   } catch (error) {
     console.error('Error in undeleteProduct:', error.message);
     res.status(500).json({ message: 'Internal server error' });

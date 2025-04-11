@@ -986,7 +986,7 @@
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function confirmAction(button, action, message) {
+    async function confirmAction(button, action, message) {
         Swal.fire({
             title: 'Confirm Action',
             text: message,
@@ -995,17 +995,63 @@
             confirmButtonText: 'Yes',
             cancelButtonText: 'No',
             reverseButtons: true,
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-               
                 const form = button.closest('form');
-                form.submit();
+                const url = form.action;
+
+                try {
+                    const response = await fetch(url, {
+                        method: "POST",
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: `Book ${action === "delete" ? "deleted" : "published"} successfully!`,
+                            timer: 1500,
+                            showConfirmButton: false,
+                        });
+
+                        const row = button.closest('tr');
+
+                        if (action === "delete") {
+                            // Remove row from DOM
+                            row.remove();
+                        } else if (action === "publish") {
+                            // Replace the form/button in the cell for undeleted state
+                            const cell = button.closest("td");
+                            cell.innerHTML = `
+                                <form action="/admin/delete-books/${result.bookId}" method="POST" class="delete-form">
+                                    <input type="hidden" name="id" value="${result.bookId}">
+                                    <button type="button" class="btn btn-danger text-white btn-outline-secondary" onclick="confirmAction(this, 'delete', 'Are you sure you want to delete this book?')">Delete</button>
+                                </form>
+                            `;
+                        }
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: result.message || `Failed to ${action} the book.`,
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Server Error",
+                        text: "Something went wrong. Please try again.",
+                    });
+                    console.error("Error:", error);
+                }
             } else {
                 Swal.fire('Cancelled', `The ${action} action was cancelled.`, 'info');
             }
         });
     }
 </script>
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
       const form = document.querySelector("form");
