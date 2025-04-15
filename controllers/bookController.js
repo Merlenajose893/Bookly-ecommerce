@@ -10,14 +10,26 @@ const sharp = require('sharp');
 const addProducts = async (req, res) => {
   try {
     const books = req.body;
-    if (!books) return res.redirect("/admin/books", { message: "No books provided" });
+   
+    console.log(req.body);
+    
 
-    const genreId = books.books.genre
-    const genre = await Genre.findById(genreId);
+    const genreId = books?.books?.genre
+    if(!genreId)
+    {
+      return res.status(400).json({message:'GenreID is required'})
+    }
+    let genre = await Genre.findById(genreId);
     if (!genre) return res.status(400).json({ error: "Invalid Genre ID" });
 
     const bookExists = await Book.findOne({ title: books.title });
     if (bookExists) return res.status(400).json("Book already exists");
+    let salesPrice=Number(books.salesPrice)
+    let regularPrice=Number(books.regularPrice)
+    if(salesPrice>regularPrice)
+    {
+      return res.status(400).json({message:'Sales Price cannot be greater than Regular Price'})
+    }
 
     const images = req.files
       ? ["image1", "image2", "image3", "image4"].reduce((acc, field) => {
@@ -44,7 +56,7 @@ const addProducts = async (req, res) => {
     });
 
     await newBook.save();
-    res.redirect("/admin/books");
+    return res.status(200).json({success:true,message:'Book Added Succesfully'})
   } catch (error) {
     console.error("Error saving book:", error);
     res.status(500).json({ message: "Server Error", error: error.message });

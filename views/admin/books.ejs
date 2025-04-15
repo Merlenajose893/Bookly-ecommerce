@@ -802,6 +802,50 @@
     });
 </script>
 <script>
+    document.getElementById('bookForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // prevent normal form submission
+  
+      const form = e.target;
+      const formData = new FormData(form);
+  
+      try {
+        const response = await fetch('/admin/books', {
+          method: 'POST',
+          body: formData
+        });
+  
+        const result = await response.json();
+  
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Book added successfully!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          // You can optionally reset the form or update UI
+          form.reset();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Failed to add book',
+            text: result.message || 'Something went wrong!'
+          });
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Network error',
+          text: 'Could not connect to server.'
+        });
+      }
+    });
+  </script>
+
+
+
+<script>
   function validateBookForm() {
       clearErrorMessages();
       let isValid = true;
@@ -1167,121 +1211,160 @@
       }
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.0/dist/sweetalert2.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    console.log('dfghjiopoigfd')
     const form = document.querySelector("form");
-    
-    form.addEventListener("submit", function (event) {
-        let isValid = true;
-        const isbn = document.getElementById("isbn");
-        const title = document.getElementById("title");
-        const author = document.getElementById("author");
-        const publisher = document.getElementById("publisher");
-        const formats = document.getElementById("formats");
-        const description = document.getElementById("description");
-        const genre = document.getElementById("genre");
-        const regularPrice = document.querySelector("[name='regularPrice']");
-        const salesPrice = document.querySelector("[name='salesPrice']");
-        const quantity = document.querySelector("[name='quantity']");
 
-        document.querySelectorAll(".error-message").forEach(el => el.textContent = "");
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault(); // Prevent default no matter what
+      let isValid = true;
 
-        function setError(element, message) {
-            const errorDiv = element.closest(".mb-3")?.querySelector(".error-message");
-            if (errorDiv) {
-                errorDiv.textContent = message;
-                errorDiv.style.color = "red";
-            }
-        }
+      const isbn = document.getElementById("isbn");
+      const title = document.getElementById("title");
+      const author = document.getElementById("author");
+      const publisher = document.getElementById("publisher");
+      const formats = document.getElementById("formats");
+      const description = document.getElementById("description");
+      const genre = document.getElementById("genre");
+      const regularPrice = document.querySelector("[name='regularPrice']");
+      const salesPrice = document.querySelector("[name='salesPrice']");
+      const quantity = document.querySelector("[name='quantity']");
 
-        const isbnPattern = /^(?:\d{10}|\d{13})$/;
-        if (!isbn.value.trim()) {
-            setError(isbn, "ISBN is required");
-            isValid = false;
-        } else if (!isbnPattern.test(isbn.value)) {
-            setError(isbn, "Invalid ISBN (must be 10 or 13 digits)");
-            isValid = false;
-        }
+      // Clear previous errors
+      document.querySelectorAll(".error-message").forEach(el => el.textContent = "");
 
-        if (!title.value.trim()) {
-            setError(title, "Title is required");
-            isValid = false;
-        }
-
-        if (!author.value.trim()) {
-            setError(author, "Author is required");
-            isValid = false;
-        }
-
-        if (!publisher.value.trim()) {
-            setError(publisher, "Publisher is required");
-            isValid = false;
-        }
-
-        if (!formats.value.trim()) {
-            setError(formats, "Formats cannot be empty");
-            isValid = false;
-        }
-
-        if (!description.value.trim()) {
-            setError(description, "Description is required");
-            isValid = false;
-        }
-
-        if (!genre.value.trim()) {
-            setError(genre, "Genre is required");
-            isValid = false;
-        }
-
-        if (!regularPrice.value.trim()) {
-            setError(regularPrice, "Regular price is required");
-            isValid = false;
-        } else if (Number(regularPrice.value) <= 0) {
-            setError(regularPrice, "Regular price must be a positive number");
-            isValid = false;
-        }
-
-        if (!salesPrice.value.trim()) {
-            setError(salesPrice, "Sales price is required");
-            isValid = false;
-        } else if (Number(salesPrice.value) < 0) {
-            setError(salesPrice, "Sales price cannot be negative");
-            isValid = false;
-        } else if (Number(salesPrice.value) > Number(regularPrice.value)) {
-            setError(salesPrice, "Sales price cannot be higher than regular price");
-            isValid = false;
-        }
-
-        if (!quantity.value.trim()) {
-            setError(quantity, "Stock quantity is required");
-            isValid = false;
-        } else if (Number(quantity.value) < 0) {
-            setError(quantity, "Stock quantity cannot be negative");
-            isValid = false;
-        }
-
-        if (!isValid) {
-            event.preventDefault();
-        }
-    });
-    
-    function setError(element, message) {
-        let errorDiv = element.parentElement.querySelector(".error-message");
+      function setError(element, message) {
+        const errorDiv = element.closest(".mb-3")?.querySelector(".error-message");
         if (errorDiv) {
-            errorDiv.textContent = message;
-            errorDiv.style.color = "red";
+          errorDiv.textContent = message;
+          errorDiv.style.color = "red";
         } else {
-            console.log("Error div not found for:", element.id);
+          console.log("Error div not found for:", element.id);
         }
-    }
+      }
+
+      // Validation checks
+      const isbnPattern = /^(?:\d{10}|\d{13})$/;
+      if (!isbn.value.trim()) {
+        setError(isbn, "ISBN is required");
+        isValid = false;
+      } else if (!isbnPattern.test(isbn.value)) {
+        setError(isbn, "Invalid ISBN (must be 10 or 13 digits)");
+        isValid = false;
+      }
+
+      if (!title.value.trim()) {
+        setError(title, "Title is required");
+        isValid = false;
+      }
+
+      if (!author.value.trim()) {
+        setError(author, "Author is required");
+        isValid = false;
+      }
+
+      if (!publisher.value.trim()) {
+        setError(publisher, "Publisher is required");
+        isValid = false;
+      }
+
+      if (!formats.value.trim()) {
+        setError(formats, "Formats cannot be empty");
+        isValid = false;
+      }
+
+      if (!description.value.trim()) {
+        setError(description, "Description is required");
+        isValid = false;
+      }
+
+      if (!genre.value.trim()) {
+        setError(genre, "Genre is required");
+        isValid = false;
+      }
+
+      if (!regularPrice.value.trim()) {
+        setError(regularPrice, "Regular price is required");
+        isValid = false;
+      } else if (Number(regularPrice.value) <= 0) {
+        setError(regularPrice, "Regular price must be a positive number");
+        isValid = false;
+      }
+
+      if (!salesPrice.value.trim()) {
+        setError(salesPrice, "Sales price is required");
+        isValid = false;
+      } else if (Number(salesPrice.value) < 0) {
+        setError(salesPrice, "Sales price cannot be negative");
+        isValid = false;
+      } else if (Number(salesPrice.value) > Number(regularPrice.value)) {
+        setError(salesPrice, "Sales price cannot be higher than regular price");
+        isValid = false;
+      }
+
+      if (!quantity.value.trim()) {
+        setError(quantity, "Stock quantity is required");
+        isValid = false;
+      } else if (Number(quantity.value) < 0) {
+        setError(quantity, "Stock quantity cannot be negative");
+        isValid = false;
+      }
+
+      if (!isValid) {
+        return; // Stop here if validation fails
+      }
+
+      // If valid, proceed with Fetch API submission
+      const formData = new FormData(form);
+
+      try {
+        const response = await fetch("/admin/books", {
+          method: "POST",
+          body: formData
+        });
+
+        const result = await response.json();
+        console.log("Server response:", result);
+
+        if (response.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Book Added!',
+            text: 'The book has been added successfully.',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            window.location.reload();
+          });
+          form.reset();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Submission Failed',
+            text: result.message || 'Something went wrong during submission.',
+            confirmButtonText: 'Try Again'
+          });
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Something went wrong!',
+          text: 'An error occurred while submitting the form. Please try again.',
+          confirmButtonText: 'OK'
+        });
+      }
+    });
   });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- SweetAlert2 CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
-
-
+  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
