@@ -118,7 +118,7 @@ const toggleOfferStatus = async (req, res) => {
 
         offer.isActive = !offer.isActive;
         await offer.save();
-        res.redirect('/admin/offer');
+        return res.status(200).json({success:true,message:'Offer Status Changed'});
     } catch (error) {
         console.error('Error', error);
         res.status(500).send('Internal Server Error');

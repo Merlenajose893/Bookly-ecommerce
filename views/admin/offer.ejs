@@ -28,7 +28,7 @@
                     <a class="nav-link" href="/admin/genres">Category Management</a>
                     <a class="nav-link" href="/admin/adminorders">Order Management</a>
                     <a class="nav-link" href="/admin/coupon">Coupon Management</a>
-                    <a class="nav-link active" href="/admin/offers">Offer Management</a>
+                    <a class="nav-link active" href="/admin/offer">Offer Management</a>
                     <a class="nav-link" href="/admin/logout">Logout</a>
                 </nav>
             </div>
@@ -428,52 +428,63 @@
     
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
-    function toggleOfferStatus(offerId, button) {
-      fetch(`/admin/offer/toggle/${offerId}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(response => {
-        if (response.headers.get("Content-Type").includes("text/html")) {
-          return response.text();
-        } else {
-          return response.json();
-        }
-      })
-      .then(data => {
-        if (typeof data === 'string') {
-          document.open();
-          document.write(data);
-          document.close();
-        } else {
-          if (data.success) {
-            Swal.fire({
-              title: "Success!",
-              text: data.isActive ? "Offer Activated" : "Offer Deactivated",
-              icon: "success",
-              timer: 1500,
-              showConfirmButton: false
-            }).then(() => {
-              window.location.reload();
-            });
+    async function toggleOfferStatus(offerId, button) {
+      try {
+        const response = await fetch(`/admin/offer/toggle/${offerId}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await response.json();
+        if (data.success) {
+          let newState;
+          if (button.textContent.trim() === "Activate") {
+            newState = true;
           } else {
-            Swal.fire({
-              title: "Error!",
-              text: data.message,
-              icon: "error"
-            });
+            newState = false;
           }
+          Swal.fire({
+            title: "Success!",
+            text: newState ? "Offer Activated" : "Offer Deactivated",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: false
+          });
+          button.textContent = newState ? "Deactivate" : "Activate";
+          if (newState) {
+            button.classList.remove("btn-danger");
+            button.classList.add("btn-success");
+          } else {
+            button.classList.remove("btn-success");
+            button.classList.add("btn-danger");
+          }
+        } else {
+          Swal.fire({
+            title: "Error!",
+            text: data.message || "Operation failed.",
+            icon: "error"
+          });
         }
-      })
-      .catch(() => {
+      } catch (error) {
         Swal.fire({
           title: "Error!",
           text: "Something went wrong. Please try again.",
           icon: "error"
         });
-      });
+        console.error("Error toggling offer status:", error);
+      }
     }
-    </script>
+  </script>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
     <script>
         function toggleFields() {
             let offerType = document.getElementById('offerType').value;

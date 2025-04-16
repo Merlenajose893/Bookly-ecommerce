@@ -852,7 +852,7 @@
 
       const isbn = document.getElementsByName('isbn')[0].value.trim();
       const title = document.getElementsByName('title')[0].value.trim();
-      const author = document.getElementsByName('author')[0].value.trim();
+      const author = document.getElementsByName('author')sh[0].value.trim();
       const publisher = document.getElementsByName('publisher')[0].value.trim();
       const formats = document.getElementsByName('formats')[0].value.trim();
       const genre = document.getElementsByName('books[genre]')[0].value;
@@ -1059,11 +1059,16 @@
                             showConfirmButton: false,
                         });
 
-                        const row = button.closest('tr');
+                        const cell=button.closest("td");
+                        
+                        
 
                         if (action === "delete") {
                             // Remove row from DOM
-                            row.remove();
+                            cell.innerHTML=`<form action="/admin/undelete-books/${result.bookId}" method="POST" class="undelete-form">
+                                    <input type="hidden" name="id" value="${result.bookId}">
+                                    <button type="button" class="btn btn-success text-white btn-outline-secondary" onclick="confirmAction(this, 'publish', 'Are you sure you want to publish this book?')">Publish</button>
+                                </form>`
                         } else if (action === "publish") {
                             // Replace the form/button in the cell for undeleted state
                             const cell = button.closest("td");
