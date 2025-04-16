@@ -169,7 +169,7 @@ const getAllBooks = async (req, res) => {
 
     console.log("Final Filter:", filter);
 
-    const books = await Book.find(filter).skip(skip).limit(limit).populate('genres', 'name');
+    const books = await Book.find(filter).skip(skip).limit(limit).populate('genres', 'name').sort({createdAt:-1});
     const count = await Book.countDocuments(filter);
     const totalPages = Math.ceil(count / limit);
     let message = '';
