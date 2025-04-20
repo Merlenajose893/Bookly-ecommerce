@@ -398,7 +398,8 @@
                                                             <label class="form-label">Current Images</label>
                                                             <div class="row">
                                                               <% book.images.forEach((image, index) => { %>
-                                                                <div class="col-md-3">
+                                                                <div class="col-md-3" data-image-name="<%= image.split('/').pop() %>">
+
                                                                   <div class="position-relative">
                                                                     <img src="/uploads/<%= image.split('/').pop() %>" 
                                                                          alt="Image <%= index + 1 %>" 
@@ -646,83 +647,68 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    function deleteImage(imageFileName, bookId) {
-      console.log("Image File Name:", imageFileName);
-      console.log("Book ID:", bookId);
-  
-      if (!imageFileName || !bookId) {
-        console.error("Invalid data:", { imageFileName, bookId });
-        Swal.fire({
-          icon: 'error',
-          title: 'Invalid Data',
-          text: 'Invalid data. Please try again.'
-        });
-        return;
-      }
-  
+  function deleteImage(imageFileName, bookId) {
+    if (!imageFileName || !bookId) {
       Swal.fire({
-        title: 'Are you sure?',
-        text: "This image will be deleted permanently!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          fetch('/admin/books/delete-image', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              imageNameToServer: imageFileName,
-              bookIdToServer: bookId
-            })
+        icon: 'error',
+        title: 'Invalid Data',
+        text: 'Invalid data. Please try again.'
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "This image will be deleted permanently!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch('/admin/books/delete-image', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            imageNameToServer: imageFileName,
+            bookIdToServer: bookId
           })
-          .then(response => response.json())
-          .then(data => {
-            console.log('Response Data:', data);
-            if (data.status) {
-              const imageElement = document.querySelector(`img[src='/uploads/${imageFileName}']`);
-              if (imageElement) {
-                const parentElement = imageElement.closest('.col-md-3');
-                if (parentElement) {
-                  parentElement.remove();
-                  Swal.fire({
-                    icon: 'success',
-                    title: 'Deleted!',
-                    text: 'Image deleted successfully',
-                    timer: 2000,
-                    showConfirmButton: false
-                  });
-                } else {
-                  console.warn('Image element found but no parent element to remove');
-                }
-              } else {
-                console.warn('Image element not found in DOM');
-              }
-            } else {
-              console.error('Error:', data.message || data.error);
-              Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: data.message || data.error || 'Error deleting image'
-              });
-            }
-          })
-          .catch(error => {
-            console.error('Error deleting image:', error);
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status) {
+            const imageContainer = document.querySelector(`[data-image-name='${imageFileName}']`);
+            imageContainer?.remove();
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Deleted!',
+              text: 'Image deleted successfully',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
             Swal.fire({
               icon: 'error',
-              title: 'Unexpected Error',
-              text: 'Something went wrong. Please try again.'
+              title: 'Error',
+              text: data.message || data.error || 'Error deleting image'
             });
+          }
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Unexpected Error',
+            text: 'Something went wrong. Please try again.'
           });
-        }
-      });
-    }
-  </script>
+        });
+      }
+    });
+  }
+</script>
+
+
   
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>

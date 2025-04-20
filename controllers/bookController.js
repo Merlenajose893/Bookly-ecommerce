@@ -218,7 +218,7 @@ const deleteSingleImage = async (req, res) => {
     if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);
       console.log(`Image ${imageNameToServer} deleted successfully`);
-      return res.json({ status: true, message: 'Image deleted successfully' });
+      return res.status(200).json({ status: true, message: 'Image deleted successfully' });
     } else {
       console.warn(`Image ${imageNameToServer} not found`);
       return res.status(404).json({ status: false, error: `Image ${imageNameToServer} not found` });
