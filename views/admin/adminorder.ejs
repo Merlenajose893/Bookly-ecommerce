@@ -331,12 +331,30 @@
         <div class="col-md-10 main-container">
           <div class="app-header mb-4"></div>
   
-          <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="mb-4">
             <form method="GET" action="/admin/adminorders">
-              <input type="text" class="form-control search-box" name="search" id="search" placeholder="Search by Order ID, Book Title, or User Name" value="<%= searchQuery || '' %>">
-              <button type="submit">Search</button>
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control"
+                  name="search"
+                  id="search"
+                  placeholder="Search by Order ID"
+                  value="<%= searchQuery || '' %>"
+                />
+                <button
+                  type="submit"
+                  name="search"
+                  class="btn btn-primary"
+                  aria-label="Search"
+                >
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
             </form>
           </div>
+          
+          
   
           <div class="table-responsive">
             <table class="table">
