@@ -83,7 +83,7 @@ const addToCart = async (req, res) => {
       return res.redirect('/cart');
     }
 
-    let itemPrice = product.salesPrice || product.regularPrice;
+    let itemPrice = product.salesPrice 
     let discountValue = 0;
 
     if (product.offerId) {
@@ -97,6 +97,14 @@ const addToCart = async (req, res) => {
         itemPrice = Math.max(0, itemPrice - discountValue);
       }
     }
+    console.log({
+      regularPrice: product.regularPrice,
+      salesPrice: product.salesPrice,
+      itemPrice,
+      discountValue,
+      finalPrice: itemPrice
+    });
+    
 
     let cart = await Cart.findOne({ userId });
 

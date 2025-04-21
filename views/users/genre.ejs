@@ -278,9 +278,9 @@
                                         
                                         <!-- Price Section -->
                                         <div class="d-flex align-items-center gap-2 mb-3">
-                                            <h6 class="fw-bold text-primary mb-0">$<%= book.regularPrice %></h6>
+                                            <h6 class="fw-bold text-primary mb-0">₹<%= book.regularPrice %></h6>
                                             <% if (book.salesPrice < book.regularPrice) { %>
-                                                <h6 class="text-muted mb-0"><del>$<%= book.salesPrice %></del></h6>
+                                                <h6 class="text-muted mb-0"><del>₹<%= book.salesPrice %></del></h6>
                                             <% } %>
                                         </div>
                                     </div>
