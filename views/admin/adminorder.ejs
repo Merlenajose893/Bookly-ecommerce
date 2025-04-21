@@ -360,7 +360,7 @@
                   <td>₹<%= order.totalAmount.toFixed(2) %></td>
                   <td><%= order.paymentMethod %></td>
                   <td>
-                    <span class="badge <%= order.status === 'Pending' ? 'bg-warning' : order.status === 'Processing' ? 'bg-info' : order.status === 'Shipped' ? 'bg-primary' : order.status === 'Delivered' ? 'bg-success' : order.status === 'Cancelled' ? 'bg-danger' : 'bg-secondary' %>">
+                    <span  class="badge <%= order.status === 'Pending' ? 'bg-warning' : order.status === 'Processing' ? 'bg-info' : order.status === 'Shipped' ? 'bg-primary' : order.status === 'Delivered' ? 'bg-success' : order.status === 'Cancelled' ? 'bg-danger' : 'bg-secondary' %>" id="statusDisplay-<%=order._id%>">
                       <%= order.status %>
                     </span>
                   </td>
@@ -427,6 +427,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+      function getBadgeClass(status) {
+    switch (status) {
+      case 'Pending':         return 'bg-warning';
+      case 'Processing':      return 'bg-info';
+      case 'Shipped':         return 'bg-primary';
+      case 'Delivered':       return 'bg-success';
+      case 'Cancelled':       return 'bg-danger';
+      case 'Returned':
+      case 'Return Approve':  return 'bg-secondary';
+      default:                return 'bg-secondary';
+    }
+  }
       async function confirmStatusUpdate(orderId) {
         const result = await Swal.fire({
           title: 'Are you sure?',
@@ -469,6 +481,7 @@
               const statusDisplay = document.getElementById(`statusDisplay-${orderId}`);
               if (statusDisplay) {
                 statusDisplay.textContent = newStatus;
+                statusDisplay.className= `badge ${getBadgeClass(newStatus)}`
               }
             } else {
               throw new Error(data.message || 'Something went wrong');
