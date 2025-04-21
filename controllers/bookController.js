@@ -67,7 +67,7 @@ const addProducts = async (req, res) => {
 const editProduct = async (req, res) => {
   try {
     const { bookId } = req.params;
-    const { title, author, description, regularPrice, salesPrice, quantity, genre, isbn, formats } =
+    let { title, author, description, regularPrice, salesPrice, quantity, genre, isbn, formats } =
       req.body;
 
     const book = await Book.findById(bookId).populate('genres');
@@ -75,7 +75,11 @@ const editProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product Not Found' });
     }
 
-    
+    salesPrice=Number(salesPrice)
+    regularPrice=Number(regularPrice)
+    if (regularPrice < salesPrice) {
+      return res.status(400).json({ message: 'Sales Price cannot be greater than Regular Price' });
+    }
     if (isbn) book.isbn = isbn;
     if (title) book.title = title;
     if (author) book.author = author;

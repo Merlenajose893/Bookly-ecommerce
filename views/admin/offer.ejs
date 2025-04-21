@@ -36,15 +36,37 @@
             <!-- Main Content -->
             <div class="col-md-10 main-container">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <input 
-                      type="text" 
-                      id="offerSearchInput"
-                      class="form-control w-50" 
-                      placeholder="Search offers">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#offerModal">
+                    <!-- search form -->
+                    <form 
+                      class="d-flex w-50" 
+                      method="GET" 
+                      action="/admin/offer"         
+                    >
+                      <div class="input-group">
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="search"
+                          value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+                          placeholder="Search by offer type, discount type, or code"
+                        />
+                        <button class="btn btn-outline-secondary" type="submit" aria-label="Search offers">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </form>
+                  
+                    <!-- create‑offer button -->
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      data-bs-toggle="modal"
+                      data-bs-target="#offerModal"
+                    >
                       Create Offer
                     </button>
                   </div>
+                  
                   
 
                 <!-- Create Offer Modal -->

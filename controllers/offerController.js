@@ -19,6 +19,8 @@ const loadOfferPage = async (req, res) => {
                 { referralCode: { $regex: searchQuery, $options: 'i' } }
             ];
         }
+        console.log(req.query.search);
+        
 
         const totalOffers = await Offer.countDocuments(filter);
         const totalPages = Math.ceil(totalOffers / limit);
@@ -31,7 +33,7 @@ const loadOfferPage = async (req, res) => {
         const books = await Book.find({ isDeleted: false });
         const genres = await Genre.find({ isListed: false });
 
-        res.render('offer', { offers, page, totalPages, books, genres });
+        res.render('offer', { offers, page, totalPages, books, genres,searchQuery:req.query.search||'' });
     } catch (error) {
         console.error('Error Loading Offer:', error);
         res.status(500).send("Internal Server Error");

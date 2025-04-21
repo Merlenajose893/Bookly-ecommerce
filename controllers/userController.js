@@ -252,6 +252,7 @@ const signup = async (req, res) => {
   }
 };
 
+
 const resendOtp = async (req, res) => {
   try {
     const { email } = req.session.userData || {};
