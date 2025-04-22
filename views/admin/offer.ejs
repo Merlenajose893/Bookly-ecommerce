@@ -448,95 +448,86 @@ document.addEventListener("DOMContentLoaded", function () {
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const editForm = document.querySelector('#editOfferForm');
+    document.addEventListener('DOMContentLoaded', () => {
+        const editForm = document.querySelector('#editOfferForm');
     
-            if (editForm) {
-                editForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
+        if (editForm) {
+            editForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
     
-                    const formData = new FormData(editForm);
-                    const formObject = Object.fromEntries(formData.entries());
+                const formData = new FormData(editForm);
+                const formObject = Object.fromEntries(formData.entries());
     
-                    const {
-                        offerType,
-                        product,
-                        category,
-                        referralCode,
-                        discountType,
-                        discountValue,
-                        startDate,
-                        endDate
-                    } = formObject;
+                const { offerType, discountType, discountValue, startDate, endDate } = formObject;
     
-                    if (!offerType || !discountType || !discountValue || !startDate || !endDate) {
-                        return Swal.fire({
-                            icon: 'warning',
-                            title: 'Missing Fields',
-                            text: 'Please fill all required fields.'
+                if (!offerType || !discountType || !discountValue || !startDate || !endDate) {
+                    return Swal.fire({
+                        icon: 'warning',
+                        title: 'Missing Fields',
+                        text: 'Please fill all required fields.'
+                    });
+                }
+    
+                const today = new Date().toISOString().split("T")[0];
+                if (new Date(startDate) < new Date(today)) {
+                    return Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid Start Date',
+                        text: 'Start Date cannot be in the past.'
+                    });
+                }
+    
+                if (new Date(endDate) <= new Date(startDate)) {
+                    return Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid End Date',
+                        text: 'End Date must be after the Start Date.'
+                    });
+                }
+    
+                const actionURL = editForm.getAttribute('action');
+    
+                try {
+                    const response = await fetch(actionURL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formObject)
+                    });
+    
+                    const data = await response.json();
+                    console.log("Server Response:", data);  // Debug log
+    
+                    if (data.success) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message || 'Offer updated successfully',
+                            confirmButtonText: 'OK'
                         });
-                    }
     
-                    const today = new Date().toISOString().split("T")[0];
-                    if (new Date(startDate) < new Date(today)) {
-                        return Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid Start Date',
-                            text: 'Start Date cannot be in the past.'
-                        });
-                    }
-    
-                    if (new Date(endDate) <= new Date(startDate)) {
-                        return Swal.fire({
-                            icon: 'error',
-                            title: 'Invalid End Date',
-                            text: 'End Date must be after the Start Date.'
-                        });
-                    }
-    
-                    const actionURL = editForm.getAttribute('action');
-    
-                    try {
-                        const response = await fetch(actionURL, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(formObject)
-                        });
-    
-                        const data = await response.json();
-    
-                        if (response.ok) {
-                            await Swal.fire({
-                                icon: 'success',
-                                title: 'Success!',
-                                text: 'Offer updated successfully',
-                                confirmButtonText: 'OK'
-                            });
-    
-                            if (data.redirectUrl) {
-                                window.location.href = data.redirectUrl;
-                            }
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Update Failed',
-                                text: data.message || "An error occurred while updating the offer."
-                            });
+                        if (data.redirectUrl) {
+                            window.location.href = data.redirectUrl;
                         }
-                    } catch (err) {
-                        console.error("Fetch Error:", err);
+                    } else {
                         Swal.fire({
                             icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong. Please try again later.'
+                            title: 'Update Failed',
+                            text: data.message || "Something went wrong."
                         });
                     }
-                });
-            }
-        });
+                } catch (err) {
+                    console.error("Fetch Error:", err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong. Please try again later.'
+                    });
+                }
+            });
+        }
+    });
     </script>
     
     
