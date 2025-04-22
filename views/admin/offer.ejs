@@ -190,8 +190,8 @@
                                                 <h5 class="modal-title">Edit Offer</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                             </div>
-                                            <div class="modal-body">
-                                                <form action="/admin/offer/edit/<%= offer._id %>" method="POST">
+                                            <div class="modal-body" id="offerModel">
+                                                <form action="/admin/offer/edit/<%= offer._id %>" method="POST" id="editOfferForm">
                                                     <div class="mb-3">
                                                         <label>Offer Type:</label>
                                                         <select name="offerType">
@@ -251,7 +251,10 @@
                                                     <div class="mb-3">
                                                        
                                                         <label>Is Active:</label>
-                                                        <input type="text" name="isActive" value="<%= offer.isActive ? 'Yes' : 'No' %>">
+                                                        <select name="isActive" class="form-control">
+                                                            <option value="true" <%= offer.isActive ? 'selected' : '' %>>Yes</option>
+                                                            <option value="false" <%= !offer.isActive ? 'selected' : '' %>>No</option>
+                                                        </select>
                                                         
                                                     
                                                     
@@ -291,18 +294,22 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
-    const offerTypeSelect = document.querySelector("[name='offerType']");
+    // Target the specific form in the modal instead of any form
+    const form = document.querySelector("#offerModal form");
+    
+    if (!form) return; // Guard clause if form doesn't exist
+    
+    const offerTypeSelect = form.querySelector("[name='offerType']");
     const productField = document.getElementById("productField");
     const categoryField = document.getElementById("categoryField");
     const referralField = document.getElementById("referralField");
-    const productDropdown = document.querySelector("[name='product']");
-    const categoryDropdown = document.querySelector("[name='category']");
-    const referralInput = document.querySelector("[name='referralCode']");
-    const discountType = document.querySelector("[name='discountType']");
-    const discountValue = document.querySelector("[name='discountValue']");
-    const startDateInput = document.querySelector("[name='startDate']");
-    const endDateInput = document.querySelector("[name='endDate']");
+    const productDropdown = form.querySelector("[name='product']");
+    const categoryDropdown = form.querySelector("[name='category']");
+    const referralInput = form.querySelector("[name='referralCode']");
+    const discountType = form.querySelector("[name='discountType']");
+    const discountValue = form.querySelector("[name='discountValue']");
+    const startDateInput = form.querySelector("[name='startDate']");
+    const endDateInput = form.querySelector("[name='endDate']");
 
     function showError(input, message) {
         let errorSpan = input.nextElementSibling;
@@ -329,34 +336,36 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     form.addEventListener("submit", async function (event) {
+    
         event.preventDefault();
+        console.log("Form submission triggered");
 
         let isValid = true;
-        document.querySelectorAll(".error").forEach(error => error.textContent = "");
-alert(isValid)
+        form.querySelectorAll(".error").forEach(error => error.textContent = "");
+        
         const offerType = offerTypeSelect.value;
         if (offerType === "") {
             showError(offerTypeSelect, "Please select an Offer Type.");
             isValid = false;
-        } else if (offerType === "Product" && !productDropdown.value) {
+        } else if (offerType === "Product" && (!productDropdown || !productDropdown.value)) {
             showError(productDropdown, "Please select a Product.");
             isValid = false;
-        } else if (offerType === "Category" && !categoryDropdown.value) {
+        } else if (offerType === "Category" && (!categoryDropdown || !categoryDropdown.value)) {
             showError(categoryDropdown, "Please select a Category.");
             isValid = false;
-        } else if (offerType === "Referral" && referralInput.value.trim() === "") {
+        } else if (offerType === "Referral" && (!referralInput || referralInput.value.trim() === "")) {
             showError(referralInput, "Please enter a Referral Code.");
             isValid = false;
         }
 
-        if (discountType.value === "") {
+        if (!discountType || discountType.value === "") {
             showError(discountType, "Please select a Discount Type.");
             isValid = false;
         } else {
             clearError(discountType);
         }
 
-        if (discountValue.value <= 0 || isNaN(discountValue.value) || discountValue.value > 100) {
+        if (!discountValue || discountValue.value <= 0 || isNaN(discountValue.value) || discountValue.value > 100) {
             showError(discountValue, "Please enter a valid Discount Value between 1 and 100.");
             isValid = false;
         } else {
@@ -364,28 +373,44 @@ alert(isValid)
         }
 
         const today = new Date().toISOString().split("T")[0];
-        if (startDateInput.value < today) {
+        if (!startDateInput || !startDateInput.value) {
+            showError(startDateInput, "Please select a Start Date.");
+            isValid = false;
+        } else if (startDateInput.value < today) {
             showError(startDateInput, "Start Date cannot be in the past.");
             isValid = false;
         } else {
             clearError(startDateInput);
         }
 
-        if (endDateInput.value <= startDateInput.value) {
+        if (!endDateInput || !endDateInput.value) {
+            showError(endDateInput, "Please select an End Date.");
+            isValid = false;
+        } else if (endDateInput.value <= startDateInput.value) {
             showError(endDateInput, "End Date must be after the Start Date.");
             isValid = false;
         } else {
             clearError(endDateInput);
         }
 
-        if (!isValid) return;
+        if (!isValid) {
+            console.log("Validation failed");
+            return;
+        }
 
+        console.log("Form is valid, proceeding with submission");
+        
+        // Convert FormData to a standard object
         const formData = new FormData(form);
-        alert(isValid)
+        const formDataObj = Object.fromEntries(formData.entries());
+        
         try {
             const response = await fetch('/admin/offer', {
                 method: "POST",
-                body: formData
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formDataObj)
             });
 
             const result = await response.json();
@@ -397,7 +422,7 @@ alert(isValid)
                     text: result.message || "Your offer has been saved successfully.",
                     confirmButtonColor: "#3085d6"
                 }).then(() => {
-                    window.location.reload(); // Or close modal
+                    window.location.reload();
                 });
             } else {
                 Swal.fire({
@@ -426,6 +451,7 @@ alert(isValid)
 
     <script>
         async function updateOffer(offerId, formData) {
+            alert('updateOffer called')
             try {
                 const response = await fetch(`/admin/offer/edit/${offerId}`, {
                     method: "POST",
@@ -468,22 +494,28 @@ alert(isValid)
             }
         }
     
-        document.getElementById("editOfferForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-    
-            const offerId = document.getElementById("offerId").value;
-            const formData = {
-                offerType: document.getElementById("offerType").value,
-                product: document.getElementById("product").value,
-                category: document.getElementById("category").value,
-                referralCode: document.getElementById("referralCode").value,
-                discountType: document.getElementById("discountType").value,
-                discountValue: document.getElementById("discountValue").value,
-                startDate: document.getElementById("startDate").value,
-                endDate: document.getElementById("endDate").value,
-            };
-    
-            updateOffer(offerId, formData);
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll('form[action^="/admin/offer/edit/"]').forEach(form => {
+                form.addEventListener("submit", function(event) {
+                    alert('event lister work1')
+                    event.preventDefault();
+                    
+                    const offerId = form.action.split('/').pop();
+                    const formData = {
+                        offerType: form.querySelector("[name='offerType']").value,
+                        product: form.querySelector("[name='product']")?.value || "",
+                        category: form.querySelector("[name='category']")?.value || "",
+                        referralCode: form.querySelector("[name='referralCode']")?.value || "",
+                        discountType: form.querySelector("[name='discountType']").value,
+                        discountValue: form.querySelector("[name='discountValue']").value,
+                        startDate: form.querySelector("[name='startDate']").value,
+                        endDate: form.querySelector("[name='endDate']").value,
+                        isActive: form.querySelector("[name='isActive']").value,
+                    };
+                    alert('event lister work2')
+                    updateOffer(offerId, formData);
+                });
+            });
         });
     </script>
     
@@ -573,6 +605,21 @@ alert(isValid)
           window.location.href = targetUrl;
         }
       });
+    });
+    </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Debug edit buttons
+        const editButtons = document.querySelectorAll('[data-bs-toggle="modal"][data-bs-target^="#editOfferModal"]');
+        console.log('Found', editButtons.length, 'edit buttons');
+        
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                console.log('Edit button clicked: ', this.getAttribute('data-bs-target'));
+            });
+        });
+        
+        // Rest of your existing DOMContentLoaded code
     });
     </script>
     </body>

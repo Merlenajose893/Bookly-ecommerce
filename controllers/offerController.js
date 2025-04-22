@@ -70,6 +70,8 @@ const createOffer = async (req, res) => {
 
 const editOffer = async (req, res) => {
     try {
+        console.log('hellosdfghjk');
+        
         const offerId = req.params.offerId;
         const { offerType, product, category, referralCode, discountType, discountValue, startDate, endDate } = req.body;
 

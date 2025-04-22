@@ -1357,7 +1357,7 @@ document.getElementById('updateBookForm').addEventListener('submit', async funct
     const formData = new FormData(form); 
 
     try {
-        const response = await fetch(form.action, {
+        const response = await fetch('/admin/books/:bookId/update', {
             method: 'POST',
             body: formData
         });
