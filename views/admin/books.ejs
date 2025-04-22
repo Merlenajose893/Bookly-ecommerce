@@ -9,25 +9,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
     <!-- Cropper.js CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
 
-<!-- Cropper.js JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <!-- Cropper.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" integrity="sha512-hvNR0F/e2J7zPPfLC9auFe3/SE0yG4aJCOd/qxew74NN7eyiSKjr7xJJMu1Jy2wf7FXITpWS1E/RY8yzuXN7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-   <link rel="stylesheet" href="/css/bookss.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-   <link
-  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
-  rel="stylesheet"
-/>
-<link
-  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css"
-  rel="stylesheet"
-/>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" integrity="sha512-hvNR0F/e2J7zPPfLC9auFe3/SE0yG4aJCOd/qxew74NN7eyiSKjr7xJJMu1Jy2wf7FXITpWS1E/RY8yzuXN7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/bookss.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet"/>
 </head>
 <body>
     <div class="container-fluid">
@@ -53,7 +46,6 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <!-- <form action="/books" method="GET" class="d-flex align-items-center mb-3">
-                             
                              <input 
                               type="text" 
                               name="search" 
@@ -61,8 +53,7 @@
                               placeholder="Search Books" 
                               value="<%= searchQuery %>">
                               <button type="submit" class="btn btn-primary">Search</button>
-</form>  -->
-
+                        </form> -->
                     </div>
                     <div>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Create</button>
@@ -86,7 +77,7 @@
                                     <div id="isbn-error" class="error-message"></div>
                                     <div class="mb-3">
                                         <label for="bookName" class="form-label">Title</label>
-                                        <input type="text" id="title"class="form-control" name="title" >
+                                        <input type="text" id="title" class="form-control" name="title" >
                                     </div>
                                     <div id="title-error" class="error-message"></div>
                                     
@@ -185,346 +176,293 @@
                               </div>
                           </div>
                       </div>
-                      
-                          
-                        
-                        
-                        
                     </div>
                     <div>
-
-
                         <hr>
-
-
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </form>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Products Table -->
+    <div class="table-responsive mb-4">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>salesPrice</th>
+                    <th>regularPrice</th>
+                    <th>Stock</th>
+                    <th>View</th>
+                    <th>Update</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% books.forEach((book) => { %>
+                <tr>
+                    <td>
+                        <% if (book.images && book.images.length > 0) { %>
+                        <img src="/Uploads/<%= book.images[0].split('/').pop() %>" alt="Book Image" class="img-fluid" style="max-width: 50px; max-height: 70px; object-fit: contain;">
+                        <% } else { %>
+                        <p class="text-muted">No image</p>
+                        <% } %>
+                    </td>
+                    <td class="white">
+                        <% if (book.genres && book.genres.length > 0) { %>
+                          <%= book.genres.map(genre => genre.name).join(', ') %>
+                        <% } else { %>
+                          <em>No genres available</em>
+                        <% } %>
+                    </td>
+                    <td class="white"><%= book.title %></td>
+                    <td class="white">₹<%= book.salesPrice %></td>
+                    <td class="white">₹<%= book.regularPrice %></td>
+                    <td class="white">
+                        <% if (book.quantity === 0) { %>
+                            <span class="green">Out of Stock</span>
+                        <% } else { %>
+                            <span class="green"><%= book.quantity %></span>
+                        <% } %>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewModal<%= book.id %>">View</button>
+                        <!-- View Modal -->
+                        <div class="modal fade" id="viewModal<%= book.id %>" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">book Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div>
+                                            <strong>Images:</strong>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                                <% if (book.images && book.images.length> 0) { %>
+                                                    <% book.images.forEach(function(image) { %>
+                                                        <img src="/Uploads/<%= image.split('/').pop() %>"
+                                                            alt="Book Image"
+                                                            style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc;">
+                                                        <% }); %>
+                                                            <% } else { %>
+                                                                <p>No images available</p>
+                                                                <% } %>
+                                            </div>
+                                            <p><strong>ISBN:</strong><%=book.isbn%></p>
+                                            <p><strong>Name:</strong> <%= book.title %></p>
+                                            <p><strong>Author:</strong> <%= book.author %></p>
+                                            <p><strong>Publisher</strong><%=book.publisher%></p>
+                                            <p><strong>Format:</strong><%=book.formats%></p>
+                                            <p><strong>Category:</strong>
+                                                <% if (book.genres && book.genres.length > 0) { %>
+                                                    <%= book.genres.map(genre => genre.name).join(', ') %>
+                                                <% } else { %>
+                                                    No genres available
+                                                <% } %>
+                                            </p>
+                                            <p><strong>Regular Price:</strong> <%= book.regularPrice %></p>
+                                            <p><strong>Sales Price:</strong> <%= book.salesPrice%></p>
+                                            <p><strong>Stock:</strong> 
+                                                <% if (book.quantity === 0) { %>
+                                                    <span>Out of Stock</span>
+                                                <% } else { %>
+                                                    <span><%= book.quantity %></span>
+                                                <% } %>
+                                            </p>
+                                            <p><strong>Description:</strong> <%= book.description %></p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <!-- Products Table -->
-                <div class="table-responsive mb-4">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Category</th>
-                                <th>Title</th>
-                                <th>salesPrice</th>
-                                <th>regularPrice</th>
-                                <th>Stock</th>
-                                <th>View</th>
-                                <th>Update</th>
-                                <th>Delete</th>
-                               
-                              
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% books.forEach((book) => { %>
-                            <tr>
-                                <td>
-                                    <% if (book.images && book.images.length > 0) { %>
-                                    <img src="/uploads/<%= book.images[0].split('/').pop() %>" alt="Book Image" class="img-fluid" style="max-width: 50px; max-height: 70px; object-fit: contain;">
-                                    <% } else { %>
-                                    <p class="text-muted">No image</p>
-                                    <% } %>
-                                </td>
-                               
-                                <td class="white">
-                                    <% if (book.genres && book.genres.length > 0) { %>
-                                      <%= book.genres.map(genre => genre.name).join(', ') %>
-                                    <% } else { %>
-                                      <em>No genres available</em>
-                                    <% } %>
-                                  </td>
-                                  
-                                  
-                                <td class="white"><%= book.title %></td>
-                             
-                                
-                                <td class="white">₹<%= book.salesPrice %></td>
-                                <td class="white">₹<%= book.regularPrice %></td>
-                                <td class="white">
-                                    <% if (book.quantity === 0) { %>
-                                        <span class="green">Out of Stock</span>
-                                    <% } else { %>
-                                        <span class="green"><%= book.quantity %></span>
-                                    <% } %>
-                                </td>
-                                
-                                
-                 
-
-                            <td>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewModal<%= book.id %>">View</button>
-                                <!-- View Modal -->
-                                <div class="modal fade" id="viewModal<%= book.id %>" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">book Details</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div>
-                                                    <strong>Images:</strong>
-                                                    <div
-                                                        style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                                        <% if (book.images && book.images.length> 0) { %>
-                                                            <% book.images.forEach(function(image) { %>
-                                                                <img src="/uploads/<%= image.split('/').pop() %>"
-                                                                    alt="Book Image"
-                                                                    style="width: 100px; height: 100px; object-fit: cover; border: 1px solid #ccc;">
-                                                                <% }); %>
-                                                                    <% } else { %>
-                                                                        <p>No images available</p>
-                                                                        <% } %>
-                                                    </div>
-
-                                                <p><strong>ISBN:</strong><%=book.isbn%></p>
-                                                <p><strong>Name:</strong> <%= book.title %></p>
-                                                <p><strong>Author:</strong> <%= book.author %></p>
-                                                <p><strong>Publisher</strong><%=book.publisher%></p>
-                                                <p><strong>Format:</strong><%=book.formats%></p>
-                                                <p><strong>Category:</strong>
-                                                    <% if (book.genres && book.genres.length > 0) { %>
-                                                        <%= book.genres.map(genre => genre.name).join(', ') %>
-                                                    <% } else { %>
-                                                        No genres available
-                                                    <% } %>
-                                                </p>
-                                                
-                                                <p><strong>Regular Price:</strong> <%= book.regularPrice %></p>
-                                                <p><strong>Sales Price:</strong> <%= book.salesPrice%></p>
-                                                <p><strong>Stock:</strong> 
-                                                    <% if (book.quantity === 0) { %>
-                                                        <span>Out of Stock</span>
-                                                    <% } else { %>
-                                                        <span><%= book.quantity %></span>
-                                                    <% } %>
-                                                </p>
-                                                
-                                                <p><strong>Description:</strong> <%= book.description %></p>
-                                                
-                                            </div>
-                                        </div>
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= book.id %>">Update</button>
+                        <!-- Update Modal -->
+                        <div class="modal fade" id="updateModal<%= book.id %>" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Update Book</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-                                </div>
-                            </td>
-                            <td>
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateModal<%= book.id %>">Update</button>
-                                <!-- Update Modal -->
-                                <div class="modal fade" id="updateModal<%= book.id %>" tabindex="-1">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Update Book</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div class="modal-body">
+                                        <form id="updateBookForm<%= book.id %>" action="/admin/books/<%=book.id%>/update" method="POST" enctype="multipart/form-data">
+                                            <input type="hidden" name="id" value="<%= book._id %>" >
+                                            <!-- Book fields -->
+                                            <div class="mb-3">
+                                                <label for="isbn" class="form-label">ISBN</label>
+                                                <input type="text" id="isbn" class="form-control" name="isbn" value="<%= book.isbn %>" >
                                             </div>
-                                            <div class="modal-body">
-                                                <form  id="updateBookForm"action="/admin/books/<%=book.id%>/update" method="POST" enctype="multipart/form-data">
-                                                    <input type="hidden" name="id" value="<%= book._id %>" >
-                                                    <!-- Book fields -->
-                                                    <div class="mb-3">
-                                                        <label for="isbn" class="form-label">ISBN</label>
-                                                        <input type="text" id="isbn" class="form-control" name="isbn" value="<%= book.isbn %>" >
-                                                    </div>
-                                                    <div id="isbn-error" class="error-message"></div>
-                                                    <div class="mb-3">
-                                                        <label for="title" class="form-label">Title</label>
-                                                        <input type="text" id="title" class="form-control" name="title" value="<%= book.title %>" >
-                                                    </div>
-                                                    <div id="title-error" class="error-message"></div>
-
-                                                    <div class="mb-3">
-                                                        <label for="author" class="form-label">Author</label>
-                                                        <input type="text" id="author" class="form-control" name="author" value="<%= book.author %>" >
-                                                    </div>
-                                                    <div id="author-error" class="error-message"></div>
-                                                    <div class="mb-3">
-                                                        <label for="publisher" class="form-label">Publisher</label>
-                                                        <input type="text" id="publisher" class="form-control" name="publisher"value="<%= book.publisher%>" >
-                                                    </div>
-                                                    <div id="publisher-error" class="error-message"></div>
-                                                    <div class="mb-3">
-                                                        <label for="formats" class="form-label">Formats</label>
-                                                        <input type="text" id="formats" class="form-control" name="formats" value="<%= book.formats %>">
-
-                                                    </div>
-                                                    <div id="formats-error" class="error-message"></div>
-                                                    <div class="mb-3">
-                                                        <label for="description" class="form-label">Description</label>
-                                                        <input type="text" id="description" class="form-control" name="description"value="<%= book.description %>">
-                                                    </div>
-                                                    <div id="description-error" class="error-message"></div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="genre" class="form-label">Genre</label>
-                                                        <select class="form-select" id="genre" name="genre" >
-                                                            <% genres.forEach(function(genre) { %>
-                                                                <option value="<%= genre._id %>" <%= book.genres.some(g => g._id.toString() === genre._id.toString()) ? 'selected' : '' %>>
-                                                                    <%= genre.name %>
-                                                                </option>
-                                                            <% }); %>
-                                                        </select>
-                                                    </div>
-                                                    <div id="genre-error" class="error-message"></div>
-                                                    
-                                <div class="mb-3">
-                                    <label for="bookName" class="form-label">Regular Price</label>
-                                    <input type="number"  class="form-control" name="regularPrice" value="<%= book.regularPrice %>"
-                                    >
-
-                                </div>
-                                <div id="regularPrice-error" class="error-message"></div>
-                                                                        
-                                <div class="mb-3">
-                                    <label for="bookName" class="form-label">Sales Price</label>
-                                    <input type="number"  class="form-control" name="salesPrice" value="<%= book.salesPrice%>"
-                                    >
-                                </div>
-                                <div id="salesPrice-error" class="error-message"></div>
-                                <div class="mb-3">
-                                    <label for="bookName" class="form-label">Stock</label>
-                                    <input type="number"  class="form-control" name="quantity" value="<%= book.quantity%>"
-                                    >
-                                </div>
-                                <div id="quantity-error" class="error-message text-danger" style="display: none;"></div>
-                                                    <!-- Existing images -->
-                                                    <div>
-                                                        <% if (book.images && book.images.length) { %>
-                                                          <div class="mb-3">
-                                                            <label class="form-label">Current Images</label>
-                                                            <div class="row">
-                                                              <% book.images.forEach((image, index) => { %>
-                                                                <div class="col-md-3" data-image-name="<%= image.split('/').pop() %>">
-
-                                                                  <div class="position-relative">
-                                                                    <img src="/uploads/<%= image.split('/').pop() %>" 
-                                                                         alt="Image <%= index + 1 %>" 
-                                                                         class="img-fluid border shadow-sm current-image mb-2" 
-                                                                         style="cursor: pointer;" 
-                                                                         data-bs-toggle="modal" 
-                                                                         data-bs-target="#imageModal" 
-                                                                         data-image="/uploads/<%= image.split('/').pop() %>">
-                                                                         <button class="btn btn-danger btn-sm position-absolute top-0 end-0" type="button"
-                                                                         onclick="deleteImage('<%= image %>', '<%= book._id %>')">Delete</button>
-                                                                 
-                                                                  </div>
-                                                                </div>
-                                                              <% }) %>
-                                                            </div>
-                                                          </div>
-                                                        <% } %>
-                                                      </div>
-                                                      
-                                                      
-                                                      
-                                                      <!-- Modal for displaying the image -->
-                                                      <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                          <div class="modal-content">
-                                                            <div class="modal-header">
-                                                              <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
-                                                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                              <img id="modalImage" src="" alt="Preview" class="img-fluid">
-                                                            </div>
+                                            <div id="isbn-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="title" class="form-label">Title</label>
+                                                <input type="text" id="title" class="form-control" name="title" value="<%= book.title %>" >
+                                            </div>
+                                            <div id="title-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="author" class="form-label">Author</label>
+                                                <input type="text" id="author" class="form-control" name="author" value="<%= book.author %>" >
+                                            </div>
+                                            <div id="author-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="publisher" class="form-label">Publisher</label>
+                                                <input type="text" id="publisher" class="form-control" name="publisher" value="<%= book.publisher%>" >
+                                            </div>
+                                            <div id="publisher-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="formats" class="form-label">Formats</label>
+                                                <input type="text" id="formats" class="form-control" name="formats" value="<%= book.formats %>">
+                                            </div>
+                                            <div id="formats-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="description" class="form-label">Description</label>
+                                                <input type="text" id="description" class="form-control" name="description" value="<%= book.description %>">
+                                            </div>
+                                            <div id="description-error" class="error-message"></div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="genre" class="form-label">Genre</label>
+                                                <select class="form-select" id="genre" name="genre" >
+                                                    <% genres.forEach(function(genre) { %>
+                                                        <option value="<%= genre._id %>" <%= book.genres.some(g => g._id.toString() === genre._id.toString()) ? 'selected' : '' %>>
+                                                            <%= genre.name %>
+                                                        </option>
+                                                    <% }); %>
+                                                </select>
+                                            </div>
+                                            <div id="genre-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="bookName" class="form-label">Regular Price</label>
+                                                <input type="number" class="form-control" name="regularPrice" value="<%= book.regularPrice %>">
+                                            </div>
+                                            <div id="regularPrice-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="bookName" class="form-label">Sales Price</label>
+                                                <input type="number" class="form-control" name="salesPrice" value="<%= book.salesPrice%>">
+                                            </div>
+                                            <div id="salesPrice-error" class="error-message"></div>
+                                            <div class="mb-3">
+                                                <label for="bookName" class="form-label">Stock</label>
+                                                <input type="number" class="form-control" name="quantity" value="<%= book.quantity%>">
+                                            </div>
+                                            <div id="quantity-error" class="error-message text-danger" style="display: none;"></div>
+                                            <!-- Existing images -->
+                                            <div>
+                                                <% if (book.images && book.images.length) { %>
+                                                  <div class="mb-3">
+                                                    <label class="form-label">Current Images</label>
+                                                    <div class="row">
+                                                      <% book.images.forEach((image, index) => { %>
+                                                        <div class="col-md-3" data-image-name="<%= image.split('/').pop() %>">
+                                                          <div class="position-relative">
+                                                            <img src="/Uploads/<%= image.split('/').pop() %>" 
+                                                                 alt="Image <%= index + 1 %>" 
+                                                                 class="img-fluid border shadow-sm current-image mb-2" 
+                                                                 style="cursor: pointer;" 
+                                                                 data-bs-toggle="modal" 
+                                                                 data-bs-target="#imageModal" 
+                                                                 data-image="/Uploads/<%= image.split('/').pop() %>">
+                                                            <button class="btn btn-danger btn-sm position-absolute top-0 end-0" type="button"
+                                                                    onclick="deleteImage('<%= image %>', '<%= book._id %>')">Delete</button>
                                                           </div>
                                                         </div>
-                                                      </div>
-                                                   
-                                                      <div class="container mt-4">
-                                                        <!-- Image 1 -->
-                                                        <div class="card mb-4">
-                                                          <div class="card-header">Upload and Crop Image 1</div>
-                                                          <div class="card-body">
-                                                            <!-- Original Image Preview (for cropping) -->
-                                                            <div class="mb-3">
-                                                              <img id="imgView1" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
-                                                            </div>
-                                                            <!-- File Input -->
-                                                            <div class="mb-3">
-                                                              <input class="form-control" type="file" name="image1" id="input1" accept="image/*">
-                                                            </div>
-                                                            <!-- Cropper Container & Cropped Image Preview -->
-                                                            <div id="croppedContainer1" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
-                                                              <img id="croppedImg1" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
-                                                              <button type="button" id="saveButton1" class="btn btn-primary">Save Cropped Image</button>
-                                                            </div>
-                                                          </div>
-                                                        </div>
-                                                      
-                                                        <!-- Image 2 -->
-                                                       
-                                                      </div>
-                                                      
-                                                    
-
-                                                    <button type="submit" class="btn btn-primary" >Update</button>
-                                                </form>
-                                            </div>
-                                        </div>
+                                                      <% }) %>
+                                                    </div>
+                                                  </div>
+                                                <% } %>
+                                              </div>
+                                              <!-- Modal for displaying the image -->
+                                              <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered">
+                                                  <div class="modal-content">
+                                                    <div class="modal-header">
+                                                      <h5 class="modal-title" id="imageModalLabel">Image Preview</h5>
+                                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                      <img id="modalImage" src="" alt="Preview" class="img-fluid">
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="container mt-4">
+                                                <!-- Image 1 -->
+                                                <div class="card mb-4">
+                                                  <div class="card-header">Upload and Crop Image 1</div>
+                                                  <div class="card-body">
+                                                    <!-- Original Image Preview (for cropping) -->
+                                                    <div class="mb-3">
+                                                      <img id="imgView1" src="" alt="Image Preview" style="display:none; max-width: 100%; border: 1px solid #ccc;">
+                                                    </div>
+                                                    <!-- File Input -->
+                                                    <div class="mb-3">
+                                                      <input class="form-control" type="file" name="image1" id="input1" accept="image/*">
+                                                    </div>
+                                                    <!-- Cropper Container & Cropped Image Preview -->
+                                                    <div id="croppedContainer1" class="image-cropper d-flex align-items-center justify-content-center flex-column" style="display:none;">
+                                                      <img id="croppedImg1" src="" alt="Cropped Image" style="display:none; max-width: 100%; border: 1px solid #ccc; margin-bottom: 10px;">
+                                                      <button type="button" id="saveButton1" class="btn btn-primary">Save Cropped Image</button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
                                     </div>
                                 </div>
-                            </td>
-                            
-                            <td>
-                                <% if (book.isDeleted === true) { %>
-                                    <form action="/admin/undelete-books/<%= book._id %>" method="POST" class="undelete-form">
-                                        <input type="hidden" name="id" value="<%= book._id %>">
-                                        <button type="button" class="btn btn-success text-white btn-outline-secondary" onclick="confirmAction(this, 'publish', 'Are you sure you want to publish this book?')">Publish</button>
-                                    </form>
-                                <% } else { %>
-                                    <form action="/admin/delete-books/<%= book._id %>" method="POST" class="delete-form">
-                                        <input type="hidden" name="id" value="<%= book._id %>">
-                                        <button type="button" class="btn btn-danger text-white btn-outline-secondary" onclick="confirmAction(this, 'delete', 'Are you sure you want to delete this book?')">Delete</button>
-                                    </form>
-                                <% } %>
-                            </td>
-                            
-                        </tr>
-                        <% }); %>
-                    </tbody>
-                    </table>
-                </div>
-<nav aria-label="Page navigation example" class="mt-3">
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <% if (book.isDeleted === true) { %>
+                            <form action="/admin/undelete-books/<%= book._id %>" method="POST" class="undelete-form">
+                                <input type="hidden" name="id" value="<%= book._id %>">
+                                <button type="button" class="btn btn-success text-white btn-outline-secondary" onclick="confirmAction(this, 'publish', 'Are you sure you want to publish this book?')">Publish</button>
+                            </form>
+                        <% } else { %>
+                            <form action="/admin/delete-books/<%= book._id %>" method="POST" class="delete-form">
+                                <input type="hidden" name="id" value="<%= book._id %>">
+                                <button type="button" class="btn btn-danger text-white btn-outline-secondary" onclick="confirmAction(this, ' bicicletădelete', 'Are you sure you want to delete this book?')">Delete</button>
+                            </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation example" class="mt-3">
         <ul class="pagination justify-content-center">
             <!-- Previous Page Link -->
             <li class="page-item <%= page <= 1 ? 'disabled' : '' %>">
                 <a class="page-link" href="?page=<%= page - 1 %>&search=<%= searchQuery %>&genre=<%= genre %>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
+                    <span aria-hidden="true">«</span>
                 </a>
             </li>
-
             <!-- Page Number Links -->
             <% for (let i = 1; i <= totalPages; i++) { %>
                 <li class="page-item <%= page === i ? 'active' : '' %>">
                     <a class="page-link" href="?page=<%= i %>&search=<%= searchQuery %>&genre=<%= genre %>"><%= i %></a>
                 </li>
             <% } %>
-
             <!-- Next Page Link -->
             <li class="page-item <%= page >= totalPages ? 'disabled' : '' %>">
                 <a class="page-link" href="?page=<%= page + 1 %>&search=<%= searchQuery %>&genre=<%= genre %>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
+                    <span aria-hidden="true">»</span>
                 </a>
             </li>
         </ul>
     </nav>
-                <!-- Add New Product Form -->
-                
-            </div>
-        </div>
-    </div>
-        
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-   
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -708,8 +646,6 @@
   }
 </script>
 
-
-  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
     function viewImage(event, imgViewId, callback) {
@@ -727,7 +663,6 @@
                 }
             };
             imgView.src = e.target.result;
-            // Ensure image stays hidden
             imgView.style.display = 'none';
         };
         reader.readAsDataURL(file);
@@ -743,7 +678,6 @@
                 viewImage(event, imgViewId, function() {
                     if (cropper) cropper.destroy();
 
-                    // Create new cropper container
                     const container = document.createElement('div');
                     container.className = 'cropper-container';
                     document.getElementById(croppedContainerId).appendChild(container);
@@ -753,7 +687,7 @@
                         viewMode: 2,
                         autoCropArea: 0.8,
                         responsive: true,
-                        container: container, // Use dedicated container
+                        container: container,
                         ready: function() {
                             document.getElementById(croppedContainerId).style.display = "flex";
                         }
@@ -767,20 +701,15 @@
                     const croppedImg = document.getElementById(croppedImgId);
                     croppedImg.src = canvas.toDataURL("image/png");
                     croppedImg.style.display = "block";
-                    
-                    
                     document.getElementById(croppedContainerId).style.display = "none";
                     cropper.destroy();
                     cropper = null;
-                    
-                    // Remove cropper container elements
                     const container = document.querySelector('.cropper-container');
                     if (container) container.remove();
                 }
             });
         }
 
-        // Initialize croppers
         initCropper("input1", "imgView1", "croppedContainer1", "croppedImg1", "saveButton1");
         initCropper("input2", "imgView2", "croppedContainer2", "croppedImg2", "saveButton2");
         initCropper("input3", "imgView3", "croppedContainer3", "croppedImg3", "saveButton3");
@@ -789,19 +718,15 @@
 </script>
 <script>
     document.getElementById('bookForm').addEventListener('submit', async function (e) {
-      e.preventDefault(); // prevent normal form submission
-  
+      e.preventDefault();
       const form = e.target;
       const formData = new FormData(form);
-  
       try {
         const response = await fetch('/admin/books', {
           method: 'POST',
           body: formData
         });
-  
         const result = await response.json();
-  
         if (result.success) {
           Swal.fire({
             icon: 'success',
@@ -809,7 +734,6 @@
             showConfirmButton: false,
             timer: 1500
           });
-          // You can optionally reset the form or update UI
           form.reset();
         } else {
           Swal.fire({
@@ -827,9 +751,7 @@
         });
       }
     });
-  </script>
-
-
+</script>
 
 <script>
   function validateBookForm() {
@@ -838,7 +760,7 @@
 
       const isbn = document.getElementsByName('isbn')[0].value.trim();
       const title = document.getElementsByName('title')[0].value.trim();
-      const author = document.getElementsByName('author')sh[0].value.trim();
+      const author = document.getElementsByName('author')[0].value.trim();
       const publisher = document.getElementsByName('publisher')[0].value.trim();
       const formats = document.getElementsByName('formats')[0].value.trim();
       const genre = document.getElementsByName('books[genre]')[0].value;
@@ -847,10 +769,10 @@
       const stock = document.getElementsByName('quantity')[0].value.trim();
       const description = document.getElementsByName('description')[0].value.trim();
       const images = [
-          document.getElementById('croppedImg1').files,
-          document.getElementById('croppedImg1').files,
-          document.getElementById('croppedImg1').files,
-          document.getElementById('croppedImg1').files,
+          document.getElementById('input1').files,
+          document.getElementById('input2').files,
+          document.getElementById('input3').files,
+          document.getElementById('input4').files,
       ];
 
       if (!/^\d{10,13}$/.test(isbn)) {
@@ -978,7 +900,7 @@
         });
       });
     });
-  </script>
+</script>
 <script>
   function handleImageChange(event, index) {
       var input = event.target;
@@ -1045,19 +967,13 @@
                             showConfirmButton: false,
                         });
 
-                        const cell=button.closest("td");
-                        
-                        
-
+                        const cell = button.closest("td");
                         if (action === "delete") {
-                            // Remove row from DOM
-                            cell.innerHTML=`<form action="/admin/undelete-books/${result.bookId}" method="POST" class="undelete-form">
+                            cell.innerHTML = `<form action="/admin/undelete-books/${result.bookId}" method="POST" class="undelete-form">
                                     <input type="hidden" name="id" value="${result.bookId}">
                                     <button type="button" class="btn btn-success text-white btn-outline-secondary" onclick="confirmAction(this, 'publish', 'Are you sure you want to publish this book?')">Publish</button>
-                                </form>`
+                                </form>`;
                         } else if (action === "publish") {
-                            // Replace the form/button in the cell for undeleted state
-                            const cell = button.closest("td");
                             cell.innerHTML = `
                                 <form action="/admin/delete-books/${result.bookId}" method="POST" class="delete-form">
                                     <input type="hidden" name="id" value="${result.bookId}">
@@ -1090,10 +1006,8 @@
 <script>
   document.addEventListener("DOMContentLoaded", () => {
       const form = document.querySelector("form");
-
       form.addEventListener("submit", (event) => {
           let isValid = true;
-
           document.querySelectorAll(".error-message").forEach((error) => {
               error.textContent = "";
           });
@@ -1174,12 +1088,11 @@
       });
 
       function setError(element, message) {
-        const container=element.closest('.mb-3')
-        if(!container)
-      {
-        console.error("No container with class 'mb-3' found");
-        return;
-      }
+          const container = element.closest('.mb-3');
+          if (!container) {
+              console.error("No container with class 'mb-3' found");
+              return;
+          }
           let errorDiv = container.querySelector(".error-message");
           if (errorDiv) {
               errorDiv.textContent = message;
@@ -1208,7 +1121,7 @@
     const form = document.querySelector("form");
 
     form.addEventListener("submit", async function (event) {
-      event.preventDefault(); // Prevent default no matter what
+      event.preventDefault();
       let isValid = true;
 
       const isbn = document.getElementById("isbn");
@@ -1222,7 +1135,6 @@
       const salesPrice = document.querySelector("[name='salesPrice']");
       const quantity = document.querySelector("[name='quantity']");
 
-      // Clear previous errors
       document.querySelectorAll(".error-message").forEach(el => el.textContent = "");
 
       function setError(element, message) {
@@ -1235,7 +1147,6 @@
         }
       }
 
-      // Validation checks
       const isbnPattern = /^(?:\d{10}|\d{13})$/;
       if (!isbn.value.trim()) {
         setError(isbn, "ISBN is required");
@@ -1303,12 +1214,10 @@
       }
 
       if (!isValid) {
-        return; // Stop here if validation fails
+        return;
       }
 
-      // If valid, proceed with Fetch API submission
       const formData = new FormData(form);
-
       try {
         const response = await fetch("/admin/books", {
           method: "POST",
@@ -1349,61 +1258,149 @@
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const updateForm = document.getElementById('updateBookForm');
-    if (!updateForm) return;
-  
-    updateForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-  
-      const formData = new FormData(updateForm);
-  
-      try {
-        const res = await fetch(updateForm.action, {
-          method: 'POST',
-          body: formData // Use FormData for multipart/form-data
-        });
-  
-        const result = await res.json();
-  
-        if (res.ok && result.success) {
-          await Swal.fire({
-            icon: 'success',
-            title: 'Updated!',
-            text: result.message || 'Book updated successfully',
-            confirmButtonText: 'OK'
+    // Attach event listeners to all update forms
+    document.querySelectorAll('form[id^="updateBookForm"]').forEach(updateForm => {
+      updateForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // Clear previous error messages
+        updateForm.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+        // Validate form fields
+        let isValid = true;
+        const isbn = updateForm.querySelector('#isbn');
+        const title = updateForm.querySelector('#title');
+        const author = updateForm.querySelector('#author');
+        const publisher = updateForm.querySelector('#publisher');
+        const formats = updateForm.querySelector('#formats');
+        const description = updateForm.querySelector('#description');
+        const genre = updateForm.querySelector('#genre');
+        const regularPrice = updateForm.querySelector('[name="regularPrice"]');
+        const salesPrice = updateForm.querySelector('[name="salesPrice"]');
+        const quantity = updateForm.querySelector('[name="quantity"]');
+
+        function setError(element, message) {
+          const errorDiv = element.closest('.mb-3')?.querySelector('.error-message');
+          if (errorDiv) {
+            errorDiv.textContent = message;
+            errorDiv.style.color = 'red';
+          }
+        }
+
+        const isbnPattern = /^(?:\d{10}|\d{13})$/;
+        if (!isbn.value.trim()) {
+          setError(isbn, 'ISBN is required');
+          isValid = false;
+        } else if (!isbnPattern.test(isbn.value)) {
+          setError(isbn, 'Invalid ISBN (must be 10 or 13 digits)');
+          isValid = false;
+        }
+
+        if (!title.value.trim()) {
+          setError(title, 'Title is required');
+          isValid = false;
+        }
+
+        if (!author.value.trim()) {
+          setError(author, 'Author is required');
+          isValid = false;
+        }
+
+        if (!publisher.value.trim()) {
+          setError(publisher, 'Publisher is required');
+          isValid = false;
+        }
+
+        if (!formats.value.trim()) {
+          setError(formats, 'Formats cannot be empty');
+          isValid = false;
+        }
+
+        if (!description.value.trim()) {
+          setError(description, 'Description is required');
+          isValid = false;
+        }
+
+        if (!genre.value.trim()) {
+          setError(genre, 'Genre is required');
+          isValid = false;
+        }
+
+        if (!regularPrice.value.trim()) {
+          setError(regularPrice, 'Regular price is required');
+          isValid = false;
+        } else if (Number(regularPrice.value) <= 0) {
+          setError(regularPrice, 'Regular price must be a positive number');
+          isValid = false;
+        }
+
+        if (!salesPrice.value.trim()) {
+          setError(salesPrice, 'Sales price is required');
+          isValid = false;
+        } else if (Number(salesPrice.value) < 0) {
+          setError(salesPrice, 'Sales price cannot be negative');
+          isValid = false;
+        } else if (Number(salesPrice.value) > Number(regularPrice.value)) {
+          setError(salesPrice, 'Sales price cannot be higher than regular price');
+          isValid = false;
+        }
+
+        if (!quantity.value.trim()) {
+          setError(quantity, 'Stock quantity is required');
+          isValid = false;
+        } else if (Number(quantity.value) < 0) {
+          setError(quantity, 'Stock quantity cannot be negative');
+          isValid = false;
+        }
+
+        if (!isValid) {
+          return; // Stop if validation fails
+        }
+
+        const formData = new FormData(updateForm);
+
+        try {
+          const res = await fetch(updateForm.action, {
+            method: 'POST',
+            body: formData
           });
-          window.location.href = '/admin/books';
-        } else {
+
+          const result = await res.json();
+
+          if (res.ok && result.success) {
+            await Swal.fire({
+              icon: 'success',
+              title: 'Updated!',
+              text: result.message || 'Book updated successfully',
+              confirmButtonText: 'OK'
+            });
+            window.location.href = '/admin/books'; // Redirect to book list
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Update Failed',
+              text: result.message || 'Something went wrong during submission.',
+              confirmButtonText: 'Try Again'
+            });
+          }
+        } catch (err) {
+          console.error('Fetch error:', err);
           Swal.fire({
             icon: 'error',
-            title: 'Update Failed',
-            text: result.message || 'Something went wrong'
+            title: 'Oops...',
+            text: 'An error occurred while submitting the form. Please try again.',
+            confirmButtonText: 'OK'
           });
         }
-      } catch (err) {
-        console.error('Fetch error:', err);
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Could not submit form. Try again later.'
-        });
-      }
+      });
     });
   });
-  </script>
-
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<!-- SweetAlert2 CDN -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
