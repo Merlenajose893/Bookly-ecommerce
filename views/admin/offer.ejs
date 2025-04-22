@@ -184,87 +184,104 @@
 
                                 <!-- Edit Offer Modal -->
                                 <div class="modal fade" id="editOfferModal<%= offer._id %>" tabindex="-1" aria-labelledby="editOfferModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Edit Offer</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body" id="offerModel">
-                                                <form action="/admin/offer/edit/<%= offer._id %>" method="POST" id="editOfferForm">
-                                                    <div class="mb-3">
-                                                        <label>Offer Type:</label>
-                                                        <select name="offerType">
-                                                            <option value="Product" <%= offer.offerType === 'Product' ? 'selected' : '' %>>Product</option>
-                                                            <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
-                                                            <option value="Referral" <%= offer.offerType === 'Referral' ? 'selected' : '' %>>Referral</option>
-                                                        </select>
-                                                        <% if (offer.offerType === 'Product') { %>
-                                                            <label>Select Product:</label>
-                                                            
-                                                            <select name="product">
-                                                                
-                                                                <% books.forEach(book => { %>
-                                                                    <option value="<%= book._id %>" <%= book._id.equals(offer.book) ? 'selected' : '' %>><%= book.title%></option>
-                                                                <% }); %>
-                                                            </select>
-                                                        <% } %>
-                                                    
-                                                        <% if (offer.offerType === 'Category') { %>
-                                                            <label>Select Category:</label>
-                                                            <select name="category">
-                                                                
-                                                                <option value="" disabled selected>Select a category</option>
-                                                                <% genres.forEach(genre => { %>
-                                                                    <option value="<%= genre._id %>" <%= genre._id.equals(offer.genre) ? 'selected' : '' %>><%= genre.name %></option>
-                                                                <% }); %>
-                                                            </select>
-                                                        <% } %>
-                                                    
-                                                        <% if (offer.offerType === 'Referral') { %>
-                                                            <label>Referral Code:</label>
-                                                            <input type="text" name="referralCode" value="<%= offer.referralCode || '' %>">
-                                                        <% } %>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Discount Type:</label>
-                                                        <select name="discountType">
-                                                            <option value="Percentage" <%= offer.discountType === 'Percentage' ? 'selected' : '' %>>Percentage</option>
-                                                            <option value="Fixed" <%= offer.discountType === 'Fixed' ? 'selected' : '' %>>Fixed</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Discount Value:</label>
-                                                        <input type="number" name="discountValue" value="<%= offer.discountValue %>">
-                                                    
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label>Start Date:</label>
-                                                        <input type="date" name="startDate" value="<%= new Date(offer.startDate).toISOString().split('T')[0] %>">
-                                                    </div>
-                                                    <div class="mb-3">
-                                                       
-    <label>End Date:</label>
-    <input type="date" name="endDate" value="<%= new Date(offer.endDate).toISOString().split('T')[0] %>">
-
-                                                    </div>
-                                                    <div class="mb-3">
-                                                       
-                                                        <label>Is Active:</label>
-                                                        <select name="isActive" class="form-control">
-                                                            <option value="true" <%= offer.isActive ? 'selected' : '' %>>Yes</option>
-                                                            <option value="false" <%= !offer.isActive ? 'selected' : '' %>>No</option>
-                                                        </select>
-                                                        
-                                                    
-                                                    
-                                                                                                        </div>
-                                                    <button type="submit" class="btn btn-success">Update Offer</button>
-                                                </form>
-                                            </div>
+                                    <div class="modal-dialog modal-dialog-centered">
+                                      <div class="modal-content shadow">
+                                        <div class="modal-header bg-light">
+                                          <h5 class="modal-title fw-bold">Edit Offer</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
+                                        <div class="modal-body p-4" id="offerModel">
+                                          <form action="/admin/offer/edit/<%= offer._id %>" method="POST" id="editOfferForm">
+                                            <!-- Offer Type Section -->
+                                            <div class="mb-4">
+                                              <label class="form-label fw-semibold">Offer Type</label>
+                                              <select name="offerType" class="form-select" id="offerTypeSelect">
+                                                <option value="Product" <%= offer.offerType === 'Product' ? 'selected' : '' %>>Product</option>
+                                                <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
+                                                <option value="Referral" <%= offer.offerType === 'Referral' ? 'selected' : '' %>>Referral</option>
+                                              </select>
+                                            </div>
+                                            
+                                            <!-- Product Selection - Shown conditionally -->
+                                            <div class="mb-4 <%= offer.offerType === 'Product' ? '' : 'd-none' %>" id="productSection">
+                                              <label class="form-label fw-semibold">Select Product</label>
+                                              <select name="product" class="form-select">
+                                                <% books.forEach(book => { %>
+                                                  <option value="<%= book._id %>" <%= book._id.equals(offer.book) ? 'selected' : '' %>><%= book.title %></option>
+                                                <% }); %>
+                                              </select>
+                                            </div>
+                                            
+                                            <!-- Category Selection - Shown conditionally -->
+                                            <div class="mb-4 <%= offer.offerType === 'Category' ? '' : 'd-none' %>" id="categorySection">
+                                              <label class="form-label fw-semibold">Select Category</label>
+                                              <select name="category" class="form-select">
+                                                <% genres.forEach(genre => { %>
+                                                  <option value="<%= genre._id %>" <%= genre._id.equals(offer.genre) ? 'selected' : '' %>><%= genre.name %></option>
+                                                <% }); %>
+                                              </select>
+                                            </div>
+                                            
+                                            <!-- Referral Code - Shown conditionally -->
+                                            <div class="mb-4 <%= offer.offerType === 'Referral' ? '' : 'd-none' %>" id="referralSection">
+                                              <label class="form-label fw-semibold">Referral Code</label>
+                                              <input type="text" name="referralCode" class="form-control" value="<%= offer.referralCode || '' %>" placeholder="Enter referral code">
+                                            </div>
+                                            
+                                            <hr class="my-4">
+                                            
+                                            <!-- Discount Information -->
+                                            <div class="row g-3 mb-4">
+                                              <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Discount Type</label>
+                                                <select name="discountType" class="form-select">
+                                                  <option value="Percentage" <%= offer.discountType === 'Percentage' ? 'selected' : '' %>>Percentage (%)</option>
+                                                  <option value="Fixed" <%= offer.discountType === 'Fixed' ? 'selected' : '' %>>Fixed Amount</option>
+                                                </select>
+                                              </div>
+                                              <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Discount Value</label>
+                                                <div class="input-group">
+                                                  <input type="number" name="discountValue" class="form-control" value="<%= offer.discountValue %>" min="0">
+                                                  <span class="input-group-text" id="discountSymbol"><%= offer.discountType === 'Percentage' ? '%' : '$' %></span>
+                                                </div>
+                                              </div>
+                                            </div>
+                                            
+                                            <!-- Date Range Selection -->
+                                            <div class="row g-3 mb-4">
+                                              <div class="col-md-6">
+                                                <label class="form-label fw-semibold">Start Date</label>
+                                                <input type="date" name="startDate" class="form-control" value="<%= new Date(offer.startDate).toISOString().split('T')[0] %>">
+                                              </div>
+                                              <div class="col-md-6">
+                                                <label class="form-label fw-semibold">End Date</label>
+                                                <input type="date" name="endDate" class="form-control" value="<%= new Date(offer.endDate).toISOString().split('T')[0] %>">
+                                              </div>
+                                            </div>
+                                            
+                                            <!-- Active Status -->
+                                            <div class="mb-4">
+                                              <label class="form-label fw-semibold">Status</label>
+                                              <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" name="isActive" value="true" id="statusSwitch" <%= offer.isActive ? 'checked' : '' %>>
+                                                <label class="form-check-label" for="statusSwitch">
+                                                  <span class="text-success <%= offer.isActive ? '' : 'd-none' %>" id="activeText">Active</span>
+                                                  <span class="text-secondary <%= offer.isActive ? 'd-none' : '' %>" id="inactiveText">Inactive</span>
+                                                </label>
+                                              </div>
+                                            </div>
+                                            
+                                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                              <button type="button" class="btn btn-outline-secondary me-md-2" data-bs-dismiss="modal">Cancel</button>
+                                              <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                          </form>
+                                        </div>
+                                      </div>
                                     </div>
-                                </div>
+                                  </div>
+                                  
                             <% }) %>
                         </tbody>
                     </table>
