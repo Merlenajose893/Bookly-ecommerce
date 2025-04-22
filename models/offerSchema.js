@@ -5,7 +5,7 @@ const offerSchema = new Schema({
     offerType: { type: String, required: true, enum: ['Product', 'Category', 'Referral'] },
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' },
-    referralCode: { type: String, unique: true, sparse: true },
+    // referralCode: { type: String, unique: true, sparse: true },
     discountType: { type: String, required: true, enum: ['Percentage', 'Fixed'] },
     discountValue: { type: Number, required: true },
     startDate: { type: Date, required: true },

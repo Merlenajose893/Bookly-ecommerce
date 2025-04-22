@@ -126,7 +126,6 @@ const editProduct = async (req, res) => {
 
 
     const updatedBook = await book.save();
-    console.log(updatedBook);
     
     return res.status(200).json({success:true,message:'Book Updated successfully'})
   } catch (error) {

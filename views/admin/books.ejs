@@ -1351,49 +1351,49 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('updateBookForm');
-  if (!form) return;
-
-  form.addEventListener('submit', async e => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    try {
-      const res = await fetch(form.action, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-
-      const result = await res.json();
-
-      if (result.success) {
-        await Swal.fire({
-          icon: 'success',
-          title: 'Updated!',
-          text: result.message || 'Book updated successfully',
-          confirmButtonText: 'OK'
+  document.addEventListener('DOMContentLoaded', () => {
+    const updateForm = document.getElementById('updateBookForm');
+    if (!updateForm) return;
+  
+    updateForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+  
+      const formData = new FormData(updateForm);
+  
+      try {
+        const res = await fetch(updateForm.action, {
+          method: 'POST',
+          body: formData // Use FormData for multipart/form-data
         });
-        window.location.href = '/admin/books';
-      } else {
+  
+        const result = await res.json();
+  
+        if (res.ok && result.success) {
+          await Swal.fire({
+            icon: 'success',
+            title: 'Updated!',
+            text: result.message || 'Book updated successfully',
+            confirmButtonText: 'OK'
+          });
+          window.location.href = '/admin/books';
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Update Failed',
+            text: result.message || 'Something went wrong'
+          });
+        }
+      } catch (err) {
+        console.error('Fetch error:', err);
         Swal.fire({
           icon: 'error',
-          title: 'Update Failed',
-          text: result.message || 'Something went wrong'
+          title: 'Oops...',
+          text: 'Could not submit form. Try again later.'
         });
       }
-    } catch (err) {
-      console.error('Fetch error:', err);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: 'Could not submit form. Try again later.'
-      });
-    }
+    });
   });
-});
-</script>
+  </script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

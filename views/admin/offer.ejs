@@ -85,7 +85,7 @@
                                             <option value="">Select Offer Type</option>
                                             <option value="Product">Product</option>
                                             <option value="Category">Category</option>
-                                            <option value="Referral">Referral</option>
+                                          
                                         </select>
                                     </div>
                             
@@ -110,10 +110,7 @@
                                     </div>
                                     
                             
-                                    <div class="mb-3" id="referralField" style="display: none;">
-                                        <label class="form-label">Referral Code</label>
-                                        <input type="text" class="form-control" name="referralCode">
-                                    </div>
+                                  
                             
                                     <div class="mb-3">
                                         <label class="form-label">Discount Type</label>
@@ -198,7 +195,7 @@
                                               <select name="offerType" class="form-select" id="offerTypeSelect">
                                                 <option value="Product" <%= offer.offerType === 'Product' ? 'selected' : '' %>>Product</option>
                                                 <option value="Category" <%= offer.offerType === 'Category' ? 'selected' : '' %>>Category</option>
-                                                <option value="Referral" <%= offer.offerType === 'Referral' ? 'selected' : '' %>>Referral</option>
+                                              
                                               </select>
                                             </div>
                                             
@@ -223,10 +220,7 @@
                                             </div>
                                             
                                             <!-- Referral Code - Shown conditionally -->
-                                            <div class="mb-4 <%= offer.offerType === 'Referral' ? '' : 'd-none' %>" id="referralSection">
-                                              <label class="form-label fw-semibold">Referral Code</label>
-                                              <input type="text" name="referralCode" class="form-control" value="<%= offer.referralCode || '' %>" placeholder="Enter referral code">
-                                            </div>
+                                          
                                             
                                             <hr class="my-4">
                                             
@@ -319,10 +313,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const offerTypeSelect = form.querySelector("[name='offerType']");
     const productField = document.getElementById("productField");
     const categoryField = document.getElementById("categoryField");
-    const referralField = document.getElementById("referralField");
+    // const referralField = document.getElementById("referralField");
     const productDropdown = form.querySelector("[name='product']");
     const categoryDropdown = form.querySelector("[name='category']");
-    const referralInput = form.querySelector("[name='referralCode']");
+    // const referralInput = form.querySelector("[name='referralCode']");
     const discountType = form.querySelector("[name='discountType']");
     const discountValue = form.querySelector("[name='discountValue']");
     const startDateInput = form.querySelector("[name='startDate']");
@@ -370,10 +364,10 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (offerType === "Category" && (!categoryDropdown || !categoryDropdown.value)) {
             showError(categoryDropdown, "Please select a Category.");
             isValid = false;
-        } else if (offerType === "Referral" && (!referralInput || referralInput.value.trim() === "")) {
-            showError(referralInput, "Please enter a Referral Code.");
-            isValid = false;
-        }
+        // } else if (offerType === "Referral" && (!referralInput || referralInput.value.trim() === "")) {
+        //     showError(referralInput, "Please enter a Referral Code.");
+        //     isValid = false;
+        // }
 
         if (!discountType || discountType.value === "") {
             showError(discountType, "Please select a Discount Type.");
