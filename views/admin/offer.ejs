@@ -333,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let isValid = true;
         document.querySelectorAll(".error").forEach(error => error.textContent = "");
-
+alert(isValid)
         const offerType = offerTypeSelect.value;
         if (offerType === "") {
             showError(offerTypeSelect, "Please select an Offer Type.");
@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!isValid) return;
 
         const formData = new FormData(form);
-
+        alert(isValid)
         try {
             const response = await fetch('/admin/offer', {
                 method: "POST",

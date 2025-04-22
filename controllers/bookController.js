@@ -128,7 +128,7 @@ const editProduct = async (req, res) => {
     const updatedBook = await book.save();
     console.log(updatedBook);
     
-    res.redirect('/admin/books');
+    return res.status(200).json({success:true,message:'Book Updated successfully'})
   } catch (error) {
     console.error('Error in editProduct:', error);
     res.status(500).json({ message: 'Server Error', error: error.message });
