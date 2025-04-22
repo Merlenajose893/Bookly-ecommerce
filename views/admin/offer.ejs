@@ -288,98 +288,138 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const form = document.querySelector("form");
-            const offerTypeSelect = document.querySelector("[name='offerType']");
-            const productField = document.getElementById("productField");
-            const categoryField = document.getElementById("categoryField");
-            const referralField = document.getElementById("referralField");
-            const productDropdown = document.querySelector("[name='product']");
-            const categoryDropdown = document.querySelector("[name='category']");
-            const referralInput = document.querySelector("[name='referralCode']");
-            const discountType = document.querySelector("[name='discountType']");
-            const discountValue = document.querySelector("[name='discountValue']");
-            const startDateInput = document.querySelector("[name='startDate']");
-            const endDateInput = document.querySelector("[name='endDate']");
-    
-            function showError(input, message) {
-                let errorSpan = input.nextElementSibling;
-                if (!errorSpan || !errorSpan.classList.contains("error")) {
-                    errorSpan = document.createElement("span");
-                    errorSpan.classList.add("error");
-                    input.parentNode.appendChild(errorSpan);
-                }
-                errorSpan.textContent = message;
-            }
-    
-            function clearError(input) {
-                let errorSpan = input.nextElementSibling;
-                if (errorSpan && errorSpan.classList.contains("error")) {
-                    errorSpan.textContent = "";
-                }
-            }
-    
-            offerTypeSelect.addEventListener("change", function () {
-                productField.style.display = this.value === "Product" ? "block" : "none";
-                categoryField.style.display = this.value === "Category" ? "block" : "none";
-                referralField.style.display = this.value === "Referral" ? "block" : "none";
-                clearError(offerTypeSelect);
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const offerTypeSelect = document.querySelector("[name='offerType']");
+    const productField = document.getElementById("productField");
+    const categoryField = document.getElementById("categoryField");
+    const referralField = document.getElementById("referralField");
+    const productDropdown = document.querySelector("[name='product']");
+    const categoryDropdown = document.querySelector("[name='category']");
+    const referralInput = document.querySelector("[name='referralCode']");
+    const discountType = document.querySelector("[name='discountType']");
+    const discountValue = document.querySelector("[name='discountValue']");
+    const startDateInput = document.querySelector("[name='startDate']");
+    const endDateInput = document.querySelector("[name='endDate']");
+
+    function showError(input, message) {
+        let errorSpan = input.nextElementSibling;
+        if (!errorSpan || !errorSpan.classList.contains("error")) {
+            errorSpan = document.createElement("span");
+            errorSpan.classList.add("error");
+            input.parentNode.appendChild(errorSpan);
+        }
+        errorSpan.textContent = message;
+    }
+
+    function clearError(input) {
+        let errorSpan = input.nextElementSibling;
+        if (errorSpan && errorSpan.classList.contains("error")) {
+            errorSpan.textContent = "";
+        }
+    }
+
+    offerTypeSelect.addEventListener("change", function () {
+        productField.style.display = this.value === "Product" ? "block" : "none";
+        categoryField.style.display = this.value === "Category" ? "block" : "none";
+        referralField.style.display = this.value === "Referral" ? "block" : "none";
+        clearError(offerTypeSelect);
+    });
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        let isValid = true;
+        document.querySelectorAll(".error").forEach(error => error.textContent = "");
+
+        const offerType = offerTypeSelect.value;
+        if (offerType === "") {
+            showError(offerTypeSelect, "Please select an Offer Type.");
+            isValid = false;
+        } else if (offerType === "Product" && !productDropdown.value) {
+            showError(productDropdown, "Please select a Product.");
+            isValid = false;
+        } else if (offerType === "Category" && !categoryDropdown.value) {
+            showError(categoryDropdown, "Please select a Category.");
+            isValid = false;
+        } else if (offerType === "Referral" && referralInput.value.trim() === "") {
+            showError(referralInput, "Please enter a Referral Code.");
+            isValid = false;
+        }
+
+        if (discountType.value === "") {
+            showError(discountType, "Please select a Discount Type.");
+            isValid = false;
+        } else {
+            clearError(discountType);
+        }
+
+        if (discountValue.value <= 0 || isNaN(discountValue.value) || discountValue.value > 100) {
+            showError(discountValue, "Please enter a valid Discount Value between 1 and 100.");
+            isValid = false;
+        } else {
+            clearError(discountValue);
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+        if (startDateInput.value < today) {
+            showError(startDateInput, "Start Date cannot be in the past.");
+            isValid = false;
+        } else {
+            clearError(startDateInput);
+        }
+
+        if (endDateInput.value <= startDateInput.value) {
+            showError(endDateInput, "End Date must be after the Start Date.");
+            isValid = false;
+        } else {
+            clearError(endDateInput);
+        }
+
+        if (!isValid) return;
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch('/admin/offer', {
+                method: "POST",
+                body: formData
             });
-    
-            form.addEventListener("submit", function (event) {
-                let isValid = true;
-                document.querySelectorAll(".error").forEach(error => error.textContent = "");
-    
-                const offerType = offerTypeSelect.value;
-                if (offerType === "") {
-                    showError(offerTypeSelect, "Please select an Offer Type.");
-                    isValid = false;
-                } else if (offerType === "Product" && !productDropdown.value) {
-                    showError(productDropdown, "Please select a Product.");
-                    isValid = false;
-                } else if (offerType === "Category" && !categoryDropdown.value) {
-                    showError(categoryDropdown, "Please select a Category.");
-                    isValid = false;
-                } else if (offerType === "Referral" && referralInput.value.trim() === "") {
-                    showError(referralInput, "Please enter a Referral Code.");
-                    isValid = false;
-                }
-    
-                if (discountType.value === "") {
-                    showError(discountType, "Please select a Discount Type.");
-                    isValid = false;
-                } else {
-                    clearError(discountType);
-                }
-    
-                if (discountValue.value <= 0 || isNaN(discountValue.value)||discountValue.value>100) {
-                    showError(discountValue, "Please enter a valid Discount Value between 1 and 100.");
-                    isValid = false;
-                } else {
-                    clearError(discountValue);
-                }
-    
-                const today = new Date().toISOString().split("T")[0];
-                if (startDateInput.value < today) {
-                    showError(startDateInput, "Start Date cannot be in the past.");
-                    isValid = false;
-                } else {
-                    clearError(startDateInput);
-                }
-                if (endDateInput.value <= startDateInput.value) {
-                    showError(endDateInput, "End Date must be after the Start Date.");
-                    isValid = false;
-                } else {
-                    clearError(endDateInput);
-                }
-    
-                if (!isValid) {
-                    event.preventDefault();
-                }
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Offer saved!",
+                    text: result.message || "Your offer has been saved successfully.",
+                    confirmButtonColor: "#3085d6"
+                }).then(() => {
+                    window.location.reload(); // Or close modal
+                });
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Failed to save!",
+                    text: result.message || "Something went wrong.",
+                    confirmButtonColor: "#d33"
+                });
+            }
+        } catch (err) {
+            console.error("Fetch error:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Oops!",
+                text: "An error occurred while submitting the form.",
+                confirmButtonColor: "#d33"
             });
-        });
-    </script>
+        }
+    });
+});
+</script>
+
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

@@ -78,7 +78,7 @@ const editProduct = async (req, res) => {
     salesPrice=Number(salesPrice)
     regularPrice=Number(regularPrice)
     if (regularPrice < salesPrice) {
-      return res.status(400).json({ message: 'Sales Price cannot be greater than Regular Price' });
+      return res.status(400).json({success:false, message: 'Sales Price cannot be greater than Regular Price' });
     }
     if (isbn) book.isbn = isbn;
     if (title) book.title = title;

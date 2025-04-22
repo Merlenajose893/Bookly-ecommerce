@@ -42,6 +42,7 @@ const loadCoupon = async (req, res) => {
 const addCoupon = async (req, res) => {
     try {
         let { name, offerPrice, minimumPrice, expiredOn } = req.body;
+        name=name.trim()
 
         if (!offerPrice || !minimumPrice || !expiredOn) {
             return res.status(400).json({ message: "Please fill all fields" });
@@ -70,7 +71,7 @@ const addCoupon = async (req, res) => {
             name = `COUP-${offerPrice}-${randomCode}`;
         }
 
-        const existingCoupon = await Coupon.findOne({ name });
+        const existingCoupon = await Coupon.findOne({ name});
         if (existingCoupon) {
             return res.status(400).json({ message: "Coupon name already exists" });
         }

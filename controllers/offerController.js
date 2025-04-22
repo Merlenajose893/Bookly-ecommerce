@@ -61,7 +61,7 @@ const createOffer = async (req, res) => {
 
         let newOffer = new Offer(offerData);
         await newOffer.save();
-        res.redirect('/admin/offer');
+        return res.status(200).json({success:true,message:'Offer Created Successfully'})
     } catch (error) {
         console.error('Error', error);
         res.status(500).send('Internal Server Error');
