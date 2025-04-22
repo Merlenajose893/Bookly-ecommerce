@@ -64,7 +64,7 @@ const createOffer = async (req, res) => {
         return res.status(200).json({success:true,message:'Offer Created Successfully'})
     } catch (error) {
         console.error('Error', error);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({success:false,message:'Error creating offer'});
     }
 };
 
